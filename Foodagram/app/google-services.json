@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "202272378802",
+    "firebase_url": "https://foodagram-c4fbc.firebaseio.com",
+    "project_id": "foodagram-c4fbc",
+    "storage_bucket": "foodagram-c4fbc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:202272378802:android:59a29415f0e9b62a",
+        "android_client_info": {
+          "package_name": "com.example.foodagramapp.foodagram"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "202272378802-p8kuc8r0th1md3snlbbm7f60upubjl4r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDo9_QWfGsP_Byb9qTvZiS3MmyvjFRsQQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
