@@ -7,12 +7,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:id="@+id/gridImageView"/>
+        android:id="@+id/grid_image_view"/>
 
     <ProgressBar
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:id="@+id/gridImageProgressbar"/>
+        android:id="@+id/grid_image_progress_bar"/>
 
 </RelativeLayout>

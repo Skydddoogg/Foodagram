@@ -43,11 +43,11 @@ public class ImageSelectorFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_image_selector, container, false);
-        galleryImage = (ImageView) view.findViewById(R.id.galleryImageView);
-        gridView = (GridView) view.findViewById(R.id.gridView);
+        View view = inflater.inflate(R.layout.fragment_gallery, container, false);
+        galleryImage = (ImageView) view.findViewById(R.id.gallery_image_view);
+        gridView = (GridView) view.findViewById(R.id.gallery_grid_view);
 //        directorySpinner = (Spinner) view.findViewById(R.id.spinnerDirectory);
-        mProgressBar = (ProgressBar) view.findViewById(R.id.progressBar);
+        mProgressBar = (ProgressBar) view.findViewById(R.id.gallery_progress_bar);
         mProgressBar.setVisibility(View.GONE);
         directories = new ArrayList<>();
         Log.d(TAG, "onCreateView: started.");
@@ -146,7 +146,7 @@ public class ImageSelectorFragment extends Fragment {
         gridView.setColumnWidth(imageWidth);
 
         //use the grid adapter to adapter the images to gridview
-        GridImageAdapter adapter = new GridImageAdapter(getActivity(), R.layout.layout_grid_imageview, mAppend, imgURLs);
+        GridImageAdapter adapter = new GridImageAdapter(getActivity(), R.layout.layout_grid_image_view, mAppend, imgURLs);
         gridView.setAdapter(adapter);
 
         //set the first image to be displayed when the activity fragment view is inflated

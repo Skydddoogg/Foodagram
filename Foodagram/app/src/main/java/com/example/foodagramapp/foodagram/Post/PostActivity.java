@@ -30,10 +30,15 @@ public class PostActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_post);
+        setContentView(R.layout.activity_main);
         Log.d(TAG, "onCreate: started.");
         if(checkPermissionsArray(Permissions.PERMISSIONS)){
-            setupViewPager();
+//            setupViewPager();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.main_view, new ImageSelectorFragment())
+                    .commit();
+            Log.d(TAG, "GO TO GALLERY");
         }else{
             verifyPermissions(Permissions.PERMISSIONS);
         }
