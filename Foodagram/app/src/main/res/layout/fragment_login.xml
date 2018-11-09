@@ -8,185 +8,163 @@
     android:background="@drawable/login_background"
     >
 
-
-    <EditText
-        android:id="@+id/login_username"
-        android:layout_width="326dp"
-        android:layout_height="59dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="84dp"
-        android:background="@drawable/login_text_input_top"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:hint="example@foodagram.com"
-        android:paddingStart="50dp"
-        android:fontFamily="@font/mitr_regular"
-        android:textSize="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_text_logo" />
-
-    <EditText
-        android:id="@+id/login_password"
-        android:layout_width="326dp"
-        android:layout_height="59dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:background="@drawable/login_text_input_bottom"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:hint="password"
-        android:paddingStart="50dp"
-        android:fontFamily="@font/mitr_regular"
-        android:textSize="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_username" />
-
-    <ImageView
-        android:id="@+id/login_logo"
-        android:layout_width="wrap_content"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout4"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/logo" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/login_text_logo"
-        android:layout_width="wrap_content"
+        <ImageView
+            android:id="@+id/login_logo"
+            android:layout_width="230dp"
+            android:layout_height="41dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/logo" />
+
+        <TextView
+            android:id="@+id/login_text_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/mitr_regular"
+            android:text="เส้นทางที่คุณเลือกกิน"
+            android:textColor="#CCffffff"
+            android:textSize="18dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/login_logo" />
+
+        <TextView
+            android:id="@+id/login_text_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="12dp"
+            android:fontFamily="@font/mitr_regular"
+            android:text="เข้าสู่ระบบ"
+            android:textColor="#CCffffff"
+            android:textSize="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/login_text_logo" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout4"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
-        android:fontFamily="@font/mitr_regular"
-        android:textSize="18dp"
-        android:text="เส้นทางที่คุณเลือกกิน"
-        android:textColor="#CCffffff"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_logo" />
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout4">
 
-    <Button
-        android:id="@+id/login_login_button"
-        android:background="@drawable/login_button_long"
-        android:layout_width="326dp"
-        android:layout_height="51dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
-        android:fontFamily="@font/mitr_regular"
-        android:textColor="#ffffff"
-        android:text="เข้าสู่ระบบ"
-        android:textSize="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_password" />
+        <EditText
+            android:id="@+id/login_username"
+            android:layout_width="match_parent"
+            android:layout_height="61dp"
+            android:background="@drawable/login_text_input_top"
+            android:drawablePadding="15dp"
+            android:drawableStart="@drawable/login_ic_email"
+            android:ems="10"
+            android:fontFamily="@font/mitr_regular"
+            android:hint="example@foodagram.com"
+            android:inputType="textPersonName"
+            android:textSize="16dp"
+            tools:layout_editor_absoluteX="29dp"
+            tools:layout_editor_absoluteY="180dp" />
+
+        <EditText
+            android:id="@+id/login_password"
+            android:layout_width="match_parent"
+            android:layout_height="59dp"
+            android:background="@drawable/login_text_input_bottom"
+            android:drawablePadding="15dp"
+            android:drawableStart="@drawable/login_ic_password"
+            android:ems="10"
+            android:fontFamily="@font/mitr_regular"
+            android:hint="password"
+            android:inputType="textPersonName"
+            android:textSize="16dp"
+            tools:layout_editor_absoluteX="29dp"
+            tools:layout_editor_absoluteY="254dp" />
+
+        <Button
+            android:id="@+id/login_login_button"
+            android:layout_width="match_parent"
+            android:layout_height="51dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/login_button_long"
+            android:fontFamily="@font/mitr_regular"
+            android:text="เข้าสู่ระบบ"
+            android:textColor="#ffffff"
+            android:textSize="16dp"
+            tools:layout_editor_absoluteX="29dp"
+            tools:layout_editor_absoluteY="320dp" />
+
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/login_text_forgot_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="24dp"
+        android:fontFamily="@font/mitr_regular"
         android:text="ลืมรหัสผ่าน?"
-        android:fontFamily="@font/mitr_regular"
-        android:textSize="16dp"
-        android:textColor="#CCffffff"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_login_button" />
-
-    <TextView
-        android:id="@+id/login_text_no_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="112dp"
-        android:layout_marginTop="56dp"
-        android:fontFamily="@font/mitr_regular"
-        android:text="ยังไม่มีบัญชี?"
-        android:textColor="#ffffff"
-        android:textSize="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_text_forgot_password"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <TextView
-        android:id="@+id/login_text_click_here"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="132dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="56dp"
-        android:fontFamily="@font/mitr_regular"
-        android:text="แตะที่นี่"
-        android:textColor="#FF345C"
-        android:textSize="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/login_text_no_id"
-        app:layout_constraintTop_toBottomOf="@+id/login_text_forgot_password"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <TextView
-        android:id="@+id/login_text_login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="48dp"
-        android:fontFamily="@font/mitr_regular"
-        android:text="เข้าสู่ระบบ"
         android:textColor="#CCffffff"
         android:textSize="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/login_username"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.102"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_text_logo"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout4" />
 
-    <ImageView
-        android:id="@+id/login_ic_email"
-        android:layout_width="16dp"
-        android:layout_height="12dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/login_password"
-        app:layout_constraintEnd_toEndOf="@+id/login_username"
-        app:layout_constraintHorizontal_bias="0.054"
-        app:layout_constraintStart_toStartOf="@+id/login_username"
-        app:layout_constraintTop_toTopOf="@+id/login_username"
-        app:layout_constraintVertical_bias="0.548"
-        app:srcCompat="@drawable/login_ic_email" />
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/bottom_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="0dp">
 
-    <ImageView
-        android:id="@+id/login_ic_password"
-        android:layout_width="14dp"
-        android:layout_height="16dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/login_password"
-        app:layout_constraintEnd_toEndOf="@+id/login_password"
-        app:layout_constraintHorizontal_bias="0.06"
-        app:layout_constraintStart_toStartOf="@+id/login_password"
-        app:layout_constraintTop_toTopOf="@+id/login_password"
-        app:layout_constraintVertical_bias="0.518"
-        app:srcCompat="@drawable/login_ic_password" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/login_text_no_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/mitr_regular"
+                android:text="ยังไม่มีบัญชี? "
+                android:textColor="#ffffff"
+                android:textSize="16dp" />
+
+            <TextView
+                android:id="@+id/login_text_click_here"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/mitr_regular"
+                android:text="แตะที่นี่"
+                android:textColor="#FF345C"
+                android:textSize="16dp" />
+        </LinearLayout>
+
+
+    </android.support.constraint.ConstraintLayout>
+
+
+
+
 
 
 </android.support.constraint.ConstraintLayout>
