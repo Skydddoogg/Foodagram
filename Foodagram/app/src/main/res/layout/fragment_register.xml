@@ -8,7 +8,6 @@
     android:background="@drawable/register_background"
     >
 
-
     <ImageView
         android:id="@+id/register_logo"
         android:layout_width="230dp"
