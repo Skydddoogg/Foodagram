@@ -9,35 +9,35 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/post_image_view"
-        android:id="@+id/toolbar4"
+        app:layout_constraintBottom_toTopOf="@id/edit_post_image_view"
+        android:id="@+id/edit_post_top_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <android.support.constraint.ConstraintLayout
-            android:id="@+id/post_top_bar_layout"
+            android:id="@+id/edit_post_top_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <TextView
-                app:layout_constraintTop_toTopOf="@id/post_top_bar_layout"
-                app:layout_constraintBottom_toBottomOf="@id/post_top_bar_layout"
-                app:layout_constraintEnd_toEndOf="@id/post_top_bar_layout"
-                app:layout_constraintStart_toStartOf="@id/post_top_bar_layout"
+                app:layout_constraintTop_toTopOf="@id/edit_post_top_bar_layout"
+                app:layout_constraintBottom_toBottomOf="@id/edit_post_top_bar_layout"
+                app:layout_constraintEnd_toEndOf="@id/edit_post_top_bar_layout"
+                app:layout_constraintStart_toStartOf="@id/edit_post_top_bar_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                android:text="โพสต์"
+                android:text="แก้ไขโพสต์"
                 android:textColor="#FF1C49"
                 android:textSize="20dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="@id/post_top_bar_layout"
-                app:layout_constraintBottom_toBottomOf="@id/post_top_bar_layout"
-                app:layout_constraintStart_toStartOf="@id/post_top_bar_layout"
+                app:layout_constraintTop_toTopOf="@id/edit_post_top_bar_layout"
+                app:layout_constraintBottom_toBottomOf="@id/edit_post_top_bar_layout"
+                app:layout_constraintStart_toStartOf="@id/edit_post_top_bar_layout"
                 android:layout_centerVertical="true"
                 android:text="ย้อนกลับ"
                 android:textColor="#172D4D"
@@ -48,24 +48,24 @@
 
     <ImageView
         android:src="@drawable/steak"
-        android:id="@+id/post_image_view"
+        android:id="@+id/edit_post_image_view"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:scaleType="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar4" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_post_top_toolbar" />
 
     <View
         android:id="@+id/post_shadow"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="@drawable/background_gallery_grid_view"
-        app:layout_constraintBottom_toBottomOf="@id/post_image_view"/>
+        app:layout_constraintBottom_toBottomOf="@id/edit_post_image_view"/>
 
     <View
-        android:id="@+id/post_post_box"
+        android:id="@+id/edit_post_post_box"
         android:layout_width="match_parent"
         android:layout_height="260dp"
         android:background="@drawable/post_post_box_rounded_view"
@@ -74,127 +74,119 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_editor_absoluteY="91dp" />
 
-    <TextView
-        android:id="@+id/post_description"
-        android:gravity="center"
-        android:textSize="14dp"
-        android:layout_width="326dp"
-        android:layout_height="73dp"
-        android:layout_marginTop="15dp"
-        android:background="@drawable/post_post_description_rounded_view"
-        android:text="เพิ่มคำบรรยายภาพ"
-        app:layout_constraintEnd_toEndOf="@id/post_post_box"
-        app:layout_constraintStart_toStartOf="@id/post_post_box"
-        app:layout_constraintTop_toTopOf="@id/post_post_box" />
+    <View
+        android:id="@+id/edit_post_divider1"
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toTopOf="@id/edit_post_post_box"
+        android:layout_marginTop="40dp"
+        android:background="#E3E3E3"
+        android:layout_height="1dp" />
 
     <View
-        android:id="@+id/post_divider1"
+        android:id="@+id/edit_post_divider2"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        app:layout_constraintTop_toBottomOf="@id/post_description"
-        android:layout_marginTop="15dp"
+        app:layout_constraintTop_toBottomOf="@id/edit_post_divider1"
+        android:layout_marginTop="40dp"
+        android:background="#E3E3E3"
+        android:layout_height="1dp" />
+
+    <View
+        android:id="@+id/edit_post_price_box"
+        android:background="@drawable/background_edit_post_price_box"
+        android:layout_width="110dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/edit_post_divider1"
+        app:layout_constraintTop_toTopOf="@id/edit_post_post_box"
+        android:layout_height="40dp" />
+
+    <View
+        android:id="@+id/edit_post_divider3"
+        android:layout_width="1dp"
+        android:layout_height="40dp"
+        app:layout_constraintEnd_toStartOf="@id/edit_post_price_box"
+        app:layout_constraintTop_toTopOf="@id/edit_post_post_box"
+        app:layout_constraintBottom_toTopOf="@id/edit_post_divider1"
         android:background="#E3E3E3" />
-    
-    <View
-        android:id="@+id/post_divider2"
-        android:layout_width="match_parent"
-        app:layout_constraintTop_toBottomOf="@id/post_divider1"
-        android:layout_marginTop="40dp"
-        android:background="#E3E3E3"
-        android:layout_height="1dp" />
-
-    <View
-        android:id="@+id/post_divider3"
-        android:layout_width="match_parent"
-        app:layout_constraintTop_toBottomOf="@id/post_divider2"
-        android:layout_marginTop="40dp"
-        android:background="#E3E3E3"
-        android:layout_height="1dp" />
 
     <TextView
-        android:id="@+id/post_text_menu"
+        android:id="@+id/edit_post_text_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="ชื่อเมนู"
         android:textColor="#172D4D"
-        app:layout_constraintTop_toBottomOf="@id/post_divider1"
-        app:layout_constraintBottom_toTopOf="@id/post_divider2"
+        app:layout_constraintTop_toTopOf="@id/edit_post_post_box"
+        app:layout_constraintBottom_toTopOf="@id/edit_post_divider1"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="30dp"
         android:textSize="14dp" />
 
-    <View
-        android:id="@+id/post_price_box"
-        android:background="#F9F9F9"
-        android:layout_width="110dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/post_divider2"
-        app:layout_constraintTop_toBottomOf="@id/post_divider1"
-        android:layout_height="40dp" />
-
     <TextView
-        android:id="@+id/post_text_price"
+        android:id="@+id/edit_post_text_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="ราคา"
         android:textColor="#172D4D"
         android:layout_marginEnd="55dp"
-        app:layout_constraintTop_toTopOf="@id/post_price_box"
-        app:layout_constraintBottom_toBottomOf="@id/post_price_box"
-        app:layout_constraintEnd_toEndOf="@id/post_price_box"
+        app:layout_constraintTop_toTopOf="@id/edit_post_price_box"
+        app:layout_constraintBottom_toBottomOf="@id/edit_post_price_box"
+        app:layout_constraintEnd_toEndOf="@id/edit_post_price_box"
         android:textSize="14dp" />
 
+    <TextView
+        android:id="@+id/edit_post_description"
+        android:gravity="center"
+        android:textSize="14dp"
+        android:layout_width="326dp"
+        android:layout_height="73dp"
+        android:background="@drawable/post_post_description_rounded_view"
+        android:text="คำบรรยายภาพ"
+        app:layout_constraintEnd_toEndOf="@id/edit_post_post_box"
+        app:layout_constraintBottom_toTopOf="@id/edit_post_save_button"
+        app:layout_constraintStart_toStartOf="@id/edit_post_post_box"
+        app:layout_constraintTop_toBottomOf="@id/edit_post_divider2" />
+
     <EditText
-        android:id="@+id/post_price"
+        android:id="@+id/edit_post_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="35"
         android:background="null"
         android:textColor="#ABB6C7"
         android:layout_marginStart="10dp"
-        app:layout_constraintTop_toTopOf="@id/post_price_box"
-        app:layout_constraintBottom_toBottomOf="@id/post_price_box"
-        app:layout_constraintStart_toEndOf="@id/post_text_price"
+        app:layout_constraintTop_toTopOf="@id/edit_post_price_box"
+        app:layout_constraintBottom_toBottomOf="@id/edit_post_price_box"
+        app:layout_constraintStart_toEndOf="@id/edit_post_text_price"
         android:textSize="14dp" />
 
     <EditText
-        android:id="@+id/post_menu"
+        android:id="@+id/edit_post_menu"
         android:background="null"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#ABB6C7"
         android:text="ผัดกะเพรา"
         android:layout_marginStart="10dp"
-        app:layout_constraintTop_toBottomOf="@id/post_divider1"
-        app:layout_constraintBottom_toTopOf="@id/post_divider2"
-        app:layout_constraintStart_toEndOf="@id/post_text_menu"
+        app:layout_constraintTop_toTopOf="@id/edit_post_post_box"
+        app:layout_constraintBottom_toTopOf="@id/edit_post_divider1"
+        app:layout_constraintStart_toEndOf="@id/edit_post_text_menu"
         android:textSize="14dp" />
 
-    <View
-        android:id="@+id/post_divider4"
-        android:layout_width="1dp"
-        android:layout_height="40dp"
-        app:layout_constraintEnd_toStartOf="@id/post_price_box"
-        app:layout_constraintTop_toBottomOf="@id/post_divider1"
-        app:layout_constraintBottom_toTopOf="@id/post_divider2"
-        android:background="#E3E3E3" />
-
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/post_location_bar"
+        android:id="@+id/edit_post_location_bar"
         android:layout_width="330dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/post_divider3"
-        app:layout_constraintTop_toBottomOf="@id/post_divider2"
+        app:layout_constraintBottom_toTopOf="@id/edit_post_divider2"
+        app:layout_constraintTop_toBottomOf="@id/edit_post_divider1"
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/post_location_logo"
+            android:id="@+id/edit_post_location_logo"
             android:tint="#FF1C49"
             android:layout_gravity="center"
-            app:layout_constraintStart_toStartOf="@id/post_location_bar"
-            app:layout_constraintTop_toTopOf="@id/post_location_bar"
-            app:layout_constraintBottom_toBottomOf="@id/post_location_bar"
+            app:layout_constraintStart_toStartOf="@id/edit_post_location_bar"
+            app:layout_constraintTop_toTopOf="@id/edit_post_location_bar"
+            app:layout_constraintBottom_toBottomOf="@id/edit_post_location_bar"
             android:layout_width="25dp"
             android:layout_height="25dp"
             app:srcCompat="@drawable/ic_location" />
@@ -203,9 +195,9 @@
             android:id="@+id/post_navigate_next_right"
             android:layout_gravity="center"
             android:tint="#5A6B84"
-            app:layout_constraintEnd_toEndOf="@id/post_location_bar"
-            app:layout_constraintTop_toTopOf="@id/post_location_bar"
-            app:layout_constraintBottom_toBottomOf="@id/post_location_bar"
+            app:layout_constraintEnd_toEndOf="@id/edit_post_location_bar"
+            app:layout_constraintTop_toTopOf="@id/edit_post_location_bar"
+            app:layout_constraintBottom_toBottomOf="@id/edit_post_location_bar"
             android:layout_width="25dp"
             android:layout_height="25dp"
             app:srcCompat="@drawable/ic_navigate_next_right" />
@@ -214,27 +206,27 @@
             android:id="@+id/post_text_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="@id/post_location_bar"
-            app:layout_constraintBottom_toBottomOf="@id/post_location_bar"
+            app:layout_constraintTop_toTopOf="@id/edit_post_location_bar"
+            app:layout_constraintBottom_toBottomOf="@id/edit_post_location_bar"
             android:textColor="#172D4D"
-            app:layout_constraintStart_toEndOf="@id/post_location_logo"
-            android:text="เพิ่มที่ตั้งของร้าน"
+            app:layout_constraintStart_toEndOf="@id/edit_post_location_logo"
+            android:text="ตั้งของร้าน"
             android:textSize="14dp" />
 
     </android.support.constraint.ConstraintLayout>
 
     <Button
-        android:id="@+id/post_share_button"
+        android:id="@+id/edit_post_save_button"
         android:background="@drawable/post_share_button"
         android:layout_width="228dp"
+        android:layout_margin="15dp"
         android:textColor="#FFFFFF"
         android:textSize="20dp"
-        android:layout_marginBottom="15dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:text="แชร์" />
+        android:text="บันทึก" />
 
 
 </android.support.constraint.ConstraintLayout>
