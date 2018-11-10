@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.example.foodagramapp.foodagram.Discover.DiscoverFragment;
+import com.example.foodagramapp.foodagram.Feed.FeedFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -14,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.main_view, new DiscoverFragment())
+                    .replace(R.id.main_view, new FeedFragment())
                     .commit();
         }
     }

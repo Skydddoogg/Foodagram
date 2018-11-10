@@ -14,6 +14,7 @@
 
 
         <ImageView
+
             android:id="@+id/discover_thumbnail"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -32,30 +33,32 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"></android.support.constraint.ConstraintLayout>
+
         <android.support.constraint.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:paddingBottom="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:paddingBottom="10dp"
             app:layout_constraintStart_toStartOf="parent">
 
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginStart="10dp"
-                android:layout_marginBottom="5dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
 
-                <ImageView
+                <com.mikhaellopez.circularimageview.CircularImageView
                     android:id="@+id/discover_user_thumbnail"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:gravity="center_horizontal"
                     android:orientation="vertical"
-                    android:src="@mipmap/ic_launcher"
+                    android:src="@drawable/profile"
+                    app:civ_border_width="0dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -78,11 +81,7 @@
         </android.support.constraint.ConstraintLayout>
 
 
-
     </android.support.constraint.ConstraintLayout>
-
-
-
 
 
 </android.support.v7.widget.CardView>

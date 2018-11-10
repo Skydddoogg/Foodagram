@@ -12,26 +12,47 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.foodagramapp.foodagram.Discover.BackStackTag.BackStackTag;
 import com.example.foodagramapp.foodagram.R;
+import com.example.foodagramapp.foodagram.Search.RecentSearchFragment;
+import com.example.foodagramapp.foodagram.Search.SearchFragment;
 
 public class DiscoverFragment extends Fragment {
     private RecyclerView recyclerView;
     private  Bitmap[] bitmaps;
+    private EditText searchBox;
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        searchBox = getActivity().findViewById(R.id.search_button);
         bitmaps = setUpBitmaps();
         recyclerView = (RecyclerView) getView().findViewById(R.id.discoverRecycleViewMian);
         recyclerView.setAdapter(new DiscoverFragment.GridLayoutAdapter(bitmaps));
         StaggeredGridLayoutManager mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(mLayoutManager);
+        onClickSearchBox();
     }
 
-    //
+
+    private void onClickSearchBox(){
+        searchBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.main_view, new RecentSearchFragment())
+                        .addToBackStack(new BackStackTag().BACK_STACK_ROOT_TAG)
+                        .commit();
+            }
+        });
+    }
+
     private Bitmap[] setUpBitmaps() {
         Bitmap[] bitmaps = new Bitmap[5];
         bitmaps[0] = BitmapFactory.decodeResource(getResources(), R.drawable.img_1);
@@ -58,7 +79,7 @@ public class DiscoverFragment extends Fragment {
         public void onBindViewHolder(GridHolder holder, int position) {
             holder.imageView.requestLayout();
             holder.imageView.setImageBitmap(bitmaps[position]);
-            holder.textView.setText("Pongpanot Na Ubon");
+            holder.textView.setText("Kor Keaw");
         }
 
         @Override

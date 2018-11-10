@@ -30,11 +30,11 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
-                    android:id="@+id/textView4"
+                    android:id="@+id/backButton_searchFragment"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="26dp"
-                    android:text="ค้นหา"
+                    android:text="ยกเลิก"
                     android:textColor="#FF1C49"
                     android:textSize="14dp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -43,25 +43,27 @@
                     app:layout_constraintVertical_bias="0.513" />
 
                 <EditText
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:drawableEnd="@drawable/search_icon"
-                    android:id="@+id/search_button"
+
+                    android:id="@+id/search_box"
                     android:layout_width="0dp"
                     android:layout_height="32dp"
-                    android:paddingRight="9dp"
-                    android:layout_marginEnd="15dp"
+                    android:layout_marginEnd="10dp"
                     android:layout_marginStart="16dp"
                     android:background="@drawable/search_box_style"
+                    android:drawableEnd="@drawable/search_icon"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
                     android:gravity="center"
                     android:hint="ค้นหาเพื่อนของคุณ"
                     android:paddingLeft="20dp"
+                    android:paddingRight="9dp"
                     android:textAlignment="textStart"
                     android:textSize="10dp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/textView4"
+                    app:layout_constraintEnd_toStartOf="@+id/backButton_searchFragment"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
             </android.support.constraint.ConstraintLayout>
 
             <android.support.constraint.ConstraintLayout
@@ -73,18 +75,13 @@
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
 
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/discoverRecycleViewMian"
+                <ListView
+                    android:id="@+id/recent_search_listView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginStart="10dp"
-                    android:clipToPadding="false"
-                    android:paddingTop="10dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"/>
 
                 <View
                     android:id="@+id/view"
