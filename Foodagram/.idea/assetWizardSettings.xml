@@ -65,11 +65,11 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="height" value="19" />
-                            <entry key="outputName" value="ic_comment_icon" />
+                            <entry key="height" value="11" />
+                            <entry key="outputName" value="ic_checkin_icon" />
                             <entry key="overrideSize" value="true" />
-                            <entry key="sourceFile" value="$PROJECT_DIR$/../../comment_icon.svg" />
-                            <entry key="width" value="20" />
+                            <entry key="sourceFile" value="$PROJECT_DIR$/../../checkin_icon.svg" />
+                            <entry key="width" value="9" />
                           </map>
                         </option>
                       </PersistentState>
