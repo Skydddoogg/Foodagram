@@ -49,10 +49,9 @@
     </android.support.v7.widget.Toolbar>
 
     <ImageView
-        android:src="@drawable/steak"
         android:id="@+id/post_image_view"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="302dp"
         android:scaleType="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -76,7 +75,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_editor_absoluteY="91dp" />
 
-    <TextView
+    <EditText
         android:id="@+id/post_description"
         android:gravity="center"
         android:textSize="14dp"
@@ -189,11 +188,14 @@
     <android.support.constraint.ConstraintLayout
         android:id="@+id/post_location_bar"
         android:layout_width="330dp"
+        android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/post_divider3"
         app:layout_constraintTop_toBottomOf="@id/post_divider2"
-        android:layout_height="wrap_content">
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?android:attr/selectableItemBackground" >
 
         <ImageView
             android:id="@+id/post_location_logo"

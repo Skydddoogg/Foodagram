@@ -1,5 +1,6 @@
 package com.example.foodagramapp.foodagram.Post;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.foodagramapp.foodagram.R;
 import com.example.foodagramapp.foodagram.Utils.FilePaths;
@@ -43,11 +45,11 @@ public class ImageSelectorFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_gallery, container, false);
-        galleryImage = (ImageView) view.findViewById(R.id.gallery_image_view);
-        gridView = (GridView) view.findViewById(R.id.gallery_grid_view);
+        View view = inflater.inflate(R.layout.fragment_image_selector, container, false);
+        galleryImage = view.findViewById(R.id.gallery_image_view);
+        gridView = view.findViewById(R.id.gallery_grid_view);
 //        directorySpinner = (Spinner) view.findViewById(R.id.spinnerDirectory);
-        mProgressBar = (ProgressBar) view.findViewById(R.id.gallery_progress_bar);
+        mProgressBar = view.findViewById(R.id.gallery_progress_bar);
         mProgressBar.setVisibility(View.GONE);
         directories = new ArrayList<>();
         Log.d(TAG, "onCreateView: started.");
@@ -62,14 +64,17 @@ public class ImageSelectorFragment extends Fragment {
 //        });
 
 
-//        TextView nextScreen = (TextView) view.findViewById(R.id.tvNext);
-//        nextScreen.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Log.d(TAG, "onClick: navigating to the final share screen.");
-//
-//                if(isRootTask()){
-//                    Intent intent = new Intent(getActivity(), NextActivity.class);
+        TextView nextScreen = view.findViewById(R.id.gallery_top_bar_next);
+        nextScreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: navigating to the final share screen.");
+                Intent intent = new Intent(getActivity(), AddPostActivity.class);
+                intent.putExtra(getString(R.string.selected_image), mSelectedImage);
+                startActivity(intent);
+
+//                if(isRootTask()) {
+//                    Intent intent = new Intent(getActivity(), AddPostActivity.class);
 //                    intent.putExtra(getString(R.string.selected_image), mSelectedImage);
 //                    startActivity(intent);
 //                }else{
@@ -79,22 +84,22 @@ public class ImageSelectorFragment extends Fragment {
 //                    startActivity(intent);
 //                    getActivity().finish();
 //                }
-//
-//            }
-//        });
+
+            }
+        });
 
         init();
         return view;
     }
 
-//    private boolean isRootTask(){
-//        if(((PostActivity)getActivity()).getTask() == 0){
-//            return true;
-//        }
-//        else{
-//            return false;
-//        }
-//    }
+    private boolean isRootTask(){
+        if(((PostActivity)getActivity()).getTask() == 0){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 
     private void init(){
         FilePaths filePaths = new FilePaths();
@@ -115,24 +120,6 @@ public class ImageSelectorFragment extends Fragment {
 
         setupGridView(filePaths.CAMERA);
 
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-//                android.R.layout.simple_spinner_item, directoryNames);
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        directorySpinner.setAdapter(adapter);
-//        directorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                Log.d(TAG, "onItemClick: selected: " + directories.get(position));
-//
-//                //setup our image grid for the directory chosen
-//                setupGridView(directories.get(position));
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> parent) {
-//
-//            }
-//        });
     }
 
 
@@ -150,10 +137,10 @@ public class ImageSelectorFragment extends Fragment {
         gridView.setAdapter(adapter);
 
         //set the first image to be displayed when the activity fragment view is inflated
-        try{
+        try {
             setImage(imgURLs.get(0), galleryImage, mAppend);
             mSelectedImage = imgURLs.get(0);
-        }catch (ArrayIndexOutOfBoundsException e){
+        } catch (IndexOutOfBoundsException e){
             Log.e(TAG, "setupGridView: ArrayIndexOutOfBoundsException: " +e.getMessage() );
         }
 

@@ -14,8 +14,6 @@ import com.example.foodagramapp.foodagram.R;
 import com.example.foodagramapp.foodagram.Utils.Permissions;
 import com.example.foodagramapp.foodagram.Utils.SectionsPagerAdapter;
 
-//import com.example.foodagramapp.foodagram.Utils.Permissions;
-
 public class PostActivity extends AppCompatActivity {
     private static final String TAG = "PostActivity";
 
