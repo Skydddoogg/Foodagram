@@ -17,16 +17,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.foodagramapp.foodagram.Discover.BackStackTag.BackStackTag;
+import com.example.foodagramapp.foodagram.Post;
 import com.example.foodagramapp.foodagram.R;
 import com.example.foodagramapp.foodagram.Search.RecentSearchFragment;
 import com.example.foodagramapp.foodagram.Search.SearchFragment;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 public class DiscoverFragment extends Fragment {
     private RecyclerView recyclerView;
     private  Bitmap[] bitmaps;
     private EditText searchBox;
-
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -104,4 +110,6 @@ public class DiscoverFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_discover, container, false);
     }
+
+
 }

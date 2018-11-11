@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import com.example.foodagramapp.foodagram.Discover.DiscoverFragment;
 import com.example.foodagramapp.foodagram.Feed.FeedFragment;
+import com.example.foodagramapp.foodagram.Search.SearchFragment;
 
 public class MainActivity extends AppCompatActivity {
 

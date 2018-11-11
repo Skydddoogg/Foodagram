@@ -94,9 +94,11 @@ public class SearchAdapter extends ArrayAdapter<User> {
             ArrayList<T> filtered = (ArrayList<T>) results.values;
             notifyDataSetChanged();
             clear();
-            for (int i = 0, l = filtered.size(); i < l; i++)
-                add((User) filtered.get(i));
-            notifyDataSetInvalidated();
+            if(results.values != null) {
+                for (int i = 0, l = filtered.size(); i < l; i++)
+                    add((User) filtered.get(i));
+                notifyDataSetInvalidated();
+            }
         }
     }
 

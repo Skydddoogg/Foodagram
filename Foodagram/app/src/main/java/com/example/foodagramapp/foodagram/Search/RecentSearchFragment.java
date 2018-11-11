@@ -67,6 +67,7 @@ public class RecentSearchFragment extends Fragment {
         user.add(new User("Pleng"));
 
         //Setup Go To Search Fragment Button
+        search_box.requestFocus();
         search_box.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

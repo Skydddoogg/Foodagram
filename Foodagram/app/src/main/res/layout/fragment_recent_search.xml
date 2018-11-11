@@ -51,8 +51,6 @@
                     android:layout_marginStart="16dp"
                     android:background="@drawable/search_box_style"
                     android:drawableEnd="@drawable/search_icon"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
                     android:gravity="center"
                     android:hint="ค้นหาเพื่อนของคุณ"
                     android:paddingLeft="20dp"
