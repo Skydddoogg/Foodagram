@@ -33,6 +33,7 @@
                 android:textSize="20dp" />
 
             <TextView
+                android:id="@+id/gallery_back_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="@id/gallery_top_bar_layout"
@@ -43,6 +44,22 @@
                 android:fontFamily="@font/mitr"
                 android:textColor="#172D4D"
                 android:textSize="14dp" />
+
+            <TextView
+                android:id="@+id/gallery_top_bar_next"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:fontFamily="@font/mitr"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="ถัดไป"
+                android:textColor="#172D4D"
+                android:textSize="14dp"
+                android:layout_marginEnd="15dp"
+                app:layout_constraintBottom_toBottomOf="@id/gallery_top_bar_layout"
+                app:layout_constraintTop_toTopOf="@id/gallery_top_bar_layout"
+                app:layout_constraintEnd_toEndOf="@id/gallery_top_bar_layout"/>
         </android.support.constraint.ConstraintLayout>
 
     </android.support.v7.widget.Toolbar>

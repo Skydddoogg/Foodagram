@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Foodagram</string>
+    <string name="selected_image">selected_image</string>
+    <string name="selected_bitmap">selected_bitmap</string>
 </resources>

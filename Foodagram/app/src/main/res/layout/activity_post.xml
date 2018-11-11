@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -8,14 +9,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
         <android.support.constraint.ConstraintLayout
             android:id="@+id/relLayout1"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <include layout="@layout/layout_center_viewpager" />
-
 
         </android.support.constraint.ConstraintLayout>
 
@@ -27,10 +26,7 @@
 
             <include layout="@layout/layout_bottom_tabs"/>
 
-
         </android.support.constraint.ConstraintLayout>
-
-
 
     </android.support.constraint.ConstraintLayout>
 
