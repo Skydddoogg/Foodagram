@@ -103,17 +103,17 @@ public class CameraFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        textureView = getView().findViewById(R.id.textureView);
+        textureView = getView().findViewById(R.id.camera_camera_view);
         //From Java 1.4 , you can use keyword 'assert' to check expression true or false
         assert textureView != null;
         textureView.setSurfaceTextureListener(textureListener);
-        btnCapture = getView().findViewById(R.id.btnCapture);
-        btnCapture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                takePicture();
-            }
-        });
+//        btnCapture = getView().findViewById(R.id.btnCapture);
+//        btnCapture.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                takePicture();
+//            }
+//        });
     }
 
     private void takePicture() {

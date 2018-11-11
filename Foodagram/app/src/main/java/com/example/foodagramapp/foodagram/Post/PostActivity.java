@@ -30,15 +30,16 @@ public class PostActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+//        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_post);
         Log.d(TAG, "onCreate: started.");
         if(checkPermissionsArray(Permissions.PERMISSIONS)){
-//            setupViewPager();
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.main_view, new ImageSelectorFragment())
-                    .commit();
-            Log.d(TAG, "GO TO GALLERY");
+            setupViewPager();
+//            getSupportFragmentManager()
+//                    .beginTransaction()
+//                    .replace(R.id.main_view, new ImageSelectorFragment())
+//                    .commit();
+//            Log.d(TAG, "GO TO GALLERY");
         }else{
             verifyPermissions(Permissions.PERMISSIONS);
         }
@@ -69,8 +70,8 @@ public class PostActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabsBottom);
         tabLayout.setupWithViewPager(mViewPager);
 
-        tabLayout.getTabAt(0).setText(getString(R.string.gallery));
-        tabLayout.getTabAt(1).setText(getString(R.string.photo));
+        tabLayout.getTabAt(0).setText("คลังรูปภาพ");
+        tabLayout.getTabAt(1).setText("กล้อง");
 
     }
 

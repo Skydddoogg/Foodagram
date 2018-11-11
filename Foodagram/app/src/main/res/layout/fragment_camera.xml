@@ -1,22 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.foodagramapp.foodagram.Post.PostActivity">
 
-    <TextureView
-        android:id="@+id/textureView"
+    <android.support.v7.widget.Toolbar
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/camera_camera_view"
+        android:id="@+id/camera_top_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/btnCapture" />
+        android:layout_height="wrap_content">
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/camera_top_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                app:layout_constraintTop_toTopOf="@id/camera_top_bar_layout"
+                app:layout_constraintBottom_toBottomOf="@id/camera_top_bar_layout"
+                app:layout_constraintEnd_toEndOf="@id/camera_top_bar_layout"
+                app:layout_constraintStart_toStartOf="@id/camera_top_bar_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="รูปภาพ"
+                android:fontFamily="@font/mitr"
+                android:textColor="#FF1C49"
+                android:textSize="20dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="@id/camera_top_bar_layout"
+                app:layout_constraintBottom_toBottomOf="@id/camera_top_bar_layout"
+                app:layout_constraintStart_toStartOf="@id/camera_top_bar_layout"
+                android:layout_centerVertical="true"
+                android:text="ย้อนกลับ"
+                android:fontFamily="@font/mitr"
+                android:textColor="#172D4D"
+                android:textSize="14dp" />
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.v7.widget.Toolbar>
+
+    <TextureView
+        android:id="@+id/camera_camera_view"
+        app:layout_constraintTop_toBottomOf="@id/camera_top_toolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/camera_blank_bottm_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp" />
+
+    <View
+        android:id="@+id/camera_blank_bottm_view"
+        android:background="#FAFAFA"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
 
     <Button
-        android:id="@+id/btnCapture"
-        android:text="CAPTURE"
-        android:layout_alignParentBottom="true"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginBottom="60dp"
+        app:layout_constraintBottom_toBottomOf="@id/camera_blank_bottm_view"
+        app:layout_constraintTop_toTopOf="@id/camera_blank_bottm_view"
+        app:layout_constraintStart_toStartOf="@id/camera_blank_bottm_view"
+        app:layout_constraintEnd_toEndOf="@id/camera_blank_bottm_view"
+        android:background="@drawable/round_button"
+        android:gravity="center_vertical|center_horizontal" />
 
-</RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>
