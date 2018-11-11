@@ -19,19 +19,15 @@ import android.widget.TextView;
 import com.example.foodagramapp.foodagram.R;
 import com.example.foodagramapp.foodagram.Utils.Extension;
 import com.example.foodagramapp.foodagram.Utils.UniversalImageLoader;
-
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
-
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -44,6 +40,7 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
     private final int PLACE_PICKER_REQUEST = 1;
 
     private ImageView image;
+    private TextView backBtn;
     private EditText postDescription;
     private EditText postMenu;
     private EditText postPrice;
@@ -105,6 +102,14 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
                 });
             }
         });
+
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "onClick: closing the activity");
+                finish();
+            }
+        });
     }
 
     private void initViews() {
@@ -114,6 +119,7 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
         postLocationBar = findViewById(R.id.post_location_bar);
         postTextLocation = findViewById(R.id.post_text_location);
         postShareButton = findViewById(R.id.post_share_button);
+        backBtn = findViewById(R.id.post_back_btn);
     }
 
     private void setImage(){

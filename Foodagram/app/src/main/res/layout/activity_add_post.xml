@@ -34,16 +34,17 @@
                 android:textSize="20dp" />
 
             <TextView
+                android:id="@+id/post_back_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="@id/post_top_bar_layout"
+                android:layout_centerVertical="true"
+                android:fontFamily="@font/mitr"
+                android:text="ย้อนกลับ"
+                android:textColor="#172D4D"
+                android:textSize="14dp"
                 app:layout_constraintBottom_toBottomOf="@id/post_top_bar_layout"
                 app:layout_constraintStart_toStartOf="@id/post_top_bar_layout"
-                android:layout_centerVertical="true"
-                android:text="ย้อนกลับ"
-                android:fontFamily="@font/mitr"
-                android:textColor="#172D4D"
-                android:textSize="14dp" />
+                app:layout_constraintTop_toTopOf="@id/post_top_bar_layout" />
         </android.support.constraint.ConstraintLayout>
 
     </android.support.v7.widget.Toolbar>

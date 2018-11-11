@@ -33,6 +33,7 @@
                 android:textSize="20dp" />
 
             <TextView
+                android:id="@+id/gallery_back_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="@id/gallery_top_bar_layout"
