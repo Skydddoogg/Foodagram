@@ -23,6 +23,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
 
@@ -35,6 +36,7 @@ public class ImageSelectorFragment extends Fragment {
     private TextView backBtn;
     private TextView nextScreen;
     private ImageView galleryImage;
+    private SlidingUpPanelLayout slidingLayout;
     private ProgressBar mProgressBar;
     private ArrayList<String> directories;
     private String mAppend = "file:/";
@@ -53,6 +55,7 @@ public class ImageSelectorFragment extends Fragment {
         mProgressBar.setVisibility(View.GONE);
         directories = new ArrayList<>();
         backBtn = view.findViewById(R.id.gallery_back_btn);
+        slidingLayout = view.findViewById(R.id.sliding_layout);
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -119,6 +122,7 @@ public class ImageSelectorFragment extends Fragment {
                 Log.d(TAG, "onItemClick: selected an image: " + imgURLs.get(position));
                 setImage(imgURLs.get(position), galleryImage, mAppend);
                 mSelectedImage = imgURLs.get(position);
+                slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
             }
         });
     }

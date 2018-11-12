@@ -54,10 +54,10 @@ public class PostActivity extends AppCompatActivity {
         adapter.addFragment(new ImageSelectorFragment());
         adapter.addFragment(new CameraFragment());
 
-        mViewPager = (ViewPager) findViewById(R.id.viewpager_container);
+        mViewPager = findViewById(R.id.viewpager_container);
         mViewPager.setAdapter(adapter);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabsBottom);
+        TabLayout tabLayout = findViewById(R.id.tabsBottom);
         tabLayout.setupWithViewPager(mViewPager);
 
         tabLayout.getTabAt(0).setText("คลังรูปภาพ");
