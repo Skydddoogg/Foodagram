@@ -66,7 +66,7 @@ public class RegisterFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_register, container, false);
     }
 
-    public boolean isUsableInput(EditText displayName, EditText password, EditText email){
+    boolean isUsableInput(EditText displayName, EditText password, EditText email){
         boolean result;
         if(displayName.getText().toString().isEmpty()
                 || password.getText().toString().isEmpty()
@@ -84,7 +84,7 @@ public class RegisterFragment extends Fragment {
         return result;
     }
 
-    public void registerToFirebase(final EditText email, EditText password, final EditText displayName){
+    void registerToFirebase(final EditText email, EditText password, final EditText displayName){
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         mAuth.createUserWithEmailAndPassword(email.getText().toString(), password.getText().toString())
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
@@ -129,7 +129,8 @@ public class RegisterFragment extends Fragment {
 
     void addUserDisplayName(EditText displayName, EditText email){
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-        User user = new User( displayName.getText().toString(), email.getText().toString(), "", "", "", "");
+        String defaultProfilePic = "https://catking.in/wp-content/uploads/2017/02/default-profile-1.png";
+        User user = new User( displayName.getText().toString(), email.getText().toString(), "", "", "", "", defaultProfilePic);
         mDatabase.child("profile").child(byteArrayToHexString(email)).setValue(user);
         Log.i("HASH", byteArrayToHexString(email));
 

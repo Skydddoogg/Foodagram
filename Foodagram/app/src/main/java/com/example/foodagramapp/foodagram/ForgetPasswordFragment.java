@@ -17,8 +17,8 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class ForgetPasswordFragment extends Fragment {
 
-    EditText emailForget;
-    Button forgetPasswordButton;
+    private EditText emailForget;
+    private Button forgetPasswordButton;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
