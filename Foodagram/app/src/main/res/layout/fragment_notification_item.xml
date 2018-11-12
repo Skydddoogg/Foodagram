@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/profile_image"
+        android:layout_width="85dp"
+        android:layout_height="85dp"
+        android:layout_margin="15dp"
+        android:src="@mipmap/profile_example"
+        />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <TextView
+
+        android:id="@+id/notification_profile_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_toRightOf="@id/profile_image"
+        android:paddingBottom="0dp"
+        android:paddingTop="18dp"
+        android:text="Sakarin Rooryut"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+    <TextView
+        android:id="@+id/notification_context"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="This is test context"/>
+    <TextView
+        android:id="@+id/notification_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:text="ID : 230031123"
+        android:textSize="12sp" />
+    </LinearLayout>
+
+
+
+</LinearLayout>

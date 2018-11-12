@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "108533093028",
+    "firebase_url": "https://foodagram-1b5ad.firebaseio.com",
+    "project_id": "foodagram-1b5ad",
+    "storage_bucket": "foodagram-1b5ad.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:108533093028:android:59a29415f0e9b62a",
+        "android_client_info": {
+          "package_name": "com.example.foodagramapp.foodagram"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "108533093028-pm96ndslprhthvchgp82851e43qp1b7n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.foodagramapp.foodagram",
+            "certificate_hash": "c85c912dfc62506c45fd66820813e2a46e0981ce"
+          }
+        },
+        {
+          "client_id": "108533093028-6cv6vncva1majbbqlj07r1luscrj16fo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhuHfhZIDVPRsM9Vpq_teSV1E0DvsMNXk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "108533093028-6cv6vncva1majbbqlj07r1luscrj16fo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
