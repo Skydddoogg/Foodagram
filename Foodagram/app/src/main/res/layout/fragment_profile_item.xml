@@ -113,6 +113,7 @@
                                 app:layout_constraintTop_toTopOf="parent" />
 
                             <TextView
+                                android:id="@+id/store_name"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="3dp"
@@ -162,7 +163,7 @@
                 app:layout_constraintStart_toStartOf="parent">
 
                 <com.mikhaellopez.circularimageview.CircularImageView
-                    android:id="@+id/discover_user_thumbnail"
+                    android:id="@+id/post_user_image"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
                     android:gravity="center_horizontal"
@@ -180,10 +181,11 @@
                     android:layout_marginStart="10dp"
                     android:orientation="vertical"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/discover_user_thumbnail"
+                    app:layout_constraintStart_toEndOf="@+id/post_user_image"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <TextView
+                        android:id="@+id/post_profile_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Name Surname"
@@ -191,6 +193,7 @@
                         android:textSize="16dp" />
 
                     <TextView
+                        android:id="@+id/post_timestamp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="34 min. ago"

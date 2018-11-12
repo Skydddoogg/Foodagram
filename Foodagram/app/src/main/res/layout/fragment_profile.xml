@@ -152,6 +152,13 @@
             android:text="โพสต์ทั้งหมด"
             android:layout_below="@id/profile_follow_block"
             android:layout_margin="15dp"/>
+        <ListView
+            android:id="@+id/profile_all_post_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/profile_all_post">
+
+        </ListView>
 
 
     </RelativeLayout>
