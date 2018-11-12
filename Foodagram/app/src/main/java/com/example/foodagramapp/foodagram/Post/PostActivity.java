@@ -1,7 +1,9 @@
 package com.example.foodagramapp.foodagram.Post;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -9,6 +11,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import com.example.foodagramapp.foodagram.R;
 import com.example.foodagramapp.foodagram.Utils.Permissions;
@@ -23,6 +27,10 @@ public class PostActivity extends AppCompatActivity {
 
     private ViewPager mViewPager;
     private Context mContext = PostActivity.this;
+    private String page;
+    private RadioGroup radioGroup;
+    private RadioButton radioCamera;
+    private RadioButton radioGallery;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,19 +58,41 @@ public class PostActivity extends AppCompatActivity {
      * setup viewpager for manager the tabs
      */
     private void setupViewPager() {
+
         SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new ImageSelectorFragment());
         adapter.addFragment(new CameraFragment());
+        adapter.addFragment(new ImageSelectorFragment());
+
+        radioGroup = findViewById(R.id.radio_group_post);
+        radioGallery = findViewById(R.id.radio_group_post_gallery);
+        radioCamera = findViewById(R.id.radio_group_post_camera);
 
         mViewPager = findViewById(R.id.viewpager_container);
         mViewPager.setAdapter(adapter);
+        mViewPager.setCurrentItem(0);
+        radioGroup.check(radioGroup.getChildAt(0).getId());
 
-        TabLayout tabLayout = findViewById(R.id.tabsBottom);
-        tabLayout.setupWithViewPager(mViewPager);
-
-        tabLayout.getTabAt(0).setText("คลังรูปภาพ");
-        tabLayout.getTabAt(1).setText("กล้อง");
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int i) {
+                page = (String) ((RadioButton) group.findViewById(i)).getText();
+                if (page.equals("กล้อง")) {
+                    mViewPager.setCurrentItem(0);
+                    radioGroup.check(radioGroup.getChildAt(0).getId());
+                    radioCamera.setTextColor(getResources().getColor(R.color.white));
+                    radioGallery.setTextColor(Color.parseColor("#5A6B84"));
+                    Log.d(TAG, "GO TO CAMERA");
+                } else {
+                    mViewPager.setCurrentItem(1);
+                    radioGroup.check(radioGroup.getChildAt(1).getId());
+                    radioGallery.setTextColor(getResources().getColor(R.color.white));
+                    radioCamera.setTextColor(Color.parseColor("#5A6B84"));
+                    Log.d(TAG, "GO TO GALLERY");
+                }
+            }
+        });
     }
+
 
     public int getTask() {
         Log.d(TAG, "getTask: TASK: " + getIntent().getFlags());
