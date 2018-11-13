@@ -39,23 +39,8 @@ private FirebaseDatabase database = FirebaseDatabase.getInstance();
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        myRef = database.getReference().child("profile");
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-//                String value = dataSnapshot.getValue(String.cl    ass);
-                for(DataSnapshot db : dataSnapshot.getChildren()){
-                    Log.i("firebaseCheck", "Value is: " + db.getValue());
-                }
 
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        EditText nameField = (EditText) getView().findViewById(R.id.edit_profile_name);
+        final EditText nameField = (EditText) getView().findViewById(R.id.edit_profile_name);
         EditText usernameField = (EditText) getView().findViewById(R.id.edit_profile_username);
         EditText descriptionField = (EditText) getView().findViewById(R.id.edit_profile_description);
         EditText emailField = (EditText) getView().findViewById(R.id.edit_profile_email);
@@ -65,6 +50,26 @@ private FirebaseDatabase database = FirebaseDatabase.getInstance();
         TextView backBtn = (TextView) getView().findViewById(R.id.edit_profile_back);
 
 
+        myRef = database.getReference().child("profile");
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+//                String value = dataSnapshot.getValue(String.cl    ass);
+                for(DataSnapshot db : dataSnapshot.getChildren()){
+
+                    Log.i("firebaseCheck", "Value is: " + db.getValue());
+                    Log.i("firebaseCheck", "Value is: " + db.child("username").getValue());
+                }
+                EditText nameField = getView().findViewById(R.id.edit_profile_name);
+                nameField.setText("Skydogg");
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
 
         saveBtn.setOnClickListener(new View.OnClickListener() {
