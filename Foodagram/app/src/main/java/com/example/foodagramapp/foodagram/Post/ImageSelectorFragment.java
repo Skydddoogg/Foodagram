@@ -2,6 +2,7 @@ package com.example.foodagramapp.foodagram.Post;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,13 +17,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.foodagramapp.foodagram.R;
+import com.example.foodagramapp.foodagram.Utils.Extension;
 import com.example.foodagramapp.foodagram.Utils.FilePaths;
 import com.example.foodagramapp.foodagram.Utils.FileSearch;
 import com.example.foodagramapp.foodagram.Utils.GridImageAdapter;
+import com.fenchtose.nocropper.CropperCallback;
+import com.fenchtose.nocropper.CropperView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
@@ -32,15 +36,28 @@ public class ImageSelectorFragment extends Fragment {
     private static final String TAG = "ImageSelectorFragment";
     private static final int NUM_GRID_COLUMNS = 3;
 
+    CropperView cropperView;
+    Bitmap previewBmap;
+
+    CropperCallback callback = new CropperCallback() {
+        @Override
+        public void onCropped(Bitmap bitmap) {
+            bmap = bitmap;
+        }
+    };
+
+    private int angle = 90;
+    static Bitmap bmap;
     private GridView gridView;
     private TextView backBtn;
     private TextView nextScreen;
-    private ImageView galleryImage;
+    private ImageView btnSnap;
+    private ImageView btnRotate;
     private SlidingUpPanelLayout slidingLayout;
     private ProgressBar mProgressBar;
     private ArrayList<String> directories;
     private String mAppend = "file:/";
-    private String mSelectedImage;
+    private boolean isSnappedToCenter = false;
 
     @Nullable
     @Override
@@ -49,36 +66,14 @@ public class ImageSelectorFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView: started.");
         View view = inflater.inflate(R.layout.fragment_image_selector, container, false);
-        galleryImage = view.findViewById(R.id.gallery_image_view);
-        gridView = view.findViewById(R.id.gallery_grid_view);
-        mProgressBar = view.findViewById(R.id.gallery_progress_bar);
-        mProgressBar.setVisibility(View.GONE);
-        directories = new ArrayList<>();
-        backBtn = view.findViewById(R.id.gallery_back_btn);
-        slidingLayout = view.findViewById(R.id.sliding_layout);
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "onClick: closing the ImageSelectorFragment.");
-            }
-        });
-        nextScreen = view.findViewById(R.id.gallery_top_bar_next);
-        nextScreen.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onClick: navigating to the AddPostActivity.");
-                Intent intent = new Intent(getActivity(), AddPostActivity.class);
-                intent.putExtra(getString(R.string.selected_image), mSelectedImage);
-                startActivity(intent);
-
-            }
-        });
-        init();
+        initView(view);
+        initGridView();
         return view;
     }
 
-    private void init(){
+    private void initGridView(){
         FilePaths filePaths = new FilePaths();
+        directories = new ArrayList<>();
 
         //check for other folders inside "/storage/emulated/0/pictures"
         if (FileSearch.getDirectoryPaths(filePaths.PICTURES) != null) {
@@ -95,6 +90,62 @@ public class ImageSelectorFragment extends Fragment {
         setupGridView(filePaths.CAMERA);
     }
 
+    private void initView(View view) {
+        // Set resources directory
+        cropperView = view.findViewById(R.id.gallery_image_view_bitmap);
+        cropperView.setMaxZoom(1.5f);
+        cropperView.setMinZoom(0.8f);
+        gridView = view.findViewById(R.id.gallery_grid_view);
+        mProgressBar = view.findViewById(R.id.gallery_progress_bar);
+        mProgressBar.setVisibility(View.GONE);
+        backBtn = view.findViewById(R.id.gallery_back_btn);
+        slidingLayout = view.findViewById(R.id.sliding_layout);
+        nextScreen = view.findViewById(R.id.gallery_top_bar_next);
+        btnSnap = view.findViewById(R.id.snap_button);
+        btnRotate = view.findViewById(R.id.rotate_button);
+
+        // Add listener
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "onClick: closing the ImageSelectorFragment.");
+            }
+        });
+
+        nextScreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: navigating to the AddPostActivity.");
+                cropImage();
+            }
+        });
+
+        btnSnap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isSnappedToCenter) {
+                    cropperView.cropToCenter();
+                } else {
+                    cropperView.fitToCenter();
+                }
+                isSnappedToCenter = !isSnappedToCenter;
+            }
+        });
+
+        btnRotate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (angle >= 270) {
+                    angle %= 270;
+                } else {
+                    angle += 90;
+                }
+                Log.d(TAG, "Image angle: " + String.valueOf(angle));
+                cropperView.setImageBitmap(rotateBitmap(previewBmap, angle));
+            }
+        });
+
+    }
 
     private void setupGridView(String selectedDirectory){
         Log.d(TAG, "setupGridView: directory chosen: " + selectedDirectory);
@@ -111,8 +162,7 @@ public class ImageSelectorFragment extends Fragment {
 
         //set the first image to be displayed when the activity fragment view is inflated
         try {
-            setImage(imgURLs.get(0), galleryImage, mAppend);
-            mSelectedImage = imgURLs.get(0);
+            setImage(imgURLs.get(0), mAppend);
         } catch (IndexOutOfBoundsException e) {
             Log.e(TAG, "setupGridView: IndexOutOfBoundsException: " +e.getMessage() );
         }
@@ -120,69 +170,59 @@ public class ImageSelectorFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d(TAG, "onItemClick: selected an image: " + imgURLs.get(position));
-                setImage(imgURLs.get(position), galleryImage, mAppend);
-                mSelectedImage = imgURLs.get(position);
+                setImage(imgURLs.get(position), mAppend);
                 slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
             }
         });
     }
 
-
-    private void setImage(String imgURL, ImageView image, String append){
+    private void setImage(String imgURL, String append){
         Log.d(TAG, "setImage: setting image");
         ImageLoader imageLoader = ImageLoader.getInstance();
         imageLoader.init(ImageLoaderConfiguration.createDefault(getActivity()));
-        imageLoader.displayImage(append + imgURL, image, new ImageLoadingListener() {
+        imageLoader.loadImage(append + imgURL, new SimpleImageLoadingListener() {
             @Override
             public void onLoadingStarted(String imageUri, View view) {
                 mProgressBar.setVisibility(View.VISIBLE);
+            }
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                previewBmap = loadedImage;
+                cropperView.setImageBitmap(previewBmap);
+                mProgressBar.setVisibility(View.INVISIBLE);
+            }
+            @Override
+            public void onLoadingCancelled(String imageUri, View view) {
+                mProgressBar.setVisibility(View.INVISIBLE);
             }
 
             @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
                 mProgressBar.setVisibility(View.INVISIBLE);
             }
-
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                mProgressBar.setVisibility(View.INVISIBLE);
-            }
-
-            @Override
-            public void onLoadingCancelled(String imageUri, View view) {
-                mProgressBar.setVisibility(View.INVISIBLE);
-            }
         });
     }
+
+    private void cropImage() {
+        try {
+            cropperView.getCroppedBitmapAsync(callback);
+            Log.d(TAG, String.valueOf(callback.equals(null)));
+            if (bmap != null) {
+                startActivity(new Intent(getActivity(), AddPostActivity.class));
+            }
+        } catch (NullPointerException e) {
+            Extension.toast(getActivity(), "Error cropping");
+        }
+    }
+
+    public static Bitmap getBitmap() {
+        return bmap;
+    }
+
+    private Bitmap rotateBitmap(Bitmap mBitmap, float angle) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        return Bitmap.createBitmap(mBitmap, 0, 0, mBitmap.getWidth(), mBitmap.getHeight(), matrix, true);
+    }
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
