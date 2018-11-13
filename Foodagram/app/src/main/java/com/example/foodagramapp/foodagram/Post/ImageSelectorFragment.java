@@ -100,7 +100,7 @@ public class ImageSelectorFragment extends Fragment {
         mProgressBar.setVisibility(View.GONE);
         backBtn = view.findViewById(R.id.gallery_back_btn);
         slidingLayout = view.findViewById(R.id.sliding_layout);
-        nextScreen = view.findViewById(R.id.gallery_top_bar_next);
+        nextScreen = view.findViewById(R.id.gallery_next_btn);
         btnSnap = view.findViewById(R.id.snap_button);
         btnRotate = view.findViewById(R.id.rotate_button);
 

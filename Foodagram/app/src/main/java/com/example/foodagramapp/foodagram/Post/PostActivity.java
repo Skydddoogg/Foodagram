@@ -11,6 +11,7 @@ import android.util.Log;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.example.foodagramapp.foodagram.LoginFragment;
 import com.example.foodagramapp.foodagram.R;
 import com.example.foodagramapp.foodagram.Utils.Permissions;
 import com.example.foodagramapp.foodagram.Utils.SectionsPagerAdapter;

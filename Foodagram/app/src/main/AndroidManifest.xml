@@ -24,13 +24,15 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name="com.example.foodagramapp.foodagram.Post.PostActivity"
-            android:launchMode="singleInstance">
+            android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <activity android:name="com.example.foodagramapp.foodagram.Post.PostActivity"
+            android:launchMode="singleInstance"/>
 
         <activity
             android:name="com.example.foodagramapp.foodagram.Post.AddPostActivity"

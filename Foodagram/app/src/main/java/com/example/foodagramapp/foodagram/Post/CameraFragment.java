@@ -2,6 +2,7 @@ package com.example.foodagramapp.foodagram.Post;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
@@ -19,11 +20,13 @@ import android.media.ImageReader;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.LayoutInflater;
@@ -34,7 +37,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.foodagramapp.foodagram.LoginFragment;
+import com.example.foodagramapp.foodagram.MainActivity;
 import com.example.foodagramapp.foodagram.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -61,6 +67,7 @@ public class CameraFragment extends Fragment {
         ORIENTATIONS.append(Surface.ROTATION_270,180);
     }
 
+    private CameraDevice.StateCallback stateCallback;
     private String cameraId;
     private CameraDevice cameraDevice;
     private CameraCaptureSession cameraCaptureSessions;
@@ -75,25 +82,6 @@ public class CameraFragment extends Fragment {
     private Handler mBackgroundHandler;
     private HandlerThread mBackgroundThread;
 
-    CameraDevice.StateCallback stateCallback = new CameraDevice.StateCallback() {
-        @Override
-        public void onOpened(@NonNull CameraDevice camera) {
-            cameraDevice = camera;
-            createCameraPreview();
-        }
-
-        @Override
-        public void onDisconnected(@NonNull CameraDevice cameraDevice) {
-            cameraDevice.close();
-        }
-
-        @Override
-        public void onError(@NonNull CameraDevice cameraDevice, int i) {
-            cameraDevice.close();
-            cameraDevice = null;
-        }
-    };
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -103,17 +91,48 @@ public class CameraFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        stateCallback = new CameraDevice.StateCallback() {
+            @Override
+            public void onOpened(@NonNull CameraDevice camera) {
+                cameraDevice = camera;
+                createCameraPreview();
+            }
+
+            @Override
+            public void onDisconnected(@NonNull CameraDevice camera) {
+
+                camera.close();
+                cameraDevice = null;
+                Log.d("Camera", "DISCONNECT CAMERA");
+
+
+            }
+
+            @Override
+            public void onError(@NonNull CameraDevice camera, int i) {
+
+                camera.close();
+                cameraDevice = null;
+                Log.d("Camera", "CLOSE CAMERA");
+
+            }
+        };
+
         textureView = getView().findViewById(R.id.camera_camera_view);
         //From Java 1.4 , you can use keyword 'assert' to check expression true or false
         assert textureView != null;
         textureView.setSurfaceTextureListener(textureListener);
-//        btnCapture = getView().findViewById(R.id.btnCapture);
-//        btnCapture.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                takePicture();
-//            }
-//        });
+        btnCapture = getView().findViewById(R.id.camera_capture_btn);
+        btnCapture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseAuth.getInstance().signOut();
+                Intent mIntent = new Intent(getActivity(), MainActivity.class);
+                startActivity(mIntent);
+                Log.d("Camera", "LOGOUT FROM CAMERA VIEW");
+            }
+        });
     }
 
     private void takePicture() {
@@ -321,10 +340,12 @@ public class CameraFragment extends Fragment {
     public void onResume() {
         super.onResume();
         startBackgroundThread();
-        if(textureView.isAvailable())
+        if(textureView.isAvailable()) {
             openCamera();
-        else
+        }
+        else {
             textureView.setSurfaceTextureListener(textureListener);
+        }
     }
 
     @Override
@@ -349,4 +370,5 @@ public class CameraFragment extends Fragment {
         mBackgroundThread.start();
         mBackgroundHandler = new Handler(mBackgroundThread.getLooper());
     }
+
 }
