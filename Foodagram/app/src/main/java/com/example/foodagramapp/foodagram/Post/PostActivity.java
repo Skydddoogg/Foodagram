@@ -1,12 +1,9 @@
 package com.example.foodagramapp.foodagram.Post;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -22,11 +19,9 @@ public class PostActivity extends AppCompatActivity {
 
     // Constants
     private static final String TAG = "PostActivity";
-    private static final int ACTIVITY_NUM = 2;
     private static final int VERIFY_PERMISSIONS_REQUEST = 1;
 
     private ViewPager mViewPager;
-    private Context mContext = PostActivity.this;
     private String page;
     private RadioGroup radioGroup;
     private RadioButton radioCamera;
@@ -37,21 +32,11 @@ public class PostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
         Log.d(TAG, "onCreate: started.");
-        if(checkPermissionsArray(Permissions.PERMISSIONS)){
+        if (checkPermissionsArray(Permissions.PERMISSIONS)) {
             setupViewPager();
-        }else{
+        } else {
             verifyPermissions(Permissions.PERMISSIONS);
         }
-    }
-
-    /**
-     * return the current tab number
-     * 0 = GalleryFragment
-     * 1 = PhotoFragment
-     * @return
-     */
-    public int getCurrentTabNumber(){
-        return mViewPager.getCurrentItem();
     }
 
     /**
@@ -145,16 +130,5 @@ public class PostActivity extends AppCompatActivity {
         }
     }
 
-//    /**
-//     * BottomNavigationView setup
-//     */
-//    private void setupBottomNavigationView(){
-//        Log.d(TAG, "setupBottomNavigationView: setting up BottomNavigationView");
-//        BottomNavigationViewEx bottomNavigationViewEx = (BottomNavigationViewEx) findViewById(R.id.bottomNavViewBar);
-//        BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
-//        BottomNavigationViewHelper.enableNavigation(mContext, this,bottomNavigationViewEx);
-//        Menu menu = bottomNavigationViewEx.getMenu();
-//        MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
-//        menuItem.setChecked(true);
-//    }
+
 }

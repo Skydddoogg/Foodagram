@@ -13,7 +13,7 @@
         android:orientation="vertical">
         <android.support.v7.widget.Toolbar
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/gallery_image_view"
+            app:layout_constraintBottom_toTopOf="@id/gallery_top_frame"
             android:id="@+id/toolbar4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -77,46 +77,75 @@
             android:layout_height="match_parent"
             android:gravity="bottom"
             app:layout_constraintTop_toBottomOf="@+id/toolbar4"
-            sothree:umanoPanelHeight="300dp"
+            sothree:umanoPanelHeight="200dp"
             sothree:umanoShadowHeight="4dp" >
 
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/gallery_image_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="400dp"
-                    android:scaleType="center"
-                    tools:layout_editor_absoluteX="0dp" />
-
-                <ProgressBar
-                    android:id="@+id/gallery_progress_bar"
+                <FrameLayout
+                    android:id="@+id/gallery_top_frame"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintBottom_toTopOf="@+id/gallery_push_up_icon"
-                    app:layout_constraintEnd_toEndOf="@+id/gallery_image_view"
-                    app:layout_constraintStart_toStartOf="@+id/gallery_image_view"
-                    app:layout_constraintTop_toTopOf="@+id/gallery_image_view" />
+                    android:layout_height="0dp"
+                    app:layout_constraintDimensionRatio="1:1">
 
-                <ImageView
-                    android:id="@+id/gallery_push_up_icon"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_alignParentBottom="true"
-                    android:src="@drawable/ic_action_push_up"
-                    android:tint="#FFF"
-                    app:layout_constraintBottom_toBottomOf="@+id/gallery_image_view"
-                    tools:layout_editor_absoluteX="0dp"
-                    tools:layout_editor_absoluteY="293dp" />
+                    <com.fenchtose.nocropper.CropperView
+                        android:background="#ff282828"
+                        android:id="@+id/gallery_image_view_bitmap"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:nocropper__grid_color="@color/colorAccent"
+                        app:nocropper__grid_opacity="0.8"
+                        app:nocropper__grid_thickness="0.8dp" />
+
+                    <ImageView
+                        android:id="@+id/snap_button"
+                        android:layout_margin="16dp"
+                        android:padding="8dp"
+                        android:layout_gravity="left|bottom"
+                        android:background="@drawable/black_tranp_circle_ripple"
+                        android:src="@drawable/ic_crop_free_white_24dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp" />
+
+                    <ImageView
+                        android:id="@+id/rotate_button"
+                        android:layout_margin="16dp"
+                        android:padding="8dp"
+                        android:layout_gravity="right|bottom"
+                        android:background="@drawable/black_tranp_circle_ripple"
+                        android:src="@drawable/ic_rotate_right_white_24dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp" />
+
+                    <ProgressBar
+                        android:id="@+id/gallery_progress_bar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintBottom_toTopOf="@+id/gallery_push_up_icon"
+                        app:layout_constraintEnd_toEndOf="@+id/gallery_top_frame"
+                        app:layout_constraintStart_toStartOf="@+id/gallery_top_frame"
+                        app:layout_constraintTop_toTopOf="@+id/gallery_top_frame" />
+
+                    <ImageView
+                        android:id="@+id/gallery_push_up_icon"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|center"
+                        android:src="@drawable/ic_action_push_up"
+                        android:tint="#FFF"
+                        app:layout_constraintBottom_toBottomOf="@+id/gallery_top_frame"
+                        tools:layout_editor_absoluteX="0dp"
+                        tools:layout_editor_absoluteY="293dp" />
+
+                </FrameLayout>
 
             </android.support.constraint.ConstraintLayout>
 

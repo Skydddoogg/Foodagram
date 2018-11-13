@@ -18,7 +18,6 @@ import android.widget.TextView;
 
 import com.example.foodagramapp.foodagram.R;
 import com.example.foodagramapp.foodagram.Utils.Extension;
-import com.example.foodagramapp.foodagram.Utils.UniversalImageLoader;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -33,6 +32,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+
+import static com.example.foodagramapp.foodagram.Post.ImageSelectorFragment.bmap;
+import static com.example.foodagramapp.foodagram.Post.ImageSelectorFragment.getBitmap;
 
 public class AddPostActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
@@ -51,7 +53,7 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
     private String mAppend = "file:/";
     private Intent intent;
     private String imgUrl;
-    private Bitmap bitmap;
+    Bitmap bitmap = getBitmap();
     private FirebaseStorage storage = FirebaseStorage.getInstance();
     private StorageReference storageRef = storage.getReference();
 
@@ -107,7 +109,7 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "onClick: closing the activity");
-                finish();
+                onBackPressed();
             }
         });
     }
@@ -123,17 +125,20 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
     }
 
     private void setImage(){
-        intent = getIntent();
         ImageView image = findViewById(R.id.post_image_view);
-        if (intent.hasExtra(getString(R.string.selected_image))) {
-            imgUrl = intent.getStringExtra(getString(R.string.selected_image));
-            Log.d(TAG, "setImage: got new image url: " + imgUrl);
-            UniversalImageLoader.setImage(imgUrl, image, null, mAppend);
-        } else if (intent.hasExtra(getString(R.string.selected_bitmap))) {
-            bitmap = intent.getParcelableExtra(getString(R.string.selected_bitmap));
-            Log.d(TAG, "setImage: got new bitmap");
-            image.setImageBitmap(bitmap);
-        }
+        Log.d(TAG, Integer.toString(bitmap.getAllocationByteCount()));
+        image.setImageBitmap(bitmap);
+
+//        if (intent.hasExtra(getString(R.string.selected_image))) {
+//            imgUrl = intent.getStringExtra(getString(R.string.selected_image));
+//            Log.d(TAG, "setImage: got new image url: " + imgUrl);
+//            UniversalImageLoader.setImage(imgUrl, image, null, mAppend);
+//        } else if (intent.hasExtra(getString(R.string.selected_bitmap))) {
+////            bitmap = getIntent().getParcelableExtra(getString(R.string.selected_bitmap));
+////            Log.d(TAG, "setImage: got new bitmap");
+//            Log.d(TAG, String.valueOf(bitmap.equals(null)));
+//            image.setImageBitmap(bitmap);
+//        }
     }
 
     @Override
@@ -178,4 +183,17 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
             }
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        bmap = null;
+        super.onBackPressed();
+    }
+//
+//    public void refreshActivity() {
+//        Intent i = new Intent(this, PostActivity.class);
+//        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        startActivity(i);
+//        finish();
+//    }
 }
