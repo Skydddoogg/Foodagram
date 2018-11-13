@@ -52,7 +52,7 @@
                 app:layout_constraintStart_toStartOf="parent">
 
                 <com.mikhaellopez.circularimageview.CircularImageView
-                    android:id="@+id/discover_user_thumbnail"
+                    android:id="@+id/feed_user_thumbnail"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:gravity="center_horizontal"
@@ -75,7 +75,7 @@
                     android:textSize="18dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/discover_user_thumbnail"
+                    app:layout_constraintStart_toEndOf="@+id/feed_user_thumbnail"
                     app:layout_constraintTop_toTopOf="parent" />
             </android.support.constraint.ConstraintLayout>
         </android.support.constraint.ConstraintLayout>

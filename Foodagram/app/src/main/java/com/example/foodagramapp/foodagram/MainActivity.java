@@ -2,7 +2,9 @@ package com.example.foodagramapp.foodagram;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.ImageView;
 
+import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.example.foodagramapp.foodagram.Discover.DiscoverFragment;
 import com.example.foodagramapp.foodagram.Feed.FeedFragment;
 import com.example.foodagramapp.foodagram.Search.SearchFragment;
@@ -19,5 +21,7 @@ public class MainActivity extends AppCompatActivity {
                     .replace(R.id.main_view, new FeedFragment())
                     .commit();
         }
+        NavigationBar nav = new NavigationBar();
+        nav.createBottomNavBar((AHBottomNavigation)findViewById(R.id.bottom_navigation), (ImageView) findViewById(R.id.imageView));
     }
 }

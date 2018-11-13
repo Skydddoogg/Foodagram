@@ -1,8 +1,16 @@
 package com.example.foodagramapp.foodagram;
 
 public class Post {
-    private String description,location,menu_image_url,menu_name;
-    private double menu_price;
+    private String description,location,menu_image_url,menu_name, owner;
+    private long menu_price, timestamp;
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
 
     public String getDescription() {
         return description;
@@ -40,7 +48,15 @@ public class Post {
         return menu_price;
     }
 
-    public void setMenu_price(double menu_price) {
+    public void setMenu_price(long menu_price) {
         this.menu_price = menu_price;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 }

@@ -9,7 +9,7 @@
         android:id="@+id/view3"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="#F9F9F9"
+        android:background="#F3F3F3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -90,7 +90,7 @@
 
                     <TextView
                         android:id="@+id/menu_name_post"
-                        android:layout_width="wrap_content"
+                        android:layout_width="120dp"
                         android:layout_height="wrap_content"
                         android:text="แซลมอนครัวซองค์"
                         android:textColor="#18273C" />
@@ -129,7 +129,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="17dp"
-                    android:layout_marginStart="37dp"
+                    android:layout_marginStart="20dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/linearLayout"
@@ -162,7 +162,7 @@
                 app:layout_constraintStart_toStartOf="parent">
 
                 <com.mikhaellopez.circularimageview.CircularImageView
-                    android:id="@+id/discover_user_thumbnail"
+                    android:id="@+id/feed_user_thumbnail"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
                     android:gravity="center_horizontal"
@@ -179,10 +179,11 @@
                     android:layout_marginStart="10dp"
                     android:orientation="vertical"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/discover_user_thumbnail"
+                    app:layout_constraintStart_toEndOf="@+id/feed_user_thumbnail"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <TextView
+                        android:id="@+id/name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Name Surname"
@@ -190,6 +191,7 @@
                         android:textSize="16dp" />
 
                     <TextView
+                        android:id="@+id/timestamp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="34 min. ago"
@@ -215,9 +217,12 @@
             app:layout_constraintTop_toBottomOf="@+id/cardView">
 
             <TextView
+
+                android:textAlignment="textStart"
                 android:id="@+id/post_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:justificationMode="inter_word"
                 android:text="ไม่เคยทานอะไรที่รู้สึกอร่อยแบบนี้มาก่อน ตัวแซลมมีความสดเกินบรรยาย เสิร์ฟพร้อมกับผักบุ้ง เป็นอะไรที่เข้ากันสุดๆ ไปโดนน! #Salmonburg"
                 android:textSize="15dp" />
 
@@ -228,6 +233,7 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
+                    android:id="@+id/like_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
 
@@ -240,6 +246,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/comment_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="25dp">
