@@ -38,6 +38,9 @@ dependencies {
     implementation 'com.google.android.gms:play-services-places:16.0.0'
     implementation 'com.sothree.slidinguppanel:library:3.4.0'
     implementation 'com.fenchtose.nocropper:nocropper:0.3.0'
+    //Loading
+    implementation 'com.github.d-max:spots-dialog:1.1@aar'
+
 //    testImplementation 'junit:junit:4.12'
 //    androidTestImplementation 'com.android.support.test:runner:1.0.2'
 //    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
