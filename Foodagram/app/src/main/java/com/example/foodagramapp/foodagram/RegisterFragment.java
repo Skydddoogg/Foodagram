@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.foodagramapp.foodagram.Dialog.CustomLoadingDialog;
 import com.example.foodagramapp.foodagram.User.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -28,6 +30,7 @@ public class RegisterFragment extends Fragment {
     private EditText email;
     private Button registerButton;
     private TextView haveAccount;
+    private CustomLoadingDialog customLoadingDialog;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -37,6 +40,7 @@ public class RegisterFragment extends Fragment {
         email = getView().findViewById(R.id.register_email);
         registerButton = getView().findViewById(R.id.register_register_button);
         haveAccount = getView().findViewById(R.id.register_text_click_here);
+        customLoadingDialog = new CustomLoadingDialog(getContext());
 
         registerButton.setOnClickListener(
                 new View.OnClickListener() {
@@ -85,11 +89,13 @@ public class RegisterFragment extends Fragment {
     }
 
     void registerToFirebase(final EditText email, EditText password, final EditText displayName){
+        customLoadingDialog.showDialog();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         mAuth.createUserWithEmailAndPassword(email.getText().toString(), password.getText().toString())
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
+                        customLoadingDialog.dismissDialog();
                         sendVerifiedEmail(authResult.getUser());
                         FirebaseAuth.getInstance().signOut();
                         getActivity().getSupportFragmentManager()
@@ -105,7 +111,8 @@ public class RegisterFragment extends Fragment {
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getActivity(), "การลงทะเบียนล้มเหลว", Toast.LENGTH_SHORT).show();
+                customLoadingDialog.dismissDialog();
+                Toast.makeText(getActivity(), "อีเมลผิดพลาดหรือมีผู้ใช้นี้ในระบบแล้ว", Toast.LENGTH_SHORT).show();
                 Log.i("REGISTER","Error : " + e.getMessage());
             }
 

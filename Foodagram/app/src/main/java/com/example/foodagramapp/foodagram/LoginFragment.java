@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.foodagramapp.foodagram.Dialog.CustomLoadingDialog;
 import com.example.foodagramapp.foodagram.Utils.MainActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -28,6 +29,7 @@ public class LoginFragment extends Fragment {
     private Button loginButton;
     private TextView forgetPassword;
     private TextView noAccount;
+    private CustomLoadingDialog customLoadingDialog;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -37,6 +39,7 @@ public class LoginFragment extends Fragment {
         loginButton = getView().findViewById(R.id.login_login_button);
         forgetPassword = getView().findViewById(R.id.login_text_forgot_password);
         noAccount = getView().findViewById(R.id.login_text_click_here);
+        customLoadingDialog = new CustomLoadingDialog(getContext());
 
         checkCurrentLogin();
 
@@ -97,11 +100,13 @@ public class LoginFragment extends Fragment {
     }
 
     void loginToFirebase(EditText email, EditText password){
+        customLoadingDialog.showDialog();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         mAuth.signInWithEmailAndPassword(email.getText().toString(), password.getText().toString())
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
+                        customLoadingDialog.dismissDialog();
                         FirebaseUser user = authResult.getUser();
                         if(user.isEmailVerified()){
                             reDirectToActivity();
@@ -115,6 +120,7 @@ public class LoginFragment extends Fragment {
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                customLoadingDialog.dismissDialog();
                 Toast.makeText(getActivity(), "รหัสผ่านไม่ถูกต้อง / ไม่มีผู้ใช้นี้ในระบบ", Toast.LENGTH_SHORT).show();
                 Log.d("REGISTER","ERROR : " + e.getMessage());
             }
