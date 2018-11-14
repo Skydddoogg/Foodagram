@@ -20,7 +20,6 @@ import android.media.ImageReader;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -37,8 +36,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.foodagramapp.foodagram.LoginFragment;
-import com.example.foodagramapp.foodagram.MainActivity;
+import com.example.foodagramapp.foodagram.AuthenticationActivity;
 import com.example.foodagramapp.foodagram.R;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -128,7 +126,7 @@ public class CameraFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 FirebaseAuth.getInstance().signOut();
-                Intent mIntent = new Intent(getActivity(), MainActivity.class);
+                Intent mIntent = new Intent(getActivity(), AuthenticationActivity.class);
                 startActivity(mIntent);
                 Log.d("Camera", "LOGOUT FROM CAMERA VIEW");
             }

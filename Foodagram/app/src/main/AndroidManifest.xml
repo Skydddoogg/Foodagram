@@ -24,7 +24,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".MainActivity">
+            android:name=".AuthenticationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -32,6 +32,9 @@
         </activity>
 
         <activity android:name="com.example.foodagramapp.foodagram.Post.PostActivity"
+            android:launchMode="singleInstance"/>
+
+        <activity android:name="com.example.foodagramapp.foodagram.Utils.MainActivity"
             android:launchMode="singleInstance"/>
 
         <activity
