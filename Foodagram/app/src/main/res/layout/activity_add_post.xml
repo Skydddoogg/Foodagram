@@ -9,7 +9,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/post_image_view"
         android:id="@+id/toolbar4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -48,23 +47,28 @@
         </android.support.constraint.ConstraintLayout>
 
     </android.support.v7.widget.Toolbar>
-
-    <ImageView
-        android:id="@+id/post_image_view"
+    
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="302dp"
-        android:scaleType="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar4" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar4"
+        app:layout_constraintBottom_toBottomOf="@id/post_post_box"
+        android:layout_marginBottom="210dp"
+        android:layout_height="0dp">
 
-    <View
-        android:id="@+id/post_shadow"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@drawable/background_gallery_grid_view"
-        app:layout_constraintBottom_toBottomOf="@id/post_image_view"/>
+        <ImageView
+            android:id="@+id/post_image_view"
+            android:scaleType="fitXY"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <View
+            android:id="@+id/post_shadow"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:background="@drawable/background_gallery_grid_view"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </android.support.constraint.ConstraintLayout>
 
     <View
         android:id="@+id/post_post_box"
@@ -73,7 +77,6 @@
         android:background="@drawable/post_post_box_rounded_view"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
@@ -97,7 +100,7 @@
         app:layout_constraintTop_toBottomOf="@id/post_description"
         android:layout_marginTop="15dp"
         android:background="#E3E3E3" />
-    
+
     <View
         android:id="@+id/post_divider2"
         android:layout_width="match_parent"
