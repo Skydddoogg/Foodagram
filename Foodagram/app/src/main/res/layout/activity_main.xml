@@ -8,16 +8,14 @@
 
     <FrameLayout
         android:id="@+id/main_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"></FrameLayout>
-
-
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></FrameLayout>
+
+
 
         <com.aurelhubert.ahbottomnavigation.AHBottomNavigation
             android:id="@+id/bottom_navigation"
@@ -38,5 +36,5 @@
             tools:layout_editor_absoluteX="176dp"
             tools:layout_editor_absoluteY="399dp" />
 
-    </android.support.constraint.ConstraintLayout>
+
 </android.support.constraint.ConstraintLayout>
