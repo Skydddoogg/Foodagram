@@ -7,12 +7,20 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
+import com.example.foodagramapp.foodagram.Comment.Comment;
 import com.example.foodagramapp.foodagram.R;
+
+import java.util.ArrayList;
 
 
 public class PostViewFragment extends Fragment {
+
+    private ArrayList<Comment> comments = new ArrayList<Comment>();
+
+    public PostViewFragment(){
+
+    }
 
     @Nullable
     @Override
@@ -24,7 +32,11 @@ public class PostViewFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        ImageView img= getView().findViewById(R.id.imageView);
-        img.setImageResource(R.drawable.food_pic);
+//        ImageView img = getView().findViewById(R.id.imageView);
+//        img.setImageResource(R.drawable.food_pic);
+//
+//        CircularImageView circularImageView = getView().findViewById(R.id.post_user_thumbnail);
+//        circularImageView.setImageResource(R.drawable.food_pic);
+
     }
 }
