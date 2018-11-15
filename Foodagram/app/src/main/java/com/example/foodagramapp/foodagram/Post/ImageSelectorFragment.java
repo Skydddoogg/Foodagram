@@ -29,7 +29,9 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class ImageSelectorFragment extends Fragment {
 
@@ -58,6 +60,7 @@ public class ImageSelectorFragment extends Fragment {
     private ArrayList<String> directories;
     private String mAppend = "file:/";
     private boolean isSnappedToCenter = false;
+    private String selectedFileName;
 
     @Nullable
     @Override
@@ -150,6 +153,7 @@ public class ImageSelectorFragment extends Fragment {
     private void setupGridView(String selectedDirectory){
         Log.d(TAG, "setupGridView: directory chosen: " + selectedDirectory);
         final ArrayList<String> imgURLs = FileSearch.getFilePaths(selectedDirectory);
+        Collections.sort(imgURLs, Collections.reverseOrder());
 
         //set the grid column width
         int gridWidth = getResources().getDisplayMetrics().widthPixels;
@@ -171,6 +175,9 @@ public class ImageSelectorFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d(TAG, "onItemClick: selected an image: " + imgURLs.get(position));
                 setImage(imgURLs.get(position), mAppend);
+                File f = new File(imgURLs.get(position));
+                selectedFileName = f.getName();
+                Log.d(TAG, "Selected image file name: " + selectedFileName);
                 slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
             }
         });
@@ -178,6 +185,7 @@ public class ImageSelectorFragment extends Fragment {
 
     private void setImage(String imgURL, String append){
         Log.d(TAG, "setImage: setting image");
+        Log.d(TAG, "URL: " + imgURL);
         ImageLoader imageLoader = ImageLoader.getInstance();
         imageLoader.init(ImageLoaderConfiguration.createDefault(getActivity()));
         imageLoader.loadImage(append + imgURL, new SimpleImageLoadingListener() {
@@ -208,7 +216,11 @@ public class ImageSelectorFragment extends Fragment {
             cropperView.getCroppedBitmapAsync(callback);
             Log.d(TAG, String.valueOf(callback.equals(null)));
             if (bmap != null) {
-                startActivity(new Intent(getActivity(), AddPostActivity.class));
+                Bundle bundle = new Bundle();
+                bundle.putString("name", selectedFileName);
+                Intent intent = new Intent(getActivity(), AddPostActivity.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
         } catch (NullPointerException e) {
             Extension.toast(getActivity(), "Error cropping");
@@ -225,4 +237,15 @@ public class ImageSelectorFragment extends Fragment {
         return Bitmap.createBitmap(mBitmap, 0, 0, mBitmap.getWidth(), mBitmap.getHeight(), matrix, true);
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            getFragmentManager()
+                    .beginTransaction()
+                    .detach(this)
+                    .attach(this)
+                    .commit();
+        }
+    }
 }

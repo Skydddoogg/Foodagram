@@ -2,7 +2,6 @@ package com.example.foodagramapp.foodagram.Post;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.foodagramapp.foodagram.Dialog.CustomLoadingDialog;
 import com.example.foodagramapp.foodagram.R;
 import com.example.foodagramapp.foodagram.Utils.Extension;
 import com.google.android.gms.common.ConnectionResult;
@@ -31,7 +31,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.File;
+import java.io.ByteArrayOutputStream;
 
 import static com.example.foodagramapp.foodagram.Post.ImageSelectorFragment.bmap;
 import static com.example.foodagramapp.foodagram.Post.ImageSelectorFragment.getBitmap;
@@ -41,6 +41,7 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
     private static final String TAG = "AddPostActivity";
     private final int PLACE_PICKER_REQUEST = 1;
 
+    Bitmap bitmap = getBitmap();
     private ImageView image;
     private TextView backBtn;
     private EditText postDescription;
@@ -53,7 +54,8 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
     private String mAppend = "file:/";
     private Intent intent;
     private String imgUrl;
-    Bitmap bitmap = getBitmap();
+    private String selectedFileName;
+    private CustomLoadingDialog customLoadingDialog;
     private FirebaseStorage storage = FirebaseStorage.getInstance();
     private StorageReference storageRef = storage.getReference();
 
@@ -61,6 +63,9 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_post);
+        customLoadingDialog = new CustomLoadingDialog(this);
+        Bundle p = getIntent().getExtras();
+        selectedFileName = p.getString("name");
         initViews();
         setImage();
 
@@ -86,22 +91,29 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
         postShareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Uri file = Uri.fromFile(new File(imgUrl));
-                StorageReference riversRef = storageRef.child("images/"+file.getLastPathSegment());
-                UploadTask uploadTask = riversRef.putFile(file);
+                customLoadingDialog.showDialog();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                byte[] data = baos.toByteArray();
+
+                StorageReference ref = storageRef.child("post_images/"+selectedFileName);
+                UploadTask uploadTask = ref.putBytes(data);
                 uploadTask.addOnFailureListener(new OnFailureListener() {
                     @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        Extension.toast(AddPostActivity.this, "Can't upload");
-                        Log.d(TAG, exception.toString());
+                    public void onFailure(@NonNull Exception e) {
+                        customLoadingDialog.dismissDialog();
+                        Extension.toast(AddPostActivity.this, "Upload failed");
+                        Log.d(TAG, e.toString());
                     }
                 }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        customLoadingDialog.dismissDialog();
                         Extension.toast(AddPostActivity.this, "Upload success");
                         Log.d(TAG, taskSnapshot.getMetadata().toString());
                     }
                 });
+
             }
         });
 
@@ -162,14 +174,14 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
-                Place place = PlacePicker.getPlace(data, this);
+                Place place = PlacePicker.getPlace(this, data);
                 StringBuilder stBuilder = new StringBuilder();
-                String placename = String.format("%s", place.getName());
+                String placeName = String.format("%s", place.getName());
 //                String latitude = String.valueOf(place.getLatLng().latitude);
 //                String longitude = String.valueOf(place.getLatLng().longitude);
 //                String address = String.format("%s", place.getAddress());
 //                stBuilder.append("Name: ");
-                stBuilder.append(placename);
+                stBuilder.append(placeName);
 //                stBuilder.append("\n");
 //                stBuilder.append("Latitude: ");
 //                stBuilder.append(latitude);
@@ -189,11 +201,5 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
         bmap = null;
         super.onBackPressed();
     }
-//
-//    public void refreshActivity() {
-//        Intent i = new Intent(this, PostActivity.class);
-//        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//        startActivity(i);
-//        finish();
-//    }
+
 }
