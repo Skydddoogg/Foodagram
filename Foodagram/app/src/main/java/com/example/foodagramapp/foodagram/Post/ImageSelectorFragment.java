@@ -48,7 +48,7 @@ public class ImageSelectorFragment extends Fragment {
         }
     };
 
-    private int angle = 90;
+    private int angle = 0;
     static Bitmap bmap;
     private GridView gridView;
     private TextView backBtn;

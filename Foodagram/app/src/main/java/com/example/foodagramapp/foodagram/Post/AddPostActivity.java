@@ -18,7 +18,6 @@ import android.widget.TextView;
 
 import com.example.foodagramapp.foodagram.Dialog.CustomLoadingDialog;
 import com.example.foodagramapp.foodagram.R;
-import com.example.foodagramapp.foodagram.Utils.Extension;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -28,15 +27,17 @@ import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.UUID;
 
 import static com.example.foodagramapp.foodagram.Post.ImageSelectorFragment.bmap;
@@ -50,23 +51,27 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
     Bitmap bitmap = getBitmap();
     private ImageView image;
     private TextView backBtn;
+    private TextView postTextLocation;
     private EditText postDescription;
     private EditText postMenu;
     private EditText postPrice;
     private Button postShareButton;
     private ConstraintLayout postLocationBar;
-    private TextView postTextLocation;
-    private GoogleApiClient mGoogleApiClient;
-    private String mAppend = "file:/";
-    private Intent intent;
-    private String imgUrl;
-    private String selectedFileName;
+    private ArrayList<String> locationList = new ArrayList<>();
+//    private String mAppend = "file:/";
+//    private Intent intent;
+//    private String imgUrl;
+//    private UploadTask uploadImageTask;
+//    private String imageRef;
+//    private String selectedFileName;
+    private String downloadImageURL;
+    private ByteArrayOutputStream baos = new ByteArrayOutputStream();
     private CustomLoadingDialog customLoadingDialog;
+    private GoogleApiClient mGoogleApiClient;
     private FirebaseStorage storage = FirebaseStorage.getInstance();
     private StorageReference storageRef = storage.getReference();
-    private UploadTask uploadImageTask;
-    private String imageRef;
-    private ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    private DatabaseReference mDatabase;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,7 +81,7 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
         customLoadingDialog = new CustomLoadingDialog(this);
 
         Bundle p = getIntent().getExtras();
-        selectedFileName = p.getString("name");
+//        selectedFileName = p.getString("name");
         initViews();
         setImage();
 
@@ -133,11 +138,8 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
                         public void onComplete(@NonNull Task<Uri> task) {
                             if (task.isSuccessful()){
                                 Uri downloadUrl = task.getResult();
-
-                                String downloadImageURL = downloadUrl.toString(); // Image URL
-
-                                // Write your code for adding an object to Real-time database here
-
+                                downloadImageURL = downloadUrl.toString(); // Image URL
+                                addPostToDB(downloadImageURL);
                                 customLoadingDialog.dismissDialog();
                                 Log.d(TAG, "IMAGE URL = " + downloadImageURL);
                             } else {
@@ -149,6 +151,7 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
                 } catch (Exception e) {
 
                 }
+
             }
         });
 
@@ -171,21 +174,9 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
         backBtn = findViewById(R.id.post_back_btn);
     }
 
-    private void setImage(){
-        ImageView image = findViewById(R.id.post_image_view);
-        Log.d(TAG, Integer.toString(bitmap.getAllocationByteCount()));
+    private void setImage() {
+        image = findViewById(R.id.post_image_view);
         image.setImageBitmap(bitmap);
-
-//        if (intent.hasExtra(getString(R.string.selected_image))) {
-//            imgUrl = intent.getStringExtra(getString(R.string.selected_image));
-//            Log.d(TAG, "setImage: got new image url: " + imgUrl);
-//            UniversalImageLoader.setImage(imgUrl, image, null, mAppend);
-//        } else if (intent.hasExtra(getString(R.string.selected_bitmap))) {
-////            bitmap = getIntent().getParcelableExtra(getString(R.string.selected_bitmap));
-////            Log.d(TAG, "setImage: got new bitmap");
-//            Log.d(TAG, String.valueOf(bitmap.equals(null)));
-//            image.setImageBitmap(bitmap);
-//        }
     }
 
     @Override
@@ -210,23 +201,15 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(this, data);
-                StringBuilder stBuilder = new StringBuilder();
                 String placeName = String.format("%s", place.getName());
-//                String latitude = String.valueOf(place.getLatLng().latitude);
-//                String longitude = String.valueOf(place.getLatLng().longitude);
-//                String address = String.format("%s", place.getAddress());
-//                stBuilder.append("Name: ");
-                stBuilder.append(placeName);
-//                stBuilder.append("\n");
-//                stBuilder.append("Latitude: ");
-//                stBuilder.append(latitude);
-//                stBuilder.append("\n");
-//                stBuilder.append("Logitude: ");
-//                stBuilder.append(longitude);
-//                stBuilder.append("\n");
-//                stBuilder.append("Address: ");
-//                stBuilder.append(address);
-                postTextLocation.setText(stBuilder.toString());
+                String latitude = String.valueOf(place.getLatLng().latitude);
+                String longitude = String.valueOf(place.getLatLng().longitude);
+                String address = String.format("%s", place.getAddress());
+                locationList.add(0, placeName);
+                locationList.add(1, latitude);
+                locationList.add(2, longitude);
+                locationList.add(3, address);
+                postTextLocation.setText(placeName);
             }
         }
     }
@@ -235,6 +218,25 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
     public void onBackPressed() {
         bmap = null;
         super.onBackPressed();
+    }
+
+    private void addPostToDB(String downloadImageURL) {
+        Log.d(TAG, "here");
+        mAuth = FirebaseAuth.getInstance();
+        String postId = String.valueOf(UUID.randomUUID());
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        Post post = new Post();
+        post.setDescription(postDescription.getText().toString());
+        post.setPlaceName(locationList.get(0));
+        post.setLatitude(locationList.get(1));
+        post.setLongitude(locationList.get(2));
+        post.setAddress(locationList.get(3));
+        post.setMenuImageURL(downloadImageURL);
+        post.setMenuName(postMenu.getText().toString());
+        post.setMenuPrice(Double.parseDouble(postPrice.getText().toString()));
+        post.setTimestamp(System.currentTimeMillis());
+        post.setOwner(mAuth.getCurrentUser().getUid());
+        mDatabase.child("post").child(postId).setValue(post);
     }
 
 }
