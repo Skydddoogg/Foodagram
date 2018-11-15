@@ -2,6 +2,7 @@ package com.example.foodagramapp.foodagram.Post;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.ImageFormat;
@@ -34,10 +35,12 @@ import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.foodagramapp.foodagram.Dialog.CustomLoadingDialog;
 import com.example.foodagramapp.foodagram.R;
+import com.example.foodagramapp.foodagram.MainActivity;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -93,6 +96,7 @@ public class CameraFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        initCancelButton();
 
         stateCallback = new CameraDevice.StateCallback() {
             @Override
@@ -375,6 +379,22 @@ public class CameraFragment extends Fragment {
         mBackgroundThread = new HandlerThread("Camera Background");
         mBackgroundThread.start();
         mBackgroundHandler = new Handler(mBackgroundThread.getLooper());
+    }
+
+    void initCancelButton(){
+        try {
+            TextView _cancelBtn = getView().findViewById(R.id.camera_cancel_btn);
+            _cancelBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent mIntent = new Intent(getActivity(), MainActivity.class);
+                    startActivity(mIntent);
+                    Log.d(TAG, "GO TO MAIN");
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 

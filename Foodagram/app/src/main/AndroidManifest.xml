@@ -34,7 +34,7 @@
         <activity android:name="com.example.foodagramapp.foodagram.Post.PostActivity"
             android:launchMode="singleInstance"/>
 
-        <activity android:name="com.example.foodagramapp.foodagram.Utils.MainActivity"
+        <activity android:name="com.example.foodagramapp.foodagram.MainActivity"
             android:launchMode="singleInstance"/>
 
         <activity

@@ -17,6 +17,7 @@ import com.example.foodagramapp.foodagram.Dialog.CustomLoadingDialog;
 import com.example.foodagramapp.foodagram.User.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -50,7 +51,11 @@ public class RegisterFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         if(isUsableInput(displayName, password, email)){
-                            registerToFirebase(email, password, displayName);
+                            try {
+                                registerToFirebase(email, password, displayName);
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }
