@@ -11,7 +11,6 @@ import android.util.Log;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.example.foodagramapp.foodagram.LoginFragment;
 import com.example.foodagramapp.foodagram.R;
 import com.example.foodagramapp.foodagram.Utils.Permissions;
 import com.example.foodagramapp.foodagram.Utils.SectionsPagerAdapter;
@@ -22,11 +21,11 @@ public class PostActivity extends AppCompatActivity {
     private static final String TAG = "PostActivity";
     private static final int VERIFY_PERMISSIONS_REQUEST = 1;
 
-    private ViewPager mViewPager;
     private String page;
-    private RadioGroup radioGroup;
-    private RadioButton radioCamera;
-    private RadioButton radioGallery;
+    static ViewPager mViewPager;
+    static RadioGroup radioGroup;
+    static RadioButton radioCamera;
+    static RadioButton radioGallery;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -130,6 +129,5 @@ public class PostActivity extends AppCompatActivity {
             return true;
         }
     }
-
 
 }
