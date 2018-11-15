@@ -2,6 +2,7 @@ package com.example.foodagramapp.foodagram.Post;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -25,13 +26,18 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.sql.Timestamp;
+import java.util.UUID;
 
 import static com.example.foodagramapp.foodagram.Post.ImageSelectorFragment.bmap;
 import static com.example.foodagramapp.foodagram.Post.ImageSelectorFragment.getBitmap;
@@ -58,12 +64,17 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
     private CustomLoadingDialog customLoadingDialog;
     private FirebaseStorage storage = FirebaseStorage.getInstance();
     private StorageReference storageRef = storage.getReference();
+    private UploadTask uploadImageTask;
+    private String imageRef;
+    private ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_post);
+
         customLoadingDialog = new CustomLoadingDialog(this);
+
         Bundle p = getIntent().getExtras();
         selectedFileName = p.getString("name");
         initViews();
@@ -88,32 +99,56 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
             }
         });
 
+
         postShareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                customLoadingDialog.showDialog();
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                byte[] data = baos.toByteArray();
 
-                StorageReference ref = storageRef.child("post_images/"+selectedFileName);
-                UploadTask uploadTask = ref.putBytes(data);
-                uploadTask.addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        customLoadingDialog.dismissDialog();
-                        Extension.toast(AddPostActivity.this, "Upload failed");
-                        Log.d(TAG, e.toString());
-                    }
-                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        customLoadingDialog.dismissDialog();
-                        Extension.toast(AddPostActivity.this, "Upload success");
-                        Log.d(TAG, taskSnapshot.getMetadata().toString());
-                    }
-                });
+                try {
 
+                    customLoadingDialog.showDialog();
+
+                    // Generate reference message for uploading image
+                    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                    String destination_directory = "post_images";
+                    String refMessage = destination_directory + "/" + UUID.randomUUID().toString() + timestamp.toString() + ".jpg";
+
+                    // Compress image
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                    byte[] data = baos.toByteArray();
+
+                    // Upload to firebase storage
+                    final StorageReference ref = storageRef.child(refMessage);
+                    UploadTask uploadTask = ref.putBytes(data);
+                    uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                        @Override
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                            if (!task.isSuccessful()){
+                                throw task.getException();
+                            }
+                            return ref.getDownloadUrl();
+                        }
+                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()){
+                                Uri downloadUrl = task.getResult();
+
+                                String downloadImageURL = downloadUrl.toString(); // Image URL
+
+                                // Write your code for adding an object to Real-time database here
+
+                                customLoadingDialog.dismissDialog();
+                                Log.d(TAG, "IMAGE URL = " + downloadImageURL);
+                            } else {
+                                customLoadingDialog.dismissDialog();
+                                Log.d(TAG, "FAILED TO UPLOAD AN IMAGE");
+                            }
+                        }
+                    });
+                } catch (Exception e) {
+
+                }
             }
         });
 
