@@ -36,6 +36,7 @@
 
 
         </android.support.constraint.ConstraintLayout>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="10dp"
@@ -46,7 +47,10 @@
             android:id="@+id/profile_image"
             android:layout_width="85dp"
             android:layout_height="85dp"
-            android:layout_margin="15dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
             android:src="@drawable/profile"
             android:layout_below="@id/profile_header"
            />
@@ -81,7 +85,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/profile_image"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="15dp"
+
             android:layout_marginBottom="12dp"
             android:fontFamily="@font/mitr_regular"
             android:text="Hello my name is mew, and this is description example , Contact"
@@ -113,6 +120,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
 
+            android:layout_marginStart="20dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -144,7 +152,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="30dp"
 
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -157,8 +165,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
 
-                android:text="980"
                 android:fontFamily="@font/mitr_regular"
+                android:text="980"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
                 tools:layout_editor_absoluteX="16dp"
@@ -176,30 +184,44 @@
             android:id="@+id/profile_edit_profile"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
 
-
+            android:layout_marginEnd="20dp"
             android:background="@drawable/button_bg_round_corner"
+            android:fontFamily="@font/mitr_regular"
             android:text="แก้ไขโปรไฟล์"
             android:textColor="@android:color/white"
-            android:fontFamily="@font/mitr_regular"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </android.support.constraint.ConstraintLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:layout_below="@id/profile_follow_block"
+            android:background="@drawable/tool_bar_shadow"/>
+
         <TextView
             android:id="@+id/profile_all_post"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="โพสต์ทั้งหมด"
             android:layout_below="@id/profile_follow_block"
-            android:layout_margin="15dp"/>
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="15dp"
+            />
         <ListView
             android:id="@+id/profile_all_post_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             android:layout_below="@id/profile_all_post">
 
         </ListView>
+
 
 
     </RelativeLayout>

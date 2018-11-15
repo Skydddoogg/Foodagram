@@ -33,9 +33,10 @@ private FirebaseDatabase database = FirebaseDatabase.getInstance();
     EditText nameField;
     EditText usernameField;
     EditText descriptionField;
-    EditText emailField;
+
     EditText sexField;
     EditText birthDateField;
+    TextView emailField;
     TextView headerUsernameField;
     int mYear,mMonth,mDay;
     private String[] sex;
@@ -88,7 +89,7 @@ private FirebaseDatabase database = FirebaseDatabase.getInstance();
                         sexField.setHint(sex);
                         birthDateField.setHint(birthDate);
                         headerUsernameField.setText(username);
-
+                        emailField.setText(email);
 
                     }
                 }
@@ -117,12 +118,11 @@ private FirebaseDatabase database = FirebaseDatabase.getInstance();
 //    }
 
     public void initUIComponent(){
-        nameField = (EditText) getView().findViewById(R.id.edit_profile_name);
-        usernameField = (EditText) getView().findViewById(R.id.edit_profile_username);
-        descriptionField = (EditText) getView().findViewById(R.id.edit_profile_description);
-
-
-        headerUsernameField = (TextView) getView().findViewById(R.id.edit_profile_header_username);
+        nameField = getView().findViewById(R.id.edit_profile_name);
+        usernameField = getView().findViewById(R.id.edit_profile_username);
+        descriptionField = getView().findViewById(R.id.edit_profile_description);
+        emailField = getView().findViewById(R.id.edit_profile_email);
+        headerUsernameField = getView().findViewById(R.id.edit_profile_header_username);
 
     }
 
