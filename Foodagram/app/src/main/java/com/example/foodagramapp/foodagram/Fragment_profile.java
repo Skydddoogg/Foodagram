@@ -1,18 +1,22 @@
 package com.example.foodagramapp.foodagram;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -21,15 +25,22 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Fragment_profile extends Fragment {
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private DatabaseReference myRef;
+    private DatabaseReference myPostRef, myProfileRef;
     private Adapter_profile profileAdapter;
+    private TextView profileNameTextView, usernameTextView, descriptionTextView;
+    private ImageView mockAnotherProfile,profileImage;
+    private String menuName, foodDescription, owner, location, price, time;
+    private String name, username, profileDescription;
+    private Button editProfileBtn;
+    private Model_profile exampleInfo;
+    private ArrayList<Model_profile> profileInfo = new ArrayList<Model_profile>();
+//    Model_profile exampleInfo = new Model_profile("Pizza", "SkyDogg" , "50", "IT KMITL");
 
-    ArrayList<Model_profile> profileInfo = new ArrayList<Model_profile>();
-    Model_profile exampleInfo = new Model_profile("Pizza", "I kwai oat" , "11/00/2018");
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -39,38 +50,83 @@ public class Fragment_profile extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        profileInfo.add(exampleInfo);
-        myRef = database.getReference().child("post");
-        myRef.addValueEventListener(new ValueEventListener() {
+//        profileInfo.add(exampleInfo);
+
+        initPostRef();
+        initProfileRef();
+
+
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        initUIComponent();
+
+
+        //** Setup list , listAdapter
+        final ListView profilePostList = getView().findViewById(R.id.profile_all_post_list);
+        profileAdapter = new Adapter_profile(
+                getActivity(),
+                R.layout.fragment_profile_item,
+                profileInfo
+        );
+        profilePostList.setAdapter(profileAdapter);
+        profileAdapter.notifyDataSetChanged();
+        //**
+
+    }
+
+    public void initUIComponent(){
+        editProfileBtn =  getView().findViewById(R.id.profile_edit_profile);
+        profileImage = getView().findViewById(R.id.profile_image);
+        profileNameTextView = getView().findViewById(R.id.profile_name);
+        usernameTextView = getView().findViewById(R.id.profile_username);
+        descriptionTextView = getView().findViewById(R.id.profile_description);
+//        mockAnotherProfile = getView().findViewById(R.id.mock_anohter_profile);
+
+        //        mockAnotherProfile.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//            }
+//        });
+
+        editProfileBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.main_view, new Fragment_editProfile())
+                        .commit();
+            }
+        });
+
+    }
+    public void initPostRef(){
+        myPostRef = database.getReference().child("post");
+        myPostRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot db: dataSnapshot.getChildren()){
-
+                    Log.i("DBprofile", "" + db.child("owner").getValue());
                     //** Check data from person's profile
-                    if(db.getKey().equals("test_user_id_1")) {
-                        // ** Get profile's post
-                        for(DataSnapshot dbProfile : db.getChildren()) {
+                    if(db.child("owner").getValue().equals("test_user_id_1")) {
+                    // ** Get profile's post
 
 
-                            String menu_name = (String) dbProfile.child("menu_name").getValue();
-                            String description = (String) dbProfile.child("description").getValue();
-                            String owner = (String) dbProfile.child("owner").getValue();
-                            String location = (String) dbProfile.child("location").getValue();
-//                            String time = (String) dbProfile.child("timestamp").getValue();
-                            exampleInfo = new Model_profile(menu_name, owner, "50");
+                            menuName = (String) db.child("menu_name").getValue();
+                            foodDescription = (String) db.child("description").getValue();
+                            owner = (String) db.child("owner").getValue();
+                            location = (String) db.child("location").getValue();
+                            price = (String) db.child("menu_price").getValue().toString();
+
+                            exampleInfo = new Model_profile(menuName, owner, price, location);
                             profileInfo.add(exampleInfo);
                             profileAdapter.notifyDataSetChanged();
 
 //
-//
-//                        Log.i("Profile post", "" + db.getKey());
-//                        Log.i("Profile post", "" + db.child("test_post_id_" + "2").child("menu_name").getValue());
-//                        Log.i("Profile post", "" + db.child("test_post_id_" + "2").child("description").getValue());
-//                        Log.i("Profile post", "" + db.child("test_post_id_" + "2").child("location").getValue());
-//                        Log.i("Profile post", "" + db.child("test_post_id_" + "2").child("menu_price").getValue());
-//                        Log.i("Profile post", "" + db.child("test_post_id_" + "2").child("owner").getValue());
-//                        Log.i("TT", "" + menu_name + db.child("test_post_id_2").getValue());
-                        }
+
                     }
 
                 }
@@ -83,35 +139,31 @@ public class Fragment_profile extends Fragment {
         });
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        Button editProfileBtn = (Button) getView().findViewById(R.id.profile_edit_profile);
-        ImageView profileImage = getView().findViewById(R.id.profile_image);
-
-        final ListView profilePostList = getView().findViewById(R.id.profile_all_post_list);
-        profileAdapter = new Adapter_profile(
-                getActivity(),
-                R.layout.fragment_profile_item,
-                profileInfo
-        );
-
-
-        profilePostList.setAdapter(profileAdapter);
-        profileAdapter.notifyDataSetChanged();
-        editProfileBtn.setOnClickListener(new View.OnClickListener() {
+    public void initProfileRef(){
+        myProfileRef = database.getReference().child("profile");
+        myProfileRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onClick(View view) {
-                getActivity().getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.main_view, new Fragment_editProfile())
-                        .addToBackStack(null)
-                        .commit();
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot db: dataSnapshot.getChildren()){
+                    if(db.child("username").getValue().equals("SkyDogg")){
+                        name = (String) db.child("name").getValue();
+                        username = (String) db.child("username").getValue();
+                        profileDescription = (String) db.child("vitae").getValue();
+
+                        profileNameTextView.setText(name);
+                        usernameTextView.setText(username);
+                        descriptionTextView.setText(profileDescription);
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
-
     }
-
 
 
 

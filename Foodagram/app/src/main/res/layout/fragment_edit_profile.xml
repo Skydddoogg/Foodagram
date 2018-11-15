@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/linearLayout3"
+        android:id="@+id/edit_profile_header"
         android:layout_width="match_parent"
 
         android:layout_height="56dp"
@@ -15,10 +15,10 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/edit_profile_id_header"
+            android:id="@+id/edit_profile_header_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="sak_rodyuth"
+            android:text="nuii_ka"
             android:textColor="#FF1C49"
             android:textSize="20dp"
             android:textStyle="bold"
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="26dp"
             android:text="ย้อนกลับ"
-            android:textColor="@android:color/darker_gray"
+            android:textColor="@android:color/black"
             android:textSize="14dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="26dp"
             android:text="บันทึก"
-            android:textColor="@android:color/darker_gray"
+            android:textColor="@android:color/black"
             android:textSize="14dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -54,6 +54,12 @@
 
 
     </android.support.constraint.ConstraintLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_below="@id/edit_profile_header"
+        android:background="@drawable/tool_bar_shadow"/>
+
 
 
 
@@ -62,7 +68,10 @@
         android:layout_width="85dp"
         android:layout_height="85dp"
         android:layout_gravity="center_horizontal"
-        android:layout_margin="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="10dp"
         android:src="@drawable/profile" />
 
     <TextView
@@ -70,13 +79,15 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:textColor="#FF1C49"
-        android:text="เปลี่ยนรูปโปรไฟล์" />
+        android:text="เปลี่ยนรูปโปรไฟล์"
+        android:layout_marginBottom="20dp"/>
 
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/custom_border_bg"
         android:paddingBottom="8dp"
         android:paddingTop="8dp"
         android:paddingLeft="20dp">
@@ -84,13 +95,14 @@
         <TextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
             android:text="ชื่อ" />
 
         <EditText
             android:id="@+id/edit_profile_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="ศักรินทร์ รอยุทธ"
+            android:hint="กมลรัตน์ สุขจิต"
             android:background="@null"/>
     </LinearLayout>
 
@@ -106,14 +118,14 @@
         <TextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-
+            android:textColor="@android:color/black"
             android:text="ชื่อผู้ใช้" />
 
         <EditText
             android:id="@+id/edit_profile_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="sak_rodyuth"
+            android:hint="nuii_ka"
             android:background="@null"/>
     </LinearLayout>
 
@@ -128,6 +140,7 @@
         <TextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
             android:text="ประวัติ"
             />
 
@@ -135,7 +148,7 @@
             android:id="@+id/edit_profile_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="ศักรินทร์เองจะใครหละ"
+            android:hint="IG : nuii_gg , FB: kamonrat sj"
             android:maxLines="3"
             android:background="@null"/>
     </LinearLayout>
@@ -144,31 +157,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:baselineAligned="false"
-        android:padding="20dp"
+        android:paddingTop="20dp"
+        android:paddingLeft="20dp"
+        android:paddingBottom="15dp"
+        android:textColor="@android:color/black"
+
         android:text="ข้อมูลส่วนตัว" />
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="8dp"
-        android:paddingTop="8dp"
-        android:paddingLeft="20dp"
-        android:background="@drawable/custom_border_bg"
-        >
 
-        <TextView
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:text="อีเมล" />
-
-        <EditText
-            android:id="@+id/edit_profile_email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="example@gmail.com"
-            android:background="@null"/>
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -181,6 +178,7 @@
         <TextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
             android:text="เพศ" />
 
         <EditText
@@ -202,6 +200,7 @@
         <TextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
             android:text="วันเกิด" />
 
         <EditText

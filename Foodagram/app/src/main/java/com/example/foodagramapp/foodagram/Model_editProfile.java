@@ -1,6 +1,8 @@
 package com.example.foodagramapp.foodagram;
 
 public class Model_editProfile  {
+
+
     String name;
     String userId;
     String description;
@@ -10,6 +12,15 @@ public class Model_editProfile  {
 
     Model_editProfile(){
 
+    }
+
+    public Model_editProfile(String name, String userId, String description, String email, String sex, String birthDate) {
+        this.name = name;
+        this.userId = userId;
+        this.description = description;
+        this.email = email;
+        this.sex = sex;
+        this.birthDate = birthDate;
     }
 
     public String getName() {

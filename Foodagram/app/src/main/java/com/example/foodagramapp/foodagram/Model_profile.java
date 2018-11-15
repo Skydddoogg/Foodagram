@@ -9,17 +9,24 @@ public class Model_profile {
     String menuName;
     String profileName;
     String postTime;
+    String menuPrice;
+
+
+
+    String location;
 
 //    public Image getMenuImage() {
 //        return menuImage;
 //    }
 
-    public Model_profile( String menuName, String profileName, String menuPrice) {
+    public Model_profile( String menuName, String profileName, String menuPrice , String location) {
 //        this.menuImage = menuImage;
 //        this.profileImage = profileImage;
         this.menuName = menuName;
         this.profileName = profileName;
+        this.menuPrice = menuPrice;
         this.postTime = postTime;
+        this.location = location;
     }
 
 //    public void setMenuImage(Image menuImage) {
@@ -33,6 +40,7 @@ public class Model_profile {
 //    public void setProfileImage(Image profileImage) {
 //        this.profileImage = profileImage;
 //    }
+
 
     public String getMenuName() {
         return menuName;
@@ -57,4 +65,21 @@ public class Model_profile {
     public void setPostTime(String postTime) {
         this.postTime = postTime;
     }
+
+    public String getMenuPrice() {
+        return menuPrice;
+    }
+
+    public void setMenuPrice(String menuPrice) {
+        this.menuPrice = menuPrice;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
 }
