@@ -31,6 +31,9 @@ public class RegisterFragment extends Fragment {
     private Button registerButton;
     private TextView haveAccount;
     private CustomLoadingDialog customLoadingDialog;
+    private FirebaseUser mUser;
+    private FirebaseAuth mAuth;
+    private String uId;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -90,13 +93,14 @@ public class RegisterFragment extends Fragment {
 
     void registerToFirebase(final EditText email, EditText password, final EditText displayName){
         customLoadingDialog.showDialog();
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
         mAuth.createUserWithEmailAndPassword(email.getText().toString(), password.getText().toString())
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
                         customLoadingDialog.dismissDialog();
                         sendVerifiedEmail(authResult.getUser());
+                        mUser = mAuth.getCurrentUser();
                         FirebaseAuth.getInstance().signOut();
                         getActivity().getSupportFragmentManager()
                                 .beginTransaction()
@@ -138,7 +142,7 @@ public class RegisterFragment extends Fragment {
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
         String defaultProfilePic = "https://catking.in/wp-content/uploads/2017/02/default-profile-1.png";
         User user = new User( displayName.getText().toString(), email.getText().toString(), "", "", "", "", defaultProfilePic);
-        mDatabase.child("profile").child(byteArrayToHexString(email)).setValue(user);
+        mDatabase.child("profile").child(mUser.getUid()).setValue(user);
         Log.i("HASH", byteArrayToHexString(email));
 
     }
