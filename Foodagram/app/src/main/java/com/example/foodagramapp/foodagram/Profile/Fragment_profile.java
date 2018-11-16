@@ -154,7 +154,7 @@ public class Fragment_profile extends Fragment {
             public void onClick(View view) {
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.main_view, new Fragment_editProfile())
+                        .add(R.id.main_view, new Fragment_editProfile())
                         .commit();
             }
         });

@@ -231,7 +231,7 @@ public class Fragment_editProfile extends Fragment {
             public void onClick(View view) {
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.main_view, new Fragment_profile())
+                        .add(R.id.main_view, new Fragment_profile())
                         .commit();
             }
         });
