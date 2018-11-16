@@ -33,6 +33,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -45,7 +46,7 @@ public class Fragment_profile extends Fragment {
     private Adapter_profile profileAdapter;
     private TextView profileNameTextView, usernameTextView, descriptionTextView;
     private ImageView mockAnotherProfile,profileImage;
-    private String menuName, foodDescription, owner, location, price, time;
+    private String menuName, foodDescription, owner, location, price, time, menuImage;
     private String name, username, profileDescription;
     private Button editProfileBtn;
     private Model_profile exampleInfo;
@@ -173,10 +174,11 @@ public class Fragment_profile extends Fragment {
                                     foodDescription = (String) db.child("description").getValue();
                                     location = (String) db.child("address").getValue();
                                     price = (String) db.child("menuPrice").getValue().toString();
-
-                                    exampleInfo = new Model_profile(menuName, owner, price, location, foodDescription);
+                                    menuImage = (String) db.child("menuImageURL").getValue();
+                                    exampleInfo = new Model_profile(menuName, owner, price, location, foodDescription, menuImage);
                                     profileInfo.add(exampleInfo);
                                     profileAdapter.notifyDataSetChanged();
+
 
                                 }
 

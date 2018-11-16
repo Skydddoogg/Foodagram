@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.foodagramapp.foodagram.Profile.Model_profile;
 import com.example.foodagramapp.foodagram.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +45,8 @@ public class Adapter_profile extends ArrayAdapter<Model_profile> {
         TextView menuPrice = profileItem.findViewById(R.id.menu_price);
         TextView location = profileItem.findViewById(R.id.checkin_location);
         TextView postDescription = profileItem.findViewById(R.id.post_description);
+
+        Picasso.get().load(profileInfo.get(position).getMenuImageUrl()).into(menuImage);
 
 
         location.setText(profileInfo.get(position).getLocation());
