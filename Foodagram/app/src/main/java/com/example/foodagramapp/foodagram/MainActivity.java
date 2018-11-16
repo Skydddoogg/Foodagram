@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -16,11 +17,13 @@ import com.example.foodagramapp.foodagram.Post.CameraFragment;
 import com.example.foodagramapp.foodagram.Post.PostActivity;
 import com.example.foodagramapp.foodagram.Post.PostViewFragment;
 import com.example.foodagramapp.foodagram.Profile.Fragment_profile;
+import com.example.foodagramapp.foodagram.Utils.SectionsPagerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "NavigationActivity";
+    static ViewPager mViewPager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -30,6 +33,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void createBottomNavBar() {
+
+//        SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager());
+//
+//        mViewPager = findViewById(R.id.viewpager_container);
+//        mViewPager.setAdapter(adapter);
+//        mViewPager.setCurrentItem(0);
+
         try {
             AHBottomNavigation bottomNavigation = findViewById(R.id.bottom_navigation);
             bottomNavigation.bringToFront();
@@ -97,10 +107,10 @@ public class MainActivity extends AppCompatActivity {
                             //DISABLE THIS BUTTON BECAUSE REPLACE IT WITH IMAGEVIEW
                             break;
                         case 3:
-//                            getSupportFragmentManager()
-//                                    .beginTransaction()
-//                                    .replace(R.id.main_view, new PostViewFragment())
-//                                    .commit();
+                            getSupportFragmentManager()
+                                    .beginTransaction()
+                                    .replace(R.id.main_view, new PostViewFragment())
+                                    .commit();
                             Log.i("NAVBAR", "SELECT NOTIFICATION");
                             break;
                         case 4:

@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -142,7 +143,12 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
                                     downloadImageURL = downloadUrl.toString(); // Image URL
                                     addPostToDB(downloadImageURL);
                                     customLoadingDialog.dismissDialog();
-                                    Log.d(TAG, "IMAGE URL = " + downloadImageURL);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putParcelable("post", post);
+                                    PostViewFragment frag = new PostViewFragment();
+                                    frag.setArguments(bundle);
+                                    getSupportFragmentManager().beginTransaction().replace(R.id.main_view, frag).commit();
+                                    Log.d(TAG, "GO TO POST VIEW");
                                 } else {
                                     customLoadingDialog.dismissDialog();
                                     Extension.toast(AddPostActivity.this, "Failed to upload an image");
@@ -151,18 +157,10 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
                             }
                         });
                     } catch (Exception e) {
-
+                        e.printStackTrace();
                     }
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable("postobject", post);
-                    PostViewFragment frag = new PostViewFragment();
-                    frag.setArguments(bundle);
-                    // EDIT HERE
-//                FragmentTransaction ft = getFragmentManager().beginTransaction();
-//                ft.replace(R.id.).addToBackStack(null).commit();
                 }
-            }
-        });
+            }});
 
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -172,6 +170,7 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
             }
         });
     }
+
 
     private void initViews() {
         postDescription = findViewById(R.id.post_description);
