@@ -1,9 +1,8 @@
 package com.example.foodagramapp.foodagram.Post;
 
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,13 +10,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
+import com.example.foodagramapp.foodagram.Comment.CommentFragment;
 import com.example.foodagramapp.foodagram.R;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 public class PostViewFragment extends Fragment{
@@ -28,6 +24,7 @@ public class PostViewFragment extends Fragment{
     private DatabaseReference databaseReference;
     private TextView _username, _time, _content, _like, _commentStatus, _commentViewBtn;
     private ImageView _menuImageView, _profileImageView;
+    private Post post;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -37,7 +34,7 @@ public class PostViewFragment extends Fragment{
 
         Bundle bundle = getArguments();
         if (bundle != null){
-            Post post = bundle.getParcelable("post");
+            post = bundle.getParcelable("post");
             _content.setText(post.getDescription());
             _time.setText(Double.toString(post.getTimestamp()));
             _username.setText(post.getOwner());
@@ -45,6 +42,7 @@ public class PostViewFragment extends Fragment{
             Log.d(TAG, "POST OWNER: " + post.getOwner());
         }
     }
+
 
     @Nullable
     @Override
@@ -73,6 +71,12 @@ public class PostViewFragment extends Fragment{
         _viewCommentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Bundle bundleForPostId = new Bundle();
+                bundleForPostId.putString("postId", post.getPostId());
+                CommentFragment frag = new CommentFragment();
+                frag.setArguments(bundleForPostId);
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.main_view, frag).commit();
+                Log.d(TAG, "POST ID = " + bundleForPostId.getString("postId"));
                 Log.d(TAG, "VIEW COMMENTS");
             }
         });
@@ -93,6 +97,7 @@ public class PostViewFragment extends Fragment{
         _editBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 Log.d(TAG, "EDIT POST");
             }
         });

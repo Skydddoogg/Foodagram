@@ -76,6 +76,35 @@ public class PostActivity extends AppCompatActivity {
                 }
             }
         });
+
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 0) {
+                    mViewPager.setCurrentItem(0);
+                    radioGroup.check(radioGroup.getChildAt(0).getId());
+                    radioCamera.setTextColor(getResources().getColor(R.color.white));
+                    radioGallery.setTextColor(Color.parseColor("#5A6B84"));
+                    Log.d(TAG, "GO TO CAMERA");
+                } else {
+                    mViewPager.setCurrentItem(1);
+                    radioGroup.check(radioGroup.getChildAt(1).getId());
+                    radioGallery.setTextColor(getResources().getColor(R.color.white));
+                    radioCamera.setTextColor(Color.parseColor("#5A6B84"));
+                    Log.d(TAG, "GO TO GALLERY");
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
 
