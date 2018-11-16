@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/edit_profile_header"
+        android:layout_width="match_parent"
+
+        android:layout_height="56dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/edit_profile_header_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="nuii_ka"
+            android:textColor="#FF1C49"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/edit_profile_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="26dp"
+            android:text="ย้อนกลับ"
+            android:textColor="@android:color/black"
+            android:textSize="14dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.513" />
+        <TextView
+            android:id="@+id/edit_profile_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="26dp"
+            android:text="บันทึก"
+            android:textColor="@android:color/black"
+            android:textSize="14dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.513" />
+
+
+    </android.support.constraint.ConstraintLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_below="@id/edit_profile_header"
+        android:background="@drawable/tool_bar_shadow"/>
+
+
+
+
+    <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/profile_image"
+        android:layout_width="85dp"
+        android:layout_height="85dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/profile" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textColor="#FF1C49"
+        android:text="เปลี่ยนรูปโปรไฟล์"
+        android:layout_marginBottom="20dp"/>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/custom_border_bg"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:paddingLeft="20dp">
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:text="ชื่อ" />
+
+        <EditText
+            android:id="@+id/edit_profile_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="กมลรัตน์ สุขจิต"
+            android:background="@null"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:paddingLeft="20dp"
+        android:background="@drawable/custom_border_bg"
+        >
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:text="ชื่อผู้ใช้" />
+
+        <EditText
+            android:id="@+id/edit_profile_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="nuii_ka"
+            android:background="@null"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:paddingLeft="20dp"
+        android:background="@drawable/custom_border_bg">
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:text="ประวัติ"
+            />
+
+        <EditText
+            android:id="@+id/edit_profile_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="IG : nuii_gg , FB: kamonrat sj"
+            android:maxLines="3"
+            android:background="@null"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:paddingTop="20dp"
+        android:paddingLeft="20dp"
+        android:paddingBottom="15dp"
+        android:textColor="@android:color/black"
+
+        android:text="ข้อมูลส่วนตัว" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:paddingLeft="20dp"
+        android:background="@drawable/custom_border_bg">
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:text="อีเมลล์" />
+
+        <TextView
+            android:id="@+id/edit_profile_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="example@gmail.com"
+            android:textSize="18sp"
+            android:background="@null"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:paddingLeft="20dp"
+        android:background="@drawable/custom_border_bg">
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:text="เพศ" />
+
+        <EditText
+            android:id="@+id/edit_profile_sex"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="ชาย, หญิง"
+            android:background="@null"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:paddingLeft="20dp"
+        android:background="@drawable/custom_border_bg">
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:text="วันเกิด" />
+
+        <EditText
+            android:id="@+id/edit_profile_birth_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="01/01/2018"
+            android:background="@null"/>
+    </LinearLayout>
+</LinearLayout>

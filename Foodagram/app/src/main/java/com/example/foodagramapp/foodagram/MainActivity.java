@@ -15,6 +15,7 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.example.foodagramapp.foodagram.Post.CameraFragment;
 import com.example.foodagramapp.foodagram.Post.PostActivity;
 import com.example.foodagramapp.foodagram.Post.PostViewFragment;
+import com.example.foodagramapp.foodagram.Profile.Fragment_profile;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
@@ -88,22 +89,25 @@ public class MainActivity extends AppCompatActivity {
                             Log.i("NAVBAR", "SELECT HOME");
                             break;
                         case 1:
-                            //SELECT DISCOVER BUTTON ON NAV BAR
+                            FirebaseAuth.getInstance().signOut();
+                            startActivity(new Intent(MainActivity.this, AuthenticationActivity.class));
                             Log.i("NAVBAR", "SELECT DISCOVER");
                             break;
                         case 2:
                             //DISABLE THIS BUTTON BECAUSE REPLACE IT WITH IMAGEVIEW
                             break;
                         case 3:
-                            getSupportFragmentManager()
-                                    .beginTransaction()
-                                    .replace(R.id.main_view, new PostViewFragment())
-                                    .commit();
+//                            getSupportFragmentManager()
+//                                    .beginTransaction()
+//                                    .replace(R.id.main_view, new PostViewFragment())
+//                                    .commit();
                             Log.i("NAVBAR", "SELECT NOTIFICATION");
                             break;
                         case 4:
-                            FirebaseAuth.getInstance().signOut();
-                            startActivity(new Intent(MainActivity.this, AuthenticationActivity.class));
+                            getSupportFragmentManager()
+                                    .beginTransaction()
+                                    .replace(R.id.main_view, new Fragment_profile())
+                                    .commit();
                             Log.i("NAVBAR", "SELECT PROFILE");
                             break;
                         default:

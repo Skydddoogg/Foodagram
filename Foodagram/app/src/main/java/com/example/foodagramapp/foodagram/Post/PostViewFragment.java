@@ -32,7 +32,7 @@ public class PostViewFragment extends Fragment{
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initBackButton();
+//        initBackButton();
         postId = "05e6b355-4eab-426e-b4c7-5a2d326fe1fa";
         database = FirebaseDatabase.getInstance();
         databaseReference = database.getReference("post/" + postId);
