@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -16,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.foodagramapp.foodagram.Dialog.CustomLoadingDialog;
 import com.example.foodagramapp.foodagram.R;
 import com.example.foodagramapp.foodagram.Utils.Extension;
 import com.example.foodagramapp.foodagram.Utils.FilePaths;
@@ -62,6 +64,7 @@ public class ImageSelectorFragment extends Fragment {
     private String mAppend = "file:/";
     private boolean isSnappedToCenter = false;
     private String selectedFileName;
+    private CustomLoadingDialog customLoadingDialog;
 
     @Nullable
     @Override
@@ -70,6 +73,7 @@ public class ImageSelectorFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView: started.");
         View view = inflater.inflate(R.layout.fragment_image_selector, container, false);
+        customLoadingDialog = new CustomLoadingDialog(getActivity());
         initView(view);
         initGridView();
         return view;
@@ -99,6 +103,7 @@ public class ImageSelectorFragment extends Fragment {
         cropperView = view.findViewById(R.id.gallery_image_view_bitmap);
         cropperView.setMaxZoom(1.5f);
         cropperView.setMinZoom(0.8f);
+        cropperView.setMakeSquare(false);
         gridView = view.findViewById(R.id.gallery_grid_view);
         mProgressBar = view.findViewById(R.id.gallery_progress_bar);
         mProgressBar.setVisibility(View.GONE);
@@ -197,12 +202,14 @@ public class ImageSelectorFragment extends Fragment {
             @Override
             public void onLoadingStarted(String imageUri, View view) {
                 mProgressBar.setVisibility(View.VISIBLE);
+                nextScreen.setEnabled(false);
             }
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                 previewBmap = loadedImage;
                 cropperView.setImageBitmap(previewBmap);
                 mProgressBar.setVisibility(View.INVISIBLE);
+                nextScreen.setEnabled(true);
             }
             @Override
             public void onLoadingCancelled(String imageUri, View view) {
@@ -218,15 +225,17 @@ public class ImageSelectorFragment extends Fragment {
 
     private void cropImage() {
         try {
+            customLoadingDialog.showDialog();
             cropperView.getCroppedBitmapAsync(callback);
             Log.d(TAG, String.valueOf(callback.equals(null)));
-            if (bmap != null) {
-                Bundle bundle = new Bundle();
-                bundle.putString("name", selectedFileName);
-                Intent intent = new Intent(getActivity(), AddPostActivity.class);
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    customLoadingDialog.dismissDialog();
+                    Intent intent = new Intent(getActivity(), AddPostActivity.class);
+                    startActivity(intent);
+                }
+            }, 1500);
         } catch (NullPointerException e) {
             Extension.toast(getActivity(), "Error cropping");
         }
