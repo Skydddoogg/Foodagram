@@ -1,6 +1,9 @@
 package com.example.foodagramapp.foodagram.Post;
 
-public class Post {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Post implements Parcelable {
 
     private String description;
     private String placeName;
@@ -16,6 +19,58 @@ public class Post {
     public Post() {
 
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int i) {
+        dest.writeString(description);
+        dest.writeString(placeName);
+        dest.writeString(latitude);
+        dest.writeString(longitude);
+        dest.writeString(address);
+        dest.writeString(menu_image_url);
+        dest.writeString(menu_name);
+        dest.writeDouble(menu_price);
+        dest.writeDouble(timestamp);
+        dest.writeString(owner);
+    }
+
+    protected Post(Parcel in) {
+        description = in.readString();
+        placeName = in.readString();
+        latitude = in.readString();
+        longitude = in.readString();
+        address = in.readString();
+        menu_image_url = in.readString();
+        menu_name = in.readString();
+        if (in.readByte() == 0) {
+            menu_price = null;
+        } else {
+            menu_price = in.readDouble();
+        }
+        if (in.readByte() == 0) {
+            timestamp = null;
+        } else {
+            timestamp = in.readDouble();
+        }
+        owner = in.readString();
+    }
+
+    public static final Creator<Post> CREATOR = new Creator<Post>() {
+        @Override
+        public Post createFromParcel(Parcel in) {
+            return new Post(in);
+        }
+
+        @Override
+        public Post[] newArray(int size) {
+            return new Post[size];
+        }
+    };
 
     public String getDescription() {
         return description;

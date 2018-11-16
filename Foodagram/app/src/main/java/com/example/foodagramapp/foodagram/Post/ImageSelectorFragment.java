@@ -53,6 +53,7 @@ public class ImageSelectorFragment extends Fragment {
     private GridView gridView;
     private TextView backBtn;
     private TextView nextScreen;
+    private TextView imageNotFound;
     private ImageView btnSnap;
     private ImageView btnRotate;
     private SlidingUpPanelLayout slidingLayout;
@@ -106,6 +107,7 @@ public class ImageSelectorFragment extends Fragment {
         nextScreen = view.findViewById(R.id.gallery_next_btn);
         btnSnap = view.findViewById(R.id.snap_button);
         btnRotate = view.findViewById(R.id.rotate_button);
+        imageNotFound = view.findViewById(R.id.gallery_image_not_found);
 
         // Add listener
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -118,7 +120,6 @@ public class ImageSelectorFragment extends Fragment {
         nextScreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "onClick: navigating to the AddPostActivity.");
                 cropImage();
             }
         });
@@ -168,6 +169,10 @@ public class ImageSelectorFragment extends Fragment {
         try {
             setImage(imgURLs.get(0), mAppend);
         } catch (IndexOutOfBoundsException e) {
+            imageNotFound.setVisibility(View.VISIBLE);
+            btnRotate.setVisibility(View.INVISIBLE);
+            btnSnap.setVisibility(View.INVISIBLE);
+            nextScreen.setVisibility(View.INVISIBLE);
             Log.e(TAG, "setupGridView: IndexOutOfBoundsException: " +e.getMessage() );
         }
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
