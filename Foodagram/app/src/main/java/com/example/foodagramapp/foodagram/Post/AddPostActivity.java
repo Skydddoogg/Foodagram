@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.example.foodagramapp.foodagram.Dialog.CustomLoadingDialog;
 import com.example.foodagramapp.foodagram.R;
+import com.example.foodagramapp.foodagram.Utils.Extension;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -65,6 +66,7 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
 //    private String imageRef;
 //    private String selectedFileName;
     private String downloadImageURL;
+    private Post post;
     private ByteArrayOutputStream baos = new ByteArrayOutputStream();
     private CustomLoadingDialog customLoadingDialog;
     private GoogleApiClient mGoogleApiClient;
@@ -80,7 +82,7 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
 
         customLoadingDialog = new CustomLoadingDialog(this);
 
-        Bundle p = getIntent().getExtras();
+//        Bundle p = getIntent().getExtras();
 //        selectedFileName = p.getString("name");
         initViews();
         setImage();
@@ -108,9 +110,7 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
         postShareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 try {
-
                     customLoadingDialog.showDialog();
 
                     // Generate reference message for uploading image
@@ -128,7 +128,7 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
                     uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                         @Override
                         public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                            if (!task.isSuccessful()){
+                            if (!task.isSuccessful()) {
                                 throw task.getException();
                             }
                             return ref.getDownloadUrl();
@@ -136,7 +136,7 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
                     }).addOnCompleteListener(new OnCompleteListener<Uri>() {
                         @Override
                         public void onComplete(@NonNull Task<Uri> task) {
-                            if (task.isSuccessful()){
+                            if (task.isSuccessful()) {
                                 Uri downloadUrl = task.getResult();
                                 downloadImageURL = downloadUrl.toString(); // Image URL
                                 addPostToDB(downloadImageURL);
@@ -144,6 +144,7 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
                                 Log.d(TAG, "IMAGE URL = " + downloadImageURL);
                             } else {
                                 customLoadingDialog.dismissDialog();
+                                Extension.toast(AddPostActivity.this, "Failed to upload an image");
                                 Log.d(TAG, "FAILED TO UPLOAD AN IMAGE");
                             }
                         }
@@ -151,7 +152,10 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
                 } catch (Exception e) {
 
                 }
-
+                // EDIT HERE
+                Intent i = new Intent(AddPostActivity.this, PostActivity.class);
+                i.putExtra("postobj", post);
+                startActivity(i);
             }
         });
 
@@ -225,7 +229,7 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
         mAuth = FirebaseAuth.getInstance();
         String postId = String.valueOf(UUID.randomUUID());
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        Post post = new Post();
+        post = new Post();
         post.setDescription(postDescription.getText().toString());
         post.setPlaceName(locationList.get(0));
         post.setLatitude(locationList.get(1));

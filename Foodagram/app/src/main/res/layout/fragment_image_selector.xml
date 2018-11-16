@@ -134,6 +134,16 @@
                         app:layout_constraintStart_toStartOf="@+id/gallery_top_frame"
                         app:layout_constraintTop_toTopOf="@+id/gallery_top_frame" />
 
+                    <TextView
+                        android:id="@+id/gallery_image_not_found"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:text="ไม่พบรูปภาพในโฟลเดอร์รูปถ่ายของท่าน"
+                        android:textAlignment="center"
+                        android:layout_gravity="center"
+                        android:visibility="invisible" />
+
                     <ImageView
                         android:id="@+id/gallery_push_up_icon"
                         android:layout_width="match_parent"
