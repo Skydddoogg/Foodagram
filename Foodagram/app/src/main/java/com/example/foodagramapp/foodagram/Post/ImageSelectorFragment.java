@@ -121,7 +121,6 @@ public class ImageSelectorFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 cropImage();
-                Extension.toast(getActivity(), "กรุณาเลือกรูปภาพ");
             }
         });
 
