@@ -34,27 +34,16 @@ public class PostViewFragment extends Fragment{
         super.onActivityCreated(savedInstanceState);
         initButtons();
         initViews();
-        postId = "05e6b355-4eab-426e-b4c7-5a2d326fe1fa";
-        database = FirebaseDatabase.getInstance();
-        databaseReference = database.getReference("post/" + postId);
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Post post = dataSnapshot.getValue(Post.class);
-                _content.setText(post.getDescription());
-                _time.setText(Double.toString(post.getTimestamp()));
-                _username.setText(post.getOwner());
-                Picasso.get().load(post.getMenuImageURL()).into(_menuImageView);
 
-                Log.d(TAG, "POST OWNER: " + post.getOwner());
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.d(TAG, "The read failed: " + databaseError.getCode());
-            }
-        });
+        Bundle bundle = getArguments();
+        if (bundle != null){
+            Post post = bundle.getParcelable("post");
+            _content.setText(post.getDescription());
+            _time.setText(Double.toString(post.getTimestamp()));
+            _username.setText(post.getOwner());
+            Picasso.get().load(post.getMenuImageURL()).into(_menuImageView);
+            Log.d(TAG, "POST OWNER: " + post.getOwner());
+        }
     }
 
     @Nullable
