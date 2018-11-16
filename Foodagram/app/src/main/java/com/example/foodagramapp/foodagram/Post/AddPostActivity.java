@@ -152,10 +152,15 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
                 } catch (Exception e) {
 
                 }
+
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("postobject", post);
+                PostViewFragment frag = new PostViewFragment();
+                frag.setArguments(bundle);
                 // EDIT HERE
-                Intent i = new Intent(AddPostActivity.this, PostActivity.class);
-                i.putExtra("postobj", post);
-                startActivity(i);
+//                FragmentTransaction ft = getFragmentManager().beginTransaction();
+//                ft.replace(R.id.).addToBackStack(null).commit();
+
             }
         });
 
