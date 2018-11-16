@@ -47,6 +47,7 @@ public class Fragment_profile extends Fragment {
     private TextView profileNameTextView, usernameTextView, descriptionTextView;
     private ImageView mockAnotherProfile,profileImage;
     private String menuName, foodDescription, owner, location, price, time, menuImage;
+    private String anotherName, anotherUserName , anotherBirthDate, anotherSex , anotherEmail, anotherProfileImage, anotherDescription;
     private String name, username, profileDescription;
     private Button editProfileBtn;
     private Model_profile exampleInfo;
@@ -54,6 +55,7 @@ public class Fragment_profile extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
     private ConstraintLayout followBlock;
+    private Boolean isAnotherUser;
 //    Model_profile exampleInfo = new Model_profile("Pizza", "SkyDogg" , "50", "IT KMITL");
 
     @Nullable
@@ -83,8 +85,17 @@ public class Fragment_profile extends Fragment {
         Bundle bundle = getArguments();
         if (bundle != null){
             ProfileForFeed profile = bundle.getParcelable("profile");
+            anotherBirthDate = profile.getDob();
+            anotherUserName = profile.getUsername();
+            anotherName = profile.getName();
+            anotherProfileImage = profile.getProfile_img_url();
+            anotherSex = profile.getSex();
+            anotherEmail = profile.getEmail();
+            anotherDescription = profile.getVitae();
 
         }
+
+
 
 
         //** Setup list , listAdapter
@@ -159,6 +170,7 @@ public class Fragment_profile extends Fragment {
                         .commit();
             }
         });
+
 
     }
     public void initPostRef(){
