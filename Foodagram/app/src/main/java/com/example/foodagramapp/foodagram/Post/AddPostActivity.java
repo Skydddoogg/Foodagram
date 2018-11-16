@@ -122,7 +122,7 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
                         String refMessage = destination_directory + "/" + UUID.randomUUID().toString() + timestamp.toString() + ".jpg";
 
                         // Compress image
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos);
                         byte[] data = baos.toByteArray();
 
                         // Upload to firebase storage

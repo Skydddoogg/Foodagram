@@ -117,6 +117,7 @@ public class PostViewFragment extends Fragment{
             public void onClick(View view) {
                 Bundle bundleForPostId = new Bundle();
                 bundleForPostId.putString("postId", post.getPostId());
+                bundleForPostId.putString("postOwner", post.getOwner());
                 CommentFragment frag = new CommentFragment();
                 frag.setArguments(bundleForPostId);
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.main_view, frag).commit();

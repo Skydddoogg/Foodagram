@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.foodagramapp.foodagram.Notification.Notification;
 import com.example.foodagramapp.foodagram.OnlineUser;
 import com.example.foodagramapp.foodagram.Profile.ProfileForFeed;
 import com.example.foodagramapp.foodagram.R;
@@ -25,12 +26,14 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class CommentFragment extends Fragment {
 
     private OnlineUser onlineUser = new OnlineUser();
     private String CURRENT_USER = onlineUser.ONLINE_USER;
     private String CURRENT_POST;
+    private String POST_OWNER;
     private String thumbnailUrl;
     private ImageView userThumbnail;
     private TextView postButton, backButton;
@@ -42,7 +45,7 @@ public class CommentFragment extends Fragment {
     private ListView commentList;
     private CommentAdapter commentAdapter;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private DatabaseReference myRef, myCommentRef, myfetchCommentRef, myfetchProfileRef, myThumbnailRef;
+    private DatabaseReference myRef, myCommentRef, myfetchCommentRef, myfetchProfileRef, myThumbnailRef, myNotiRef;
     private String TAG = "CommentFragment";
 
     @Nullable
@@ -58,6 +61,7 @@ public class CommentFragment extends Fragment {
         Bundle bundle = getArguments();
         if (bundle != null){
             CURRENT_POST = bundle.getString("postId");
+            POST_OWNER = bundle.getString("postOwner");
             Log.d(TAG, "POST ID = " + CURRENT_POST);
         }
 
@@ -74,6 +78,7 @@ public class CommentFragment extends Fragment {
 
                 Log.d(TAG, "");
                 pushComment(commentText, commentTimeStamp);
+                pushNotification(commentText, commentTimeStamp);
 
                 commentForm.getText().clear();
 
@@ -161,6 +166,13 @@ public class CommentFragment extends Fragment {
         commentClass = new Comment(CURRENT_USER, commentText, commentTimeStamp.doubleValue());
         myCommentRef.push().setValue(commentClass);
         Log.d(TAG, "PUSH COMMENT");
+    }
+
+    private void pushNotification(String content, Long commentTimeStamp){
+        myNotiRef = database.getReference("notification").child(POST_OWNER);
+        Notification notification = new Notification(content, CURRENT_USER, CURRENT_POST, "comment", 0.0, commentTimeStamp.doubleValue());
+        myNotiRef.push().setValue(notification);
+        Log.d(TAG, "PUSH NOTIFICATION");
     }
 
     private void  profileThumbnail(){
