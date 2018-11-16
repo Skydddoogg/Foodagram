@@ -47,7 +47,8 @@ public class Fragment_profile extends Fragment {
     private TextView profileNameTextView, usernameTextView, descriptionTextView;
     private ImageView mockAnotherProfile,profileImage;
     private String menuName, foodDescription, owner, location, price, time, menuImage;
-    private String anotherName, anotherUserName , anotherBirthDate, anotherSex , anotherEmail, anotherProfileImage, anotherDescription;
+    private String anotherName, anotherUserName , anotherBirthDate, anotherSex , anotherEmail, anotherProfileImage
+            , anotherDescription, anotherUserUid;
     private String name, username, profileDescription;
     private Button editProfileBtn;
     private Model_profile exampleInfo;
@@ -92,6 +93,24 @@ public class Fragment_profile extends Fragment {
             anotherSex = profile.getSex();
             anotherEmail = profile.getEmail();
             anotherDescription = profile.getVitae();
+            anotherUserUid = profile.getUserId();
+            //Get user UID and compare it with CurrentUserId
+
+        }
+
+        if(mUser.getUid().equals(anotherUserUid)){
+
+            isAnotherUser = false;
+
+            Log.i("UID", "Same user");
+            Log.i("UID", anotherName);
+            Log.i("UID", anotherUserName);
+            Log.i("UID", anotherUserUid);
+
+
+        }else{
+            isAnotherUser = true;
+            Log.i("UID", "Another user");
 
         }
 
