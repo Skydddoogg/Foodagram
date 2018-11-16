@@ -6,23 +6,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <android.support.constraint.ConstraintLayout
-        app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
-        app:layout_constraintTop_toBottomOf="@+id/toolBarLayout"
+    app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
+    app:layout_constraintTop_toBottomOf="@+id/toolBarLayout"
+    android:layout_width="match_parent"
+    android:background="#FAFAFA"
+    android:layout_height="0dp">
+
+    <ListView
+        android:id="@+id/comment_list"
         android:layout_width="match_parent"
-        android:background="#FAFAFA"
-        android:layout_height="0dp">
-        <ListView
-            android:id="@+id/comment_list"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintVertical_bias="0.0"
-            tools:layout_editor_absoluteX="0dp"></ListView>
-    </android.support.constraint.ConstraintLayout>
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="0dp"></ListView>
+</android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/toolBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="61dp"
+        android:layout_height="60dp"
         android:background="#fff"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -102,7 +104,7 @@
     <android.support.constraint.ConstraintLayout
         android:id="@+id/constraintLayout2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="77dp"
         android:background="#ffffff"
         android:paddingHorizontal="10dp"
         android:paddingVertical="5dp"

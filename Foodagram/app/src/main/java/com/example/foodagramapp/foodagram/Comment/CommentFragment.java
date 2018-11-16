@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.foodagramapp.foodagram.Notification.Notification;
 import com.example.foodagramapp.foodagram.OnlineUser;
@@ -74,11 +75,15 @@ public class CommentFragment extends Fragment {
             public void onClick(View v) {
                 commentForm = getView().findViewById(R.id.comment_form);
                 String commentText = commentForm.getText().toString();
-                Long commentTimeStamp = System.currentTimeMillis();
 
-                Log.d(TAG, "");
-                pushComment(commentText, commentTimeStamp);
-                pushNotification(commentText, commentTimeStamp);
+                if(commentText.isEmpty()){
+                    Toast.makeText(getActivity(), "ยังไม่พิมพ์เลย กลับไปพิมพ์ก่อน",Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Long commentTimeStamp = System.currentTimeMillis();
+                    pushComment(commentText, commentTimeStamp);
+                    pushNotification(commentText, commentTimeStamp);
+                }
 
                 commentForm.getText().clear();
 
