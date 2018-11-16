@@ -3,14 +3,18 @@ package com.example.foodagramapp.foodagram.Comment;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.foodagramapp.foodagram.Profile;
 import com.example.foodagramapp.foodagram.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,14 +22,15 @@ import java.util.List;
 public class CommentAdapter extends ArrayAdapter <Comment> {
 
     private List<Comment> comment = new ArrayList<>();
-    private List<Profile> proflies;
+    private List<Profile> profiles;
     private Context context;
+    private String _userName, _content;
 
     public CommentAdapter (@NonNull Context context, int resource, @NonNull List<Comment> objects, @NonNull List<Profile> profiles){
         super(context, resource, objects);
         this.context = context;
         this.comment = objects;
-        this.proflies = profiles;
+        this.profiles = profiles;
     }
 
     @NonNull
@@ -39,22 +44,27 @@ public class CommentAdapter extends ArrayAdapter <Comment> {
         TextView userId = (TextView) commentItem.findViewById(R.id.comment_item_user_name);
         TextView content = (TextView) commentItem.findViewById(R.id.comment_item_content);
         TextView timestamp = (TextView) commentItem.findViewById(R.id.comment_item_time_stamp);
+        ImageView userThumbnail = (ImageView) commentItem.findViewById(R.id.comment_item_user_thumbnail);
 
         Comment row = comment.get(position);
-//        Profile profilePos = proflies.get(position);
-//
-//        String _userName = profilePos.getName();
-        String _userName = "TEST";
-        String _content = row.getContent();
+        Profile profilePos = profiles.get(position);
+
+        _userName = profilePos.getUsername();
+        _content = row.getContent();
         Double _timeStamp = row.getTimestamp();
 
         userId.setText(_userName);
         content.setText(_content);
         timestamp.setText(getCountOfDays(_timeStamp.longValue()));
+        Picasso.get().load(profiles.get(position).getProfile_img_url()).into(userThumbnail);
 
         return commentItem;
     }
 
+
+    public Comment getItem(int position) {
+        return comment.get(position);
+    }
 
     public String getCountOfDays(long time) {
         final int SECOND_MILLIS = 1000;

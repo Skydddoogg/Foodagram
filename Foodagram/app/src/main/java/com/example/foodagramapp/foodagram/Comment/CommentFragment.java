@@ -5,12 +5,15 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
+import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -21,22 +24,29 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import static com.nostra13.universalimageloader.core.ImageLoader.TAG;
+
 public class CommentFragment extends Fragment {
 
-    private String ONLINE_USER = "test_user_id_1";
-    private TextView postButton;
+    private String CURRUNT_USER = "4EU0qwzeuhOBJdsE0vsuTBNYN2A2";
+    private String CURRENT_POST = "test_post_id_13";
+    private String thumbnailUrl;
+    private ImageView userThumbnail;
+    private TextView postButton, backButton;
     private EditText commentForm;
-//    Array
-    private ArrayList<Profile> profiles = new ArrayList<>();
+    private Bundle bundle;
     private ArrayList<Comment> comment = new ArrayList<Comment>();
+    private ArrayList<Profile> profiles = new ArrayList<Profile>();
     private Comment commentClass = new Comment();
-
-//    Firebase
+//    private FragmentProfile fragmentProfile;
+    private ListView commentList;
+    private CommentAdapter commentAdapter;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private DatabaseReference myRef, myCommentRef;
+    private DatabaseReference myRef, myCommentRef, myfetchCommentRef, myfetchProfileRef, myThumbnailRef;
 
     @Nullable
     @Override
@@ -48,9 +58,9 @@ public class CommentFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         fetchComment();
-        fetchProfile();
-
+        profileThumbnail();
         postButton = getView().findViewById(R.id.comment_form_submit);
+        backButton = getView().findViewById(R.id.backButton);
         postButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,24 +68,32 @@ public class CommentFragment extends Fragment {
                 String commentText = commentForm.getText().toString();
                 Long commentTimeStamp = System.currentTimeMillis();
 
+                Log.d("checkBug", "-------------------------------------------->>> POST : " + commentText);
                 pushComment(commentText, commentTimeStamp);
 
                 commentForm.getText().clear();
-                Log.d("checkBug", "--------------------------------------------- fuck Post -----------------------------------------");
 
             }
         });
-        Log.d("checkBug", "--------------------------------------------- fuck onActivityCreated -----------------------------------------");
+
+        // Back Stack Back
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("BACK", "Back to menu");
+            }
+        });
     }
 
     public void fetchComment(){
-        myRef = database.getReference("/comment/test_post_id_1");
-        myRef.addValueEventListener(new ValueEventListener() {
+        myfetchCommentRef = database.getReference("comment").child(CURRENT_POST);
+        myfetchCommentRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 comment.clear();
                 for (DataSnapshot child : dataSnapshot.getChildren()){
                     comment.add(child.getValue(Comment.class));
+                    fetchProfile();
                 }
             }
             @Override
@@ -85,58 +103,80 @@ public class CommentFragment extends Fragment {
         });
     }
 
-
-    private void fetchProfile() {
-        //Child ให้ใส่ User ที่เป็นคน Login เพื่อดู User คนนี้กดติดตามใคร
-        myRef = database.getReference().child("profile");
-        myRef.addValueEventListener(new ValueEventListener() {
+    private void fetchProfile(){
+        myfetchProfileRef = database.getReference("profile");
+        myfetchProfileRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                renderPost();
                 profiles.clear();
                 for (Comment user_id : comment) {
                     profiles.add(dataSnapshot.child(user_id.getUser_id()).getValue(Profile.class));
-                    Log.d("checkBug", "--------------------------------------------- fuck -----------------------------------------");
                 }
-                profiles.clear();
-
-                renderPost();
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.e("FeedFragment", databaseError.getMessage());
+                Log.i("HISTORY", "ERROR CANNOT RETREIVE HISTORY FROM FIREBASE");
             }
         });
+
     }
 
+    // render Comment Adapter
+
     private void renderPost() {
-        ListView commentList = (ListView) getView().findViewById(R.id.comment_list);
+        commentList = (ListView) getView().findViewById(R.id.comment_list);
         commentList.setDivider(null);
-        final CommentAdapter commentAdapter = new CommentAdapter(
+        commentAdapter = new CommentAdapter(
                 getActivity(),
                 R.layout.fragment_comment_item,
                 comment,
                 profiles
         );
         commentList.setAdapter(commentAdapter);
+
+        onClickItem();
     }
 
-
-    private void pushComment(final String commentText, final Long commentTimeStamp){
-        myCommentRef = database.getReference("/comment/test_post_id_1");
-        myCommentRef.addValueEventListener(new ValueEventListener() {
+    private void onClickItem(){
+        commentList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                commentClass = new Comment(ONLINE_USER, commentText, commentTimeStamp.doubleValue());
-                myCommentRef.push().setValue(commentClass);
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {bundle = new Bundle();
+//                bundle.putString("userId", commentAdapter.getItem(position).getUser_id());
+//
+//                fragmentProfile = new FragmentProfile();
+//
+//                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.main_view, fragmentProfile.setArguments(bundle)).addToBackStack(null).commit();
+//                Log.d("MENU", "Select" + menu.get(position));
 
-                Log.d("checkBug", "--------------------------------------------- fuck push -----------------------------------------");
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.i("HISTORY", "ERROR CAN'T RETREIVE USER PROFILE FROM FIREBASE");
+                Log.i("checkBug", commentAdapter.getItem(position).getUser_id());
             }
         });
     }
+
+    // push comment to database
+
+    private void pushComment(final String commentText, final Long commentTimeStamp){
+        myCommentRef = database.getReference("comment").child(CURRENT_POST);
+        commentClass = new Comment(CURRUNT_USER, commentText, commentTimeStamp.doubleValue());
+        myCommentRef.push().setValue(commentClass);
+        Log.d("checkBug", "-------------------------------------------->>> PUSH");
+    }
+
+    private void  profileThumbnail(){
+        userThumbnail = (ImageView) getView().findViewById(R.id.comment_form_user_thumbnail);
+        myThumbnailRef = database.getReference("profile").child(CURRUNT_USER);
+        myThumbnailRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                thumbnailUrl = dataSnapshot.child("profile_img_url").getValue(String.class);
+                Picasso.get().load(thumbnailUrl).into(userThumbnail);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.i("HISTORY", "ERROR CANNOT RETREIVE HISTORY FROM FIREBASE");
+            }
+        });
+    }
+
 }
