@@ -45,12 +45,13 @@ public class Adapter_profile extends ArrayAdapter<Model_profile> {
         TextView postTime = profileItem.findViewById(R.id.post_timestamp);
         TextView menuPrice = profileItem.findViewById(R.id.menu_price);
         TextView location = profileItem.findViewById(R.id.checkin_location);
+        TextView postDescription = profileItem.findViewById(R.id.post_description);
 
 
         location.setText(profileInfo.get(position).getLocation());
         menuName.setText(profileInfo.get(position).getMenuName());
         menuPrice.setText(profileInfo.get(position).getMenuPrice());
-
+        postDescription.setText(profileInfo.get(position).getPostDescription());
         profileName.setText(profileInfo.get(position).getProfileName());
 
         postTime.setText(profileInfo.get(position).getPostTime());

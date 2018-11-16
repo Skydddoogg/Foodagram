@@ -22,6 +22,8 @@ import com.example.foodagramapp.foodagram.Profile.Fragment_profile;
 
 import com.example.foodagramapp.foodagram.R;
 import com.google.firebase.FirebaseException;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -44,7 +46,11 @@ public class Fragment_editProfile extends Fragment {
     TextView headerUsernameField;
     int mYear,mMonth,mDay;
     private String[] sex;
+    private FirebaseAuth mAuth;
+    private FirebaseUser mUser;
+
     // Write a message to the database
+
 
 
 
@@ -61,7 +67,8 @@ public class Fragment_editProfile extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         sex = new String[]{"ชาย", "หญิง"};
-
+        mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getCurrentUser();
         initUIComponent();
         initSexField();
         initBirthDateField();
@@ -77,7 +84,7 @@ public class Fragment_editProfile extends Fragment {
                     for(DataSnapshot db : dataSnapshot.getChildren()){
 
                         //** Test mock username
-                        if(db.child("username").getValue().equals("SkyDogg")) {
+                        if(db.getKey().equals(mUser.getUid())) {
                             DataSnapshot dbProfile = db.child("username");
 
                             String name = (String) db.child("name").getValue();
@@ -203,11 +210,13 @@ public class Fragment_editProfile extends Fragment {
             @Override
             public void onClick(View view) {
                 //** Test save value mock
-                myRef.child("test_user_id_1").child("username").setValue(usernameField.getText().toString());
-                myRef.child("test_user_id_1").child("name").setValue(nameField.getText().toString());
-                myRef.child("test_user_id_1").child("vitae").setValue(descriptionField.getText().toString());
-                myRef.child("test_user_id_1").child("sex").setValue(sexField.getText().toString());
-                myRef.child("test_user_id_1").child("bod").setValue(birthDateField.getText().toString());
+                myRef.child(mUser.getUid()).child("username").setValue(usernameField.getText().toString());
+                myRef.child(mUser.getUid()).child("name").setValue(nameField.getText().toString());
+                myRef.child(mUser.getUid()).child("vitae").setValue(descriptionField.getText().toString());
+                myRef.child(mUser.getUid()).child("sex").setValue(sexField.getText().toString());
+                myRef.child(mUser.getUid()).child("dob").setValue(birthDateField.getText().toString());
+                myRef.child(mUser.getUid()).child("email").setValue(emailField.getText().toString());
+
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.main_view, new Fragment_profile())
