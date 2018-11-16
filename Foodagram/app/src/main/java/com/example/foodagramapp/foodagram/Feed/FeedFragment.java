@@ -18,6 +18,7 @@ import android.widget.ListView;
 
 import com.example.foodagramapp.foodagram.OnlineUser;
 import com.example.foodagramapp.foodagram.Post.Post;
+import com.example.foodagramapp.foodagram.Post.PostViewFragment;
 import com.example.foodagramapp.foodagram.Profile.ProfileForFeed;
 import com.example.foodagramapp.foodagram.R;
 import com.google.firebase.database.DataSnapshot;
@@ -60,10 +61,30 @@ public class FeedFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        listView = (ListView) getView().findViewById(R.id.feed_listView);
-        followingForAUser = new ArrayList<>();
+        if(getActivity() != null) {
+            listView = (ListView) getActivity().findViewById(R.id.feed_listView);
+            followingForAUser = new ArrayList<>();
+            pullToRefresh = new SwipeRefreshLayout(getContext());
+            pullToRefresh = getActivity().findViewById(R.id.pullToRefresh);
+        }
         fetchFollowingForAUser();
 
+
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        Log.d("FeedFragment", String.valueOf(isVisibleToUser));
+        if (isVisibleToUser) {
+            getFragmentManager()
+                    .beginTransaction()
+                    .detach(this)
+                    .attach(this)
+                    .commit();
+        } else {
+            clearStack();
+        }
     }
 
     @Nullable
@@ -78,16 +99,15 @@ public class FeedFragment extends Fragment {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                followingForAUser.clear();
                 for (DataSnapshot obj : dataSnapshot.getChildren()) {
                     followingForAUser.add(obj.getValue(String.class));
                 }
 
                 //When New Follow and Unfollow
-                try {
-                    fetchPost();
-                } catch (Exception e) {
-                    Log.d("FeedFragment", e.getLocalizedMessage());
-                }
+                fetchPost();
+
+//                feedAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -103,11 +123,11 @@ public class FeedFragment extends Fragment {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
                 for (int position = 0; position < followingForAUser.size(); position++) {
                     if (position == 0) {
                         posts.clear();
                         postId.clear();
+
                     }
                     for (DataSnapshot obj : dataSnapshot.getChildren()) {
                         if (obj.child("owner").getValue(String.class).equals(followingForAUser.get(position))) {
@@ -117,8 +137,10 @@ public class FeedFragment extends Fragment {
                     }
                 }
                 TOTAL_POST = posts.size();
+                Log.d("FeedFragment", Integer.toString(TOTAL_POST));
                 onScrollToLastItem();
                 pullToRefresh();
+
             }
 
             @Override
@@ -141,7 +163,6 @@ public class FeedFragment extends Fragment {
                     profiles.add(dataSnapshot.child(user_id.getOwner()).getValue(ProfileForFeed.class));
                 }
                 fetchComment();
-
             }
 
             @Override
@@ -265,10 +286,12 @@ public class FeedFragment extends Fragment {
 
     //EVENT
     private void pullToRefresh() {
-        pullToRefresh = getView().findViewById(R.id.pullToRefresh);
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+
+//                clearStack();
+                feedAdapter.clear();
                 updatePost();
                 fetchLikeCount();
                 pullToRefresh.setRefreshing(false);
@@ -298,19 +321,19 @@ public class FeedFragment extends Fragment {
     private void onClickItem() {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //Send Post Objn
-//                 SleepForm obj;
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                //Send Post Obj
+                PostViewFragment obj;
                 FragmentManager fm;
                 FragmentTransaction ft;
                 Bundle bundle = new Bundle();
-                bundle.putParcelable("bundleDate", feedAdapter.getItem(position));
+                bundle.putParcelable("post", feedAdapter.getItem(position));
                 fm = getActivity().getSupportFragmentManager();
                 ft = fm.beginTransaction();
-//                obj = new SleepForm();
-//                obj.setArguments(bundle);
-//                ft.replace(R.id.main_view, obj);
-//                ft.commit();
+                obj = new PostViewFragment();
+                obj.setArguments(bundle);
+                ft.replace(R.id.main_view, obj);
+                ft.commit();
             }
         });
 
@@ -319,22 +342,48 @@ public class FeedFragment extends Fragment {
     //RENDER UI
     private void renderPost() {
         listView.setDivider(null);
-        feedAdapter = new FeedAdapter(
-                getActivity(),
-                R.layout.feed_crad_view,
-                posts_for_render,
-                likeCout,
-                profiles,
-                postId_for_render,
-                ONLINE_USER,
-                comments
-        );
-        // Save the ListView state (= includes scroll position) as a Parceble
-        Parcelable state = listView.onSaveInstanceState();
-        // e.g. set new items
-        listView.setAdapter(feedAdapter);
-        // Restore previous state (including selected item index and scroll position)
-        listView.onRestoreInstanceState(state);
+        if (getActivity() != null) {
+            feedAdapter = new FeedAdapter(
+                    getActivity(),
+                    R.layout.feed_crad_view,
+                    posts_for_render,
+                    likeCout,
+                    profiles,
+                    postId_for_render,
+                    ONLINE_USER,
+                    comments
+            );
+
+
+            // Save the ListView state (= includes scroll position) as a Parceble
+            Parcelable state = listView.onSaveInstanceState();
+            // e.g. set new items
+            listView.setAdapter(feedAdapter);
+            // Restore previous state (including selected item index and scroll position)
+            listView.onRestoreInstanceState(state);
+            onClickItem();
+
+            feedAdapter.notifyDataSetChanged();
+        }
+    }
+
+    public void clearStack() {
+        //Here we are clearing back stack fragment entries
+        int backStackEntry = getFragmentManager().getBackStackEntryCount();
+        if (backStackEntry > 0) {
+            for (int i = 0; i < backStackEntry; i++) {
+                getFragmentManager().popBackStackImmediate();
+            }
+        }
+        //Here we are removing all the fragment that are shown here
+        if (getFragmentManager().getFragments() != null && getFragmentManager().getFragments().size() > 0) {
+            for (int i = 0; i < getFragmentManager().getFragments().size(); i++) {
+                Fragment mFragment = getFragmentManager().getFragments().get(i);
+                if (mFragment != null) {
+                    getFragmentManager().beginTransaction().remove(mFragment).commit();
+                }
+            }
+        }
     }
 
 

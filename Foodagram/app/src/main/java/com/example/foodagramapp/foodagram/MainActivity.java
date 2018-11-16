@@ -96,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
                             getSupportFragmentManager()
                                     .beginTransaction()
                                     .replace(R.id.main_view, new FeedFragment())
+                                    .addToBackStack(null)
                                     .commit();
                             Log.i("NAVBAR", "SELECT HOME");
                             break;

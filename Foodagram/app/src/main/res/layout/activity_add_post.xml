@@ -52,28 +52,28 @@
         </android.support.constraint.ConstraintLayout>
 
     </android.support.v7.widget.Toolbar>
-    
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar4"
-        app:layout_constraintBottom_toBottomOf="@id/post_post_box"
-        android:layout_marginBottom="210dp"
-        android:layout_height="0dp">
 
-        <ImageView
-            android:id="@+id/post_image_view"
-            android:scaleType="fitXY"
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="0dp"
+            android:layout_marginBottom="210dp"
+            app:layout_constraintBottom_toBottomOf="@id/post_post_box"
+            app:layout_constraintTop_toBottomOf="@id/toolbar4">
 
-        <View
-            android:id="@+id/post_shadow"
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:background="@drawable/background_gallery_grid_view"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            <ImageView
+                android:id="@+id/post_image_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY" />
 
-    </android.support.constraint.ConstraintLayout>
+            <View
+                android:id="@+id/post_shadow"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:background="@drawable/background_gallery_grid_view"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+        </android.support.constraint.ConstraintLayout>
 
     <View
         android:id="@+id/post_post_box"
