@@ -3,7 +3,6 @@ package com.example.foodagramapp.foodagram.Search;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,7 @@ import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.foodagramapp.foodagram.Profile;
+import com.example.foodagramapp.foodagram.Profile.ProfileForFeed;
 import com.example.foodagramapp.foodagram.R;
 import com.squareup.picasso.Picasso;
 
@@ -20,15 +19,15 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchAdapter extends ArrayAdapter<Profile> {
+public class SearchAdapter extends ArrayAdapter<ProfileForFeed> {
     private Context context;
-    private List<Profile> profiles;
-    private List<Profile> following;
+    private List<ProfileForFeed> profiles;
+    private List<ProfileForFeed> following;
     private TextView name, userName, followed, vitae;
     private ImageView image_profile;
     private Filter filter;
 
-    public SearchAdapter(@NonNull Context context, int resource, List<Profile> list, List<Profile> following) {
+    public SearchAdapter(@NonNull Context context, int resource, List<ProfileForFeed> list, List<ProfileForFeed> following) {
         super(context,resource,list);
         this.context = context;
         this.profiles = list;
@@ -37,7 +36,7 @@ public class SearchAdapter extends ArrayAdapter<Profile> {
 
     @Nullable
     @Override
-    public Profile getItem(int position) {
+    public ProfileForFeed getItem(int position) {
         return profiles.get(position);
     }
 
@@ -65,7 +64,7 @@ public class SearchAdapter extends ArrayAdapter<Profile> {
 
         followed = (TextView) listItems.findViewById(R.id.folloed);
 
-        for(Profile usrId : following) {
+        for(ProfileForFeed usrId : following) {
             if (profiles.get(position).getEmail().equals(usrId.getEmail()) && usrId.getEmail() != null) {
                 followed.setVisibility(View.VISIBLE);
             }
@@ -80,14 +79,14 @@ public class SearchAdapter extends ArrayAdapter<Profile> {
     @Override
     public Filter getFilter() {
         if (filter == null)
-            filter = new AppFilter<Profile>(profiles);
+            filter = new AppFilter<ProfileForFeed>(profiles);
         return filter;
     }
 
     private class AppFilter<T> extends Filter {
-        private ArrayList<Profile> sourceObjects;
-        public AppFilter(List<Profile> objects) {
-            sourceObjects = new ArrayList<Profile>();
+        private ArrayList<ProfileForFeed> sourceObjects;
+        public AppFilter(List<ProfileForFeed> objects) {
+            sourceObjects = new ArrayList<ProfileForFeed>();
             synchronized (this) {
                 sourceObjects.addAll(objects);
             }
@@ -98,9 +97,9 @@ public class SearchAdapter extends ArrayAdapter<Profile> {
             String filterSeq = chars.toString().toLowerCase();
             FilterResults result = new FilterResults();
             if (filterSeq != null && filterSeq.length() > 0) {
-                ArrayList<Profile> filter = new ArrayList<Profile>();
+                ArrayList<ProfileForFeed> filter = new ArrayList<ProfileForFeed>();
                 int count = 0;
-                for (Profile object : sourceObjects) {
+                for (ProfileForFeed object : sourceObjects) {
                     // the filtering itself:
                     count++;
                     if (object.getUsername().toString().toLowerCase().contains(filterSeq)) {
@@ -128,7 +127,7 @@ public class SearchAdapter extends ArrayAdapter<Profile> {
             notifyDataSetChanged();
             clear();
             for (int i = 0, l = filtered.size(); i < l; i++)
-                add((Profile) filtered.get(i));
+                add((ProfileForFeed) filtered.get(i));
             notifyDataSetInvalidated();
         }
     }

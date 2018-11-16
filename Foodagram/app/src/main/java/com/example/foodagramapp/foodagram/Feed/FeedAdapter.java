@@ -12,8 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.foodagramapp.foodagram.LikeAction;
-import com.example.foodagramapp.foodagram.Post;
-import com.example.foodagramapp.foodagram.Profile;
+import com.example.foodagramapp.foodagram.Post.Post;
+import com.example.foodagramapp.foodagram.Profile.ProfileForFeed;
 import com.example.foodagramapp.foodagram.R;
 import com.squareup.picasso.Picasso;
 
@@ -22,19 +22,19 @@ import java.util.List;
 public class FeedAdapter extends ArrayAdapter<Post> {
     private Context context;
     private List<Post> postStore;
-    private List<Profile> profiles;
+    private List<ProfileForFeed> profiles;
     private List<String> likeCount;
     private List<String> postId, commentCount;
     private TextView menu_name, post_description, menu_price, timestamp, name, like_count, comment;
     private ImageView menu_image, feed_user_thumbnail, like_button;
     private Bitmap bitmap;
     private String src;
-    private List<Profile> proflies;
+    private List<ProfileForFeed> proflies;
     private String ONLINE_USER;
     private LikeAction likeAction;
 
     public FeedAdapter(@NonNull Context context, int resource, List<Post> list,
-                       List<String> likeCount, List<Profile> proflies, List<String> postId,
+                       List<String> likeCount, List<ProfileForFeed> proflies, List<String> postId,
                        String ONLINE_USER, List<String> commentCount) {
         super(context, resource, list);
         this.context = context;

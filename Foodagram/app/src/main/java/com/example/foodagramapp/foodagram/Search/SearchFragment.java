@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 import com.example.foodagramapp.foodagram.Tag.Tag;
 import com.example.foodagramapp.foodagram.OnlineUser;
-import com.example.foodagramapp.foodagram.Profile;
+import com.example.foodagramapp.foodagram.Profile.ProfileForFeed;
 import com.example.foodagramapp.foodagram.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -44,8 +44,8 @@ public class SearchFragment extends Fragment {
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
 
     //Array
-    private ArrayList<Profile> profileBuffer = new ArrayList<>();
-    private ArrayList<Profile> following = new ArrayList<>();
+    private ArrayList<ProfileForFeed> profileBuffer = new ArrayList<>();
+    private ArrayList<ProfileForFeed> following = new ArrayList<>();
     private ArrayList<String> follower = new ArrayList<>();
     private ArrayList<String> recentSearchBuffer = new ArrayList<>();
 
@@ -114,7 +114,7 @@ public class SearchFragment extends Fragment {
                         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                following.add(dataSnapshot.getValue(Profile.class));
+                                following.add(dataSnapshot.getValue(ProfileForFeed.class));
                                 renderUI();
                             }
 
@@ -142,7 +142,7 @@ public class SearchFragment extends Fragment {
                 profileBuffer.clear();
                 for (DataSnapshot obj : dataSnapshot.getChildren()) {
                     if (!obj.getKey().equals(ONLINE_USER)) {
-                        profileBuffer.add(obj.getValue(Profile.class));
+                        profileBuffer.add(obj.getValue(ProfileForFeed.class));
                         fectFollower(obj.getKey());
                     }
 

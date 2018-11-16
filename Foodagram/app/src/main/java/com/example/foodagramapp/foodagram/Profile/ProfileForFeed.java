@@ -1,6 +1,6 @@
-package com.example.foodagramapp.foodagram;
+package com.example.foodagramapp.foodagram.Profile;
 
-public class Profile{
+public class ProfileForFeed {
    private String dob, email, name, profile_img_url, sex, username, vitae;
 
 

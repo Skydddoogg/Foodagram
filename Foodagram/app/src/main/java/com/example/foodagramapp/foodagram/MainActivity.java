@@ -1,6 +1,5 @@
 package com.example.foodagramapp.foodagram;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -13,12 +12,11 @@ import android.widget.ImageView;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
-import com.example.foodagramapp.foodagram.Post.CameraFragment;
+import com.example.foodagramapp.foodagram.Discover.DiscoverFragment;
+import com.example.foodagramapp.foodagram.Feed.FeedFragment;
 import com.example.foodagramapp.foodagram.Post.PostActivity;
 import com.example.foodagramapp.foodagram.Post.PostViewFragment;
 import com.example.foodagramapp.foodagram.Profile.Fragment_profile;
-import com.example.foodagramapp.foodagram.Utils.SectionsPagerAdapter;
-import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -95,12 +93,19 @@ public class MainActivity extends AppCompatActivity {
                 public boolean onTabSelected(int position, boolean wasSelected) {
                     switch (position) {
                         case 0:
-                            //SELECT HOME BUTTON ON NAV BAR
+                            getSupportFragmentManager()
+                                    .beginTransaction()
+                                    .replace(R.id.main_view, new FeedFragment())
+                                    .commit();
                             Log.i("NAVBAR", "SELECT HOME");
                             break;
                         case 1:
-                            FirebaseAuth.getInstance().signOut();
-                            startActivity(new Intent(MainActivity.this, AuthenticationActivity.class));
+                            getSupportFragmentManager()
+                                    .beginTransaction()
+                                    .replace(R.id.main_view, new DiscoverFragment())
+                                    .commit();
+//                            FirebaseAuth.getInstance().signOut();
+//                            startActivity(new Intent(MainActivity.this, AuthenticationActivity.class));
                             Log.i("NAVBAR", "SELECT DISCOVER");
                             break;
                         case 2:

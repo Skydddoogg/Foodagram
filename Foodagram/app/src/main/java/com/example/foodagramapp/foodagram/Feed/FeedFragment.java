@@ -17,8 +17,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.foodagramapp.foodagram.OnlineUser;
-import com.example.foodagramapp.foodagram.Post;
-import com.example.foodagramapp.foodagram.Profile;
+import com.example.foodagramapp.foodagram.Post.Post;
+import com.example.foodagramapp.foodagram.Profile.ProfileForFeed;
 import com.example.foodagramapp.foodagram.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -53,7 +53,7 @@ public class FeedFragment extends Fragment {
     static private ArrayList<String> postId = new ArrayList<>();
     static private ArrayList<String> postId_for_render = new ArrayList<>();
     final private ArrayList<String> likeCout = new ArrayList<>();
-    static private ArrayList<Profile> profiles = new ArrayList<>();
+    static private ArrayList<ProfileForFeed> profiles = new ArrayList<>();
     static private ArrayList<String> comments = new ArrayList<>();
 
 
@@ -138,7 +138,7 @@ public class FeedFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 profiles.clear();
                 for (Post user_id : posts_for_render) {
-                    profiles.add(dataSnapshot.child(user_id.getOwner()).getValue(Profile.class));
+                    profiles.add(dataSnapshot.child(user_id.getOwner()).getValue(ProfileForFeed.class));
                 }
                 fetchComment();
 

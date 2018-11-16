@@ -6,29 +6,26 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.foodagramapp.foodagram.Post;
-import com.example.foodagramapp.foodagram.Profile;
+import com.example.foodagramapp.foodagram.Post.Post;
+import com.example.foodagramapp.foodagram.Profile.ProfileForFeed;
 import com.example.foodagramapp.foodagram.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import static android.content.ContentValues.TAG;
-
 public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.ViewHolder> {
 
     private List<Post> postList;
-    private List<Profile> profiles;
+    private List<ProfileForFeed> profiles;
     private Context context;
 
-    public DiscoverAdapter(List<Post> postList, List<Profile> profiles, Context context) {
+    public DiscoverAdapter(List<Post> postList, List<ProfileForFeed> profiles, Context context) {
         this.postList = postList;
         this.context = context;
         this.profiles = profiles;

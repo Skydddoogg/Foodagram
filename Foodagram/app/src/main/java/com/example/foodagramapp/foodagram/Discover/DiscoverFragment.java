@@ -14,8 +14,8 @@ import android.widget.EditText;
 
 import com.example.foodagramapp.foodagram.OnlineUser;
 import com.example.foodagramapp.foodagram.Tag.Tag;
-import com.example.foodagramapp.foodagram.Post;
-import com.example.foodagramapp.foodagram.Profile;
+import com.example.foodagramapp.foodagram.Post.Post;
+import com.example.foodagramapp.foodagram.Profile.ProfileForFeed;
 import com.example.foodagramapp.foodagram.R;
 import com.example.foodagramapp.foodagram.Search.SearchFragment;
 import com.google.firebase.database.DataSnapshot;
@@ -37,7 +37,7 @@ public class DiscoverFragment extends Fragment {
     //ArrayList
     private ArrayList<String> postOwnerId = new ArrayList<>();
     private ArrayList<Post> posts = new ArrayList<>();
-    private ArrayList<Profile> owernProfile = new ArrayList<>();
+    private ArrayList<ProfileForFeed> owernProfile = new ArrayList<>();
 
     //DB
     private Query myRef;
@@ -86,7 +86,7 @@ public class DiscoverFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 owernProfile.clear();
                 for (String ownerId : postOwnerId) {
-                    owernProfile.add(dataSnapshot.child(ownerId).getValue(Profile.class));
+                    owernProfile.add(dataSnapshot.child(ownerId).getValue(ProfileForFeed.class));
                 }
                 randomItem();
             }
