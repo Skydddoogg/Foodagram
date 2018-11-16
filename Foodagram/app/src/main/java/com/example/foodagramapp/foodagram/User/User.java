@@ -11,12 +11,13 @@ public class User implements Comparable<User> {
     private String vitae;
     private String sex;
     private String profile_img_url;
+    private String userId;
 
     public User(){
 
     }
 
-    public User(String displayname, String email, String name, String dob, String vitae, String sex, String profile_img_url){
+    public User(String displayname, String email, String name, String dob, String vitae, String sex, String profile_img_url, String userId){
         this.displayname = displayname;
         this.email = email;
         this.name = name;
@@ -24,6 +25,7 @@ public class User implements Comparable<User> {
         this.vitae = vitae;
         this.sex = sex;
         this.profile_img_url = profile_img_url;
+        this.userId = userId;
     }
 
     @Override
@@ -85,6 +87,14 @@ public class User implements Comparable<User> {
 
     public void setProfile_img_url(String profile_img_url) {
         this.profile_img_url = profile_img_url;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }
 

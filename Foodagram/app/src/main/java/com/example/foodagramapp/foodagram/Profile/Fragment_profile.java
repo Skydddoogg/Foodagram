@@ -33,6 +33,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -45,7 +46,9 @@ public class Fragment_profile extends Fragment {
     private Adapter_profile profileAdapter;
     private TextView profileNameTextView, usernameTextView, descriptionTextView;
     private ImageView mockAnotherProfile,profileImage;
-    private String menuName, foodDescription, owner, location, price, time;
+    private String menuName, foodDescription, owner, location, price, time, menuImage;
+    private String anotherName, anotherUserName , anotherBirthDate, anotherSex , anotherEmail, anotherProfileImage
+            , anotherDescription, anotherUserUid;
     private String name, username, profileDescription;
     private Button editProfileBtn;
     private Model_profile exampleInfo;
@@ -53,6 +56,7 @@ public class Fragment_profile extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
     private ConstraintLayout followBlock;
+    private Boolean isAnotherUser;
 //    Model_profile exampleInfo = new Model_profile("Pizza", "SkyDogg" , "50", "IT KMITL");
 
     @Nullable
@@ -78,6 +82,40 @@ public class Fragment_profile extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initUIComponent();
+
+        Bundle bundle = getArguments();
+        if (bundle != null){
+            ProfileForFeed profile = bundle.getParcelable("profile");
+            anotherBirthDate = profile.getDob();
+            anotherUserName = profile.getUsername();
+            anotherName = profile.getName();
+            anotherProfileImage = profile.getProfile_img_url();
+            anotherSex = profile.getSex();
+            anotherEmail = profile.getEmail();
+            anotherDescription = profile.getVitae();
+            anotherUserUid = profile.getUserId();
+            //Get user UID and compare it with CurrentUserId
+            Log.d("ProfileFragment", "User ID = " + anotherUserUid);
+
+        }
+
+        if(mUser.getUid().equals(anotherUserUid)){
+
+            isAnotherUser = false;
+
+            Log.i("UID", "Same user");
+            Log.i("UID", anotherName);
+            Log.i("UID", anotherUserName);
+            Log.i("UID", anotherUserUid);
+
+
+        }else{
+            isAnotherUser = true;
+            Log.i("UID", "Another user");
+
+        }
+
+
 
 
         //** Setup list , listAdapter
@@ -153,6 +191,7 @@ public class Fragment_profile extends Fragment {
             }
         });
 
+
     }
     public void initPostRef(){
         try {
@@ -173,10 +212,11 @@ public class Fragment_profile extends Fragment {
                                     foodDescription = (String) db.child("description").getValue();
                                     location = (String) db.child("address").getValue();
                                     price = (String) db.child("menuPrice").getValue().toString();
-
-                                    exampleInfo = new Model_profile(menuName, owner, price, location, foodDescription);
+                                    menuImage = (String) db.child("menuImageURL").getValue();
+                                    exampleInfo = new Model_profile(menuName, owner, price, location, foodDescription, menuImage);
                                     profileInfo.add(exampleInfo);
                                     profileAdapter.notifyDataSetChanged();
+
 
                                 }
 
