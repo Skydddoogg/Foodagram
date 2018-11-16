@@ -62,9 +62,15 @@ public class PostViewFragment extends Fragment{
 
                     Bundle bundleForProfile = new Bundle();
                     bundleForProfile.putParcelable("profile", profile);
-                    Fragment_profile frag = new Fragment_profile();
+                    final Fragment_profile frag = new Fragment_profile();
                     frag.setArguments(bundleForProfile);
-                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.main_view, frag).commit();
+                    _profileImageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.main_view, frag).commit();
+                            Log.d(TAG, "GO TO PROFILE");
+                        }
+                    });
 
                     Log.d(TAG, "THE READ SUCCEEDED");
 

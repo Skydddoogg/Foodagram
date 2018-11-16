@@ -95,6 +95,7 @@ public class Fragment_profile extends Fragment {
             anotherDescription = profile.getVitae();
             anotherUserUid = profile.getUserId();
             //Get user UID and compare it with CurrentUserId
+            Log.d("ProfileFragment", "User ID = " + anotherUserUid);
 
         }
 
