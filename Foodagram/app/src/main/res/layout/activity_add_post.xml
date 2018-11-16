@@ -59,16 +59,18 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar4"
-        app:layout_constraintBottom_toBottomOf="@id/post_post_box"
-        android:layout_marginBottom="210dp"
-        android:layout_height="0dp">
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintTop_toBottomOf="@id/toolbar4">
 
         <ImageView
             android:id="@+id/post_image_view"
-            android:scaleType="fitXY"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp" />
 
         <View
             android:id="@+id/post_shadow"
@@ -242,7 +244,7 @@
             app:layout_constraintBottom_toBottomOf="@id/post_location_bar"
             android:textColor="#172D4D"
             app:layout_constraintStart_toEndOf="@id/post_location_logo"
-            android:text="เพิ่มที่ตั้งของร้าน"
+            android:hint="เพิ่มที่ตั้งของร้าน"
             android:textSize="14dp" />
 
     </android.support.constraint.ConstraintLayout>

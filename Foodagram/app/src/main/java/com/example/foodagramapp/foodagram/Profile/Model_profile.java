@@ -10,8 +10,15 @@ public class Model_profile {
     String profileName;
     String postTime;
     String menuPrice;
+    String postDescription;
 
+    public String getPostDescription() {
+        return postDescription;
+    }
 
+    public void setPostDescription(String postDescription) {
+        this.postDescription = postDescription;
+    }
 
     String location;
 
@@ -19,7 +26,7 @@ public class Model_profile {
 //        return menuImage;
 //    }
 
-    public Model_profile( String menuName, String profileName, String menuPrice , String location) {
+    public Model_profile( String menuName, String profileName, String menuPrice , String location, String postDescription ) {
 //        this.menuImage = menuImage;
 //        this.profileImage = profileImage;
         this.menuName = menuName;
@@ -27,6 +34,7 @@ public class Model_profile {
         this.menuPrice = menuPrice;
         this.postTime = postTime;
         this.location = location;
+        this.postDescription = postDescription;
     }
 
 //    public void setMenuImage(Image menuImage) {
