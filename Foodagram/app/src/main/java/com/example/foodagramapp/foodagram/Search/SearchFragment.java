@@ -108,7 +108,7 @@ public class SearchFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 following.clear();
-                if(dataSnapshot.getChildren() != null) {
+                if (dataSnapshot.getChildren() != null) {
                     for (DataSnapshot obj : dataSnapshot.getChildren()) {
                         myRef = database.getReference("profile").child(obj.getValue(String.class));
                         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -181,8 +181,7 @@ public class SearchFragment extends Fragment {
     }
 
 
-
-    private void onClickItem(){
+    private void onClickItem() {
         searchListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -190,7 +189,7 @@ public class SearchFragment extends Fragment {
                 myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        for(DataSnapshot obj : dataSnapshot.getChildren()) {
+                        for (DataSnapshot obj : dataSnapshot.getChildren()) {
                             //Send User Id
                             // SleepForm obj;
                             FragmentManager fm;
@@ -217,21 +216,24 @@ public class SearchFragment extends Fragment {
 
 
     private void renderUI() {
-        adapter = new SearchAdapter(
-                getActivity(),
-                R.layout.search_adapter,
-                profileBuffer,
-                following
-        );
+        if (getActivity() != null) {
+            adapter = new SearchAdapter(
+                    getActivity(),
+                    R.layout.search_adapter,
+                    profileBuffer,
+                    following
+            );
 
-        searchListView.setAdapter(adapter);
-        filterProfile();
-        onClickItem();
-        adapter.notifyDataSetChanged();
+            searchListView.setAdapter(adapter);
+            filterProfile();
+            onClickItem();
+            adapter.notifyDataSetChanged();
+        }
+
+
 
 
     }
-
 
 
     @Nullable

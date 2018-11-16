@@ -45,19 +45,24 @@ public class DiscoverFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private StaggeredGridLayoutManager mLayoutManager;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        searchBox = getActivity().findViewById(R.id.search_button);
+        searchBox = getView().findViewById(R.id.search_button);
+        mRecyclerView = (RecyclerView) getView().findViewById(R.id.discoverRecycleViewMian);
+        if (getActivity()!=null) {
+            mAdapter = new DiscoverAdapter(posts, owernProfile, getActivity());
+        }
+        mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         onClickSearchBox();
         fetchPost();
     }
 
 
     private void fetchPost() {
-        myRef = database.getReference("post").limitToFirst(10);
+        myRef = database.getReference("post");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -99,13 +104,10 @@ public class DiscoverFragment extends Fragment {
     }
 
     private void renderPost() {
-        mRecyclerView = (RecyclerView) getView().findViewById(R.id.discoverRecycleViewMian);
-
-        mAdapter = new DiscoverAdapter(posts, owernProfile, getActivity());
-        mRecyclerView.setAdapter(mAdapter);
-
-        StaggeredGridLayoutManager mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        if (getActivity()!=null) {
+            mRecyclerView.setAdapter(mAdapter);
+            mRecyclerView.setLayoutManager(mLayoutManager);
+        }
 
     }
 

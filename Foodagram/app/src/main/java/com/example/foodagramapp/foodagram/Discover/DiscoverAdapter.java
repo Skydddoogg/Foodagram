@@ -12,9 +12,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.foodagramapp.foodagram.MainActivity;
 import com.example.foodagramapp.foodagram.Post.Post;
+import com.example.foodagramapp.foodagram.Post.PostViewFragment;
 import com.example.foodagramapp.foodagram.Profile.ProfileForFeed;
 import com.example.foodagramapp.foodagram.R;
+import com.example.foodagramapp.foodagram.Tag.Tag;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -57,18 +60,19 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.ViewHo
             @Override
             public void onClick(View v) {
 
-                //Send Post Obj
-                // SleepForm obj;
+//                Send Post Obj
+                PostViewFragment obj;
                 FragmentManager fm;
                 FragmentTransaction ft;
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("post", postList.get(position));
-//                            fm = getActivity().getSupportFragmentManager();
-//                            ft = fm.beginTransaction();
-//                            obj = new SleepForm();
-//                            obj.setArguments(bundle);
-//                            ft.replace(R.id.main_view, obj);
-//                            ft.commit();
+                fm = ((MainActivity) context).getSupportFragmentManager();
+                ft = fm.beginTransaction();
+                obj = new PostViewFragment();
+                obj.setArguments(bundle);
+                ft.replace(R.id.main_view, obj);
+                ft.addToBackStack(new Tag().DISCOVER_FRAGMENT);
+                ft.commit();
             }
         });
         holder.discover_user_name.setText(profiles.get(position).getUsername());

@@ -60,7 +60,8 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
     private Button postShareButton;
     private ConstraintLayout postLocationBar;
     private ArrayList<String> locationList = new ArrayList<>();
-//    private String mAppend = "file:/";
+    private String postId;
+    //    private String mAppend = "file:/";
 //    private Intent intent;
 //    private String imgUrl;
 //    private UploadTask uploadImageTask;
@@ -83,8 +84,6 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
 
         customLoadingDialog = new CustomLoadingDialog(this);
 
-//        Bundle p = getIntent().getExtras();
-//        selectedFileName = p.getString("name");
         initViews();
         setImage();
 
@@ -111,57 +110,58 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
         postShareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    customLoadingDialog.showDialog();
+                if (!isValidPost()) {
+                    Extension.toast(AddPostActivity.this, "กรุณากรอกข้อมูลให้ครบถ้วน");
+                } else {
+                    try {
+                        customLoadingDialog.showDialog();
 
-                    // Generate reference message for uploading image
-                    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-                    String destination_directory = "post_images";
-                    String refMessage = destination_directory + "/" + UUID.randomUUID().toString() + timestamp.toString() + ".jpg";
+                        // Generate reference message for uploading image
+                        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                        String destination_directory = "post_images";
+                        String refMessage = destination_directory + "/" + UUID.randomUUID().toString() + timestamp.toString() + ".jpg";
 
-                    // Compress image
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                    byte[] data = baos.toByteArray();
+                        // Compress image
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                        byte[] data = baos.toByteArray();
 
-                    // Upload to firebase storage
-                    final StorageReference ref = storageRef.child(refMessage);
-                    UploadTask uploadTask = ref.putBytes(data);
-                    uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                        @Override
-                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                            if (!task.isSuccessful()) {
-                                throw task.getException();
+                        // Upload to firebase storage
+                        final StorageReference ref = storageRef.child(refMessage);
+                        UploadTask uploadTask = ref.putBytes(data);
+                        uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                            @Override
+                            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                                if (!task.isSuccessful()) {
+                                    throw task.getException();
+                                }
+                                return ref.getDownloadUrl();
                             }
-                            return ref.getDownloadUrl();
-                        }
-                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Uri> task) {
-                            if (task.isSuccessful()) {
-                                Uri downloadUrl = task.getResult();
-                                downloadImageURL = downloadUrl.toString(); // Image URL
-                                addPostToDB(downloadImageURL);
-                                customLoadingDialog.dismissDialog();
-
-                                Bundle bundle = new Bundle();
-                                bundle.putParcelable("post", post);
-                                PostViewFragment frag = new PostViewFragment();
-                                frag.setArguments(bundle);
-                                getSupportFragmentManager().beginTransaction().replace(R.id.main_view, frag).commit();
-
-                                Log.d(TAG, "GO TO POST VIEW");
-                            } else {
-                                customLoadingDialog.dismissDialog();
-                                Extension.toast(AddPostActivity.this, "Failed to upload an image");
-                                Log.d(TAG, "FAILED TO UPLOAD AN IMAGE");
+                        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Uri> task) {
+                                if (task.isSuccessful()) {
+                                    Uri downloadUrl = task.getResult();
+                                    downloadImageURL = downloadUrl.toString(); // Image URL
+                                    addPostToDB(downloadImageURL);
+                                    customLoadingDialog.dismissDialog();
+                                    Bundle bundle = new Bundle();
+                                    bundle.putParcelable("post", post);
+                                    PostViewFragment frag = new PostViewFragment();
+                                    frag.setArguments(bundle);
+                                    getSupportFragmentManager().beginTransaction().replace(R.id.main_view, frag).commit();
+                                    Log.d(TAG, "GO TO POST VIEW");
+                                } else {
+                                    customLoadingDialog.dismissDialog();
+                                    Extension.toast(AddPostActivity.this, "Failed to upload an image");
+                                    Log.d(TAG, "FAILED TO UPLOAD AN IMAGE");
+                                }
                             }
-                        }
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-        });
+            }});
 
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -172,6 +172,7 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
         });
     }
 
+
     private void initViews() {
         postDescription = findViewById(R.id.post_description);
         postMenu = findViewById(R.id.post_menu);
@@ -180,6 +181,24 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
         postTextLocation = findViewById(R.id.post_text_location);
         postShareButton = findViewById(R.id.post_share_button);
         backBtn = findViewById(R.id.post_back_btn);
+    }
+
+    private boolean isValidPost() {
+        boolean condition1 = !postDescription.getText().toString().equals("");
+        boolean condition2 = !postMenu.getText().toString().equals("");
+        boolean condition3 = !postPrice.getText().toString().equals("");
+        boolean condition4 = !postTextLocation.getText().toString().equals("");
+
+        Log.d(TAG, "1: " + String.valueOf(condition1));
+        Log.d(TAG, "2: " + String.valueOf(condition2));
+        Log.d(TAG, "3: " + String.valueOf(condition3));
+        Log.d(TAG, "4: " + String.valueOf(condition4));
+
+        if (condition1 && condition2 && condition3 && condition4) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private void setImage() {
@@ -231,7 +250,7 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
     private void addPostToDB(String downloadImageURL) {
         Log.d(TAG, "here");
         mAuth = FirebaseAuth.getInstance();
-        String postId = String.valueOf(UUID.randomUUID());
+        postId = String.valueOf(UUID.randomUUID());
         mDatabase = FirebaseDatabase.getInstance().getReference();
         post = new Post();
         post.setDescription(postDescription.getText().toString());
@@ -244,6 +263,7 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
         post.setMenuPrice(Double.parseDouble(postPrice.getText().toString()));
         post.setTimestamp(System.currentTimeMillis());
         post.setOwner(mAuth.getCurrentUser().getUid());
+        post.setPostId(postId);
         mDatabase.child("post").child(postId).setValue(post);
     }
 

@@ -1,15 +1,22 @@
 package com.example.foodagramapp.foodagram.Profile;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -22,14 +29,19 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
+
+import static com.nostra13.universalimageloader.core.ImageLoader.TAG;
 
 public class Fragment_profile extends Fragment {
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private DatabaseReference myPostRef, myProfileRef;
+    private DatabaseReference myPostRef, myProfileRef, profileNameRef;
     private Adapter_profile profileAdapter;
     private TextView profileNameTextView, usernameTextView, descriptionTextView;
     private ImageView mockAnotherProfile,profileImage;
@@ -38,6 +50,9 @@ public class Fragment_profile extends Fragment {
     private Button editProfileBtn;
     private Model_profile exampleInfo;
     private ArrayList<Model_profile> profileInfo = new ArrayList<Model_profile>();
+    private FirebaseAuth mAuth;
+    private FirebaseUser mUser;
+    private ConstraintLayout followBlock;
 //    Model_profile exampleInfo = new Model_profile("Pizza", "SkyDogg" , "50", "IT KMITL");
 
     @Nullable
@@ -50,8 +65,11 @@ public class Fragment_profile extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        profileInfo.add(exampleInfo);
-        initPostRef();
+        mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getCurrentUser();
         initProfileRef();
+        initPostRef();
+
 
 
     }
@@ -70,6 +88,40 @@ public class Fragment_profile extends Fragment {
                 profileInfo
         );
         profilePostList.setAdapter(profileAdapter);
+        profilePostList.setOnScrollListener(new AbsListView.OnScrollListener() {
+            private boolean listIsAtTop()   {
+                if(profilePostList.getChildCount() == 0) return true;
+                return profilePostList.getChildAt(0).getTop() == 0;
+            }
+            int mLastFirstVisibleItem = 0;
+            private LinearLayout lBelow;
+            @Override
+            public void onScrollStateChanged(AbsListView absListView, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                // TODO Auto-generated method stub
+                final int currentFirstVisibleItem = profilePostList.getFirstVisiblePosition();
+
+
+                if (currentFirstVisibleItem > mLastFirstVisibleItem ) {
+
+                        animateHideProfileHeader();
+
+                } else if (firstVisibleItem == 0 && listIsAtTop()) {
+
+                        animateShowProfileHeader();
+
+                }
+                this.mLastFirstVisibleItem = currentFirstVisibleItem;
+            }
+
+
+
+        });
+
         profileAdapter.notifyDataSetChanged();
         //**
 
@@ -81,6 +133,7 @@ public class Fragment_profile extends Fragment {
         profileNameTextView = getView().findViewById(R.id.profile_name);
         usernameTextView = getView().findViewById(R.id.profile_username);
         descriptionTextView = getView().findViewById(R.id.profile_description);
+        followBlock = getView().findViewById(R.id.profile_follow_block);
 //        mockAnotherProfile = getView().findViewById(R.id.mock_anohter_profile);
 
         //        mockAnotherProfile.setOnClickListener(new View.OnClickListener() {
@@ -107,24 +160,36 @@ public class Fragment_profile extends Fragment {
             myPostRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    for(DataSnapshot db: dataSnapshot.getChildren()){
-                        Log.i("DBprofile", "" + db.child("owner").getValue());
+                    for(final DataSnapshot db: dataSnapshot.getChildren()){
                         //** Check data from person's profile
-                        if(db.child("owner").getValue().equals("test_user_id_1")) {
+
+                        if(db.child("owner").getValue().equals(mUser.getUid())) {
+                            myProfileRef = database.getReference().child("profile").child(mUser.getUid());
+                            myProfileRef.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    owner = (String) dataSnapshot.child("username").getValue();
+                                    menuName = (String) db.child("menuName").getValue();
+                                    foodDescription = (String) db.child("description").getValue();
+                                    location = (String) db.child("address").getValue();
+                                    price = (String) db.child("menuPrice").getValue().toString();
+
+                                    exampleInfo = new Model_profile(menuName, owner, price, location, foodDescription);
+                                    profileInfo.add(exampleInfo);
+                                    profileAdapter.notifyDataSetChanged();
+
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+
+
                             // ** Get profile's post
 
 
-                            menuName = (String) db.child("menu_name").getValue();
-                            foodDescription = (String) db.child("description").getValue();
-                            owner = (String) db.child("owner").getValue();
-                            location = (String) db.child("location").getValue();
-                            price = (String) db.child("menu_price").getValue().toString();
-
-                            exampleInfo = new Model_profile(menuName, owner, price, location);
-                            profileInfo.add(exampleInfo);
-                            profileAdapter.notifyDataSetChanged();
-
-//
 
                         }
 
@@ -148,13 +213,13 @@ public class Fragment_profile extends Fragment {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for(DataSnapshot db: dataSnapshot.getChildren()){
-                        if(db.child("username").getValue().equals("SkyDogg")){
-                            name = (String) db.child("name").getValue();
+                        if(db.getKey().equals(mUser.getUid())){
                             username = (String) db.child("username").getValue();
+                            name = (String) db.child("name").getValue();
                             profileDescription = (String) db.child("vitae").getValue();
 
-                            profileNameTextView.setText(name);
-                            usernameTextView.setText(username);
+                            profileNameTextView.setText(username);
+                            usernameTextView.setText(name);
                             descriptionTextView.setText(profileDescription);
                         }
                     }
@@ -171,6 +236,123 @@ public class Fragment_profile extends Fragment {
         }
     }
 
+    public void animateHideProfileHeader(){
+        followBlock.animate()
+                .translationY(followBlock.getHeight()/2)
+                .alpha(0.0f)
+                .setDuration(400)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        followBlock.setVisibility(View.GONE);
+                    }
+                });
+        descriptionTextView.animate()
+                .translationY(descriptionTextView.getHeight()/2)
+                .alpha(0.0f)
+                .setDuration(400)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        descriptionTextView.setVisibility(View.GONE);
+                    }
+                });
+        usernameTextView.animate()
+                .translationY(usernameTextView.getHeight()/2)
+                .alpha(0.0f)
+                .setDuration(400)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        usernameTextView.setVisibility(View.GONE);
+                    }
+                });
+        profileNameTextView.animate()
+                .translationY(profileNameTextView.getHeight()/2)
+                .alpha(0.0f)
+                .setDuration(400)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        profileNameTextView.setVisibility(View.GONE);
+                    }
+                });
+        profileImage.animate()
+                .translationY(profileImage.getHeight()/2)
+                .alpha(0.0f)
+                .setDuration(400)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        profileImage.setVisibility(View.GONE);
+                    }
+                });
+    }
+
+    public void animateShowProfileHeader(){
+
+        followBlock.animate()
+                .translationY(0)
+                .alpha(1.0f)
+                .setDuration(200)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        followBlock.setVisibility(View.VISIBLE);
+                    }
+                });
+        descriptionTextView.animate()
+                .translationY(0)
+                .alpha(1.0f)
+                .setDuration(200)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        descriptionTextView.setVisibility(View.VISIBLE);
+                    }
+                });
+        usernameTextView.animate()
+                .translationY(0)
+                .alpha(1.0f)
+                .setDuration(200)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        usernameTextView.setVisibility(View.VISIBLE);
+                    }
+                });
+        profileNameTextView.animate()
+                .translationY(0)
+                .alpha(1.0f)
+                .setDuration(200)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        profileNameTextView.setVisibility(View.VISIBLE);
+                    }
+                });
+        profileImage.animate()
+                .translationY(0)
+                .alpha(1.0f)
+                .setDuration(200)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        profileImage.setVisibility(View.VISIBLE);
+                    }
+                });
+
+    }
 
 
 }
