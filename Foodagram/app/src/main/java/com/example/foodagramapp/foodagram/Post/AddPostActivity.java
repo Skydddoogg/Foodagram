@@ -60,7 +60,8 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
     private Button postShareButton;
     private ConstraintLayout postLocationBar;
     private ArrayList<String> locationList = new ArrayList<>();
-//    private String mAppend = "file:/";
+    private String postId;
+    //    private String mAppend = "file:/";
 //    private Intent intent;
 //    private String imgUrl;
 //    private UploadTask uploadImageTask;
@@ -231,7 +232,7 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
     private void addPostToDB(String downloadImageURL) {
         Log.d(TAG, "here");
         mAuth = FirebaseAuth.getInstance();
-        String postId = String.valueOf(UUID.randomUUID());
+        postId = String.valueOf(UUID.randomUUID());
         mDatabase = FirebaseDatabase.getInstance().getReference();
         post = new Post();
         post.setDescription(postDescription.getText().toString());
@@ -244,6 +245,7 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
         post.setMenuPrice(Double.parseDouble(postPrice.getText().toString()));
         post.setTimestamp(System.currentTimeMillis());
         post.setOwner(mAuth.getCurrentUser().getUid());
+        post.setPostId(postId);
         mDatabase.child("post").child(postId).setValue(post);
     }
 

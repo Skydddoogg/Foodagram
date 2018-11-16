@@ -15,6 +15,7 @@ public class Post implements Parcelable {
     private Double menu_price;
     private Double timestamp;
     private String owner;
+    private String postId;
 
     public Post() {
 
@@ -150,5 +151,13 @@ public class Post implements Parcelable {
 
     public void setOwner(String owner) {
         this.owner = owner;
+    }
+
+    public String getPostId() {
+        return postId;
+    }
+
+    public void setPostId(String postId) {
+        this.postId = postId;
     }
 }
