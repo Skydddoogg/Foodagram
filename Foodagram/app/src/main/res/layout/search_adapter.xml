@@ -8,7 +8,7 @@
     android:layout_height="wrap_content">
 
     <com.mikhaellopez.circularimageview.CircularImageView
-        android:id="@+id/imageView"
+        android:id="@+id/image_profile"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginStart="10dp"
@@ -24,40 +24,58 @@
         android:layout_marginStart="10dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/user_first_name_searchAdapter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Kot Keaw"
-            android:textColor="#18273C"
-            android:textSize="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
-            app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/image_profile"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.476">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
+
             <TextView
-                android:id="@+id/follower_searchAdapter"
+                android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ผู้ติดตาม 86 คน"
-                android:textSize="12dp"
+                android:text="Kot Keaw"
+                android:textColor="#18273C"
+                android:textSize="17dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imageView"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="( kotKeaw )"
+                android:textColor="#737d8b"
+                android:textSize="13dp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/vitae"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="เชฟป้อมเองครับ"
                 android:textColor="#ABB6C7"
+                android:textSize="13dp"
                 tools:layout_editor_absoluteX="70dp"
                 tools:layout_editor_absoluteY="36dp" />
+
             <TextView
-                android:id="@+id/following_searchAdapter"
+                android:visibility="invisible"
+                android:id="@+id/folloed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ติดตามแล้ว"
-                android:textSize="12dp"
                 android:layout_marginLeft="6dp"
+                android:text="ติดตามแล้ว"
                 android:textColor="#FF819A"
+                android:textSize="13dp"
                 tools:layout_editor_absoluteX="70dp"
                 tools:layout_editor_absoluteY="36dp" />
         </LinearLayout>

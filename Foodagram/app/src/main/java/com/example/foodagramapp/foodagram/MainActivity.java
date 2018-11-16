@@ -18,10 +18,10 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.main_view, new FeedFragment())
+                    .replace(R.id.main_view, new SearchFragment())
                     .commit();
         }
         NavigationBar nav = new NavigationBar();
-        nav.createBottomNavBar((AHBottomNavigation)findViewById(R.id.bottom_navigation), (ImageView) findViewById(R.id.imageView));
+        nav.createBottomNavBar((AHBottomNavigation) findViewById(R.id.bottom_navigation), (ImageView) findViewById(R.id.imageView));
     }
 }

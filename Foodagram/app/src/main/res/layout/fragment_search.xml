@@ -30,7 +30,7 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
-                    android:id="@+id/backButton_searchFragment"
+                    android:id="@+id/back_to_discover"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="26dp"
@@ -59,7 +59,7 @@
                     android:textAlignment="textStart"
                     android:textSize="10dp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/backButton_searchFragment"
+                    app:layout_constraintEnd_toStartOf="@+id/back_to_discover"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -78,6 +78,9 @@
                    android:id="@+id/search_listView"
                    android:paddingTop="15dp"
                    android:clipToPadding="false"
+                   android:focusable="false"
+                   android:smoothScrollbar="true"
+                   android:focusableInTouchMode="false"
                    android:layout_width="match_parent"
                    android:layout_height="wrap_content"></ListView>
 

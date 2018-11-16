@@ -162,7 +162,7 @@
                 app:layout_constraintStart_toStartOf="parent">
 
                 <com.mikhaellopez.circularimageview.CircularImageView
-                    android:id="@+id/feed_user_thumbnail"
+                    android:id="@+id/profileImage"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
                     android:gravity="center_horizontal"
@@ -179,7 +179,7 @@
                     android:layout_marginStart="10dp"
                     android:orientation="vertical"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/feed_user_thumbnail"
+                    app:layout_constraintStart_toEndOf="@+id/profileImage"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <TextView
@@ -257,6 +257,7 @@
                     android:layout_marginLeft="25dp">
 
                     <TextView
+                        android:id="@+id/comment"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:drawablePadding="10dp"

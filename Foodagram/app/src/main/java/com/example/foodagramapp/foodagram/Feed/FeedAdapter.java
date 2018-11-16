@@ -2,10 +2,8 @@ package com.example.foodagramapp.foodagram.Feed;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,30 +17,25 @@ import com.example.foodagramapp.foodagram.Profile;
 import com.example.foodagramapp.foodagram.R;
 import com.squareup.picasso.Picasso;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-
-import static android.text.Layout.JUSTIFICATION_MODE_INTER_WORD;
 
 public class FeedAdapter extends ArrayAdapter<Post> {
     private Context context;
     private List<Post> postStore;
     private List<Profile> profiles;
     private List<String> likeCount;
-    private List<String> postId;
-    private TextView menu_name, post_description, menu_price, timestamp, name, like_count;
+    private List<String> postId, commentCount;
+    private TextView menu_name, post_description, menu_price, timestamp, name, like_count, comment;
     private ImageView menu_image, feed_user_thumbnail, like_button;
     private Bitmap bitmap;
     private String src;
     private List<Profile> proflies;
     private String ONLINE_USER;
     private LikeAction likeAction;
-    public FeedAdapter(@NonNull Context context, int resource, List<Post> list, List<String> likeCount, List<Profile> proflies, List<String> postId, String ONLINE_USER) {
+
+    public FeedAdapter(@NonNull Context context, int resource, List<Post> list,
+                       List<String> likeCount, List<Profile> proflies, List<String> postId,
+                       String ONLINE_USER, List<String> commentCount) {
         super(context, resource, list);
         this.context = context;
         this.postStore = list;
@@ -50,6 +43,13 @@ public class FeedAdapter extends ArrayAdapter<Post> {
         this.likeCount = likeCount;
         this.postId = postId;
         this.ONLINE_USER = ONLINE_USER;
+        this.commentCount = commentCount;
+    }
+
+    @Nullable
+    @Override
+    public Post getItem(int position) {
+        return postStore.get(position);
     }
 
     @NonNull
@@ -63,28 +63,29 @@ public class FeedAdapter extends ArrayAdapter<Post> {
 
 
         menu_name = (TextView) listItems.findViewById(R.id.menu_name_post);
-        menu_name.setText(postStore.get(position).getMenu_name());
+        menu_name.setText(postStore.get(position).getMenuName());
         menu_image = (ImageView) listItems.findViewById(R.id.menu_image);
-        feed_user_thumbnail = (ImageView) listItems.findViewById(R.id.feed_user_thumbnail);
-        src = postStore.get(position).getMenu_image_url();
+        feed_user_thumbnail = (ImageView) listItems.findViewById(R.id.profileImage);
+        src = postStore.get(position).getMenuImageURL();
         post_description = listItems.findViewById(R.id.post_description);
         post_description.setText(postStore.get(position).getDescription());
 
         menu_price = listItems.findViewById(R.id.menu_price);
-        menu_price.setText("" + (int) postStore.get(position).getMenu_price());
+        menu_price.setText("" + (int) postStore.get(position).getMenuPrice());
 
         timestamp = (TextView) listItems.findViewById(R.id.timestamp);
 
-        timestamp.setText(getCountOfDays(postStore.get(position).getTimestamp()));
+        timestamp.setText(getCountOfDays((long) postStore.get(position).getTimestamp()));
 
         like_count = (TextView) listItems.findViewById(R.id.like_count);
         like_count.setText(likeCount.get(position));
 
 
+        comment = (TextView) listItems.findViewById(R.id.comment);
+        comment.setText(commentCount.get(position));
+
 
         like_button = (ImageView) listItems.findViewById(R.id.like_button);
-
-
 
 
         likeAction = new LikeAction(ONLINE_USER, postId.get(position), likeCount.get(position), like_button);
@@ -99,13 +100,12 @@ public class FeedAdapter extends ArrayAdapter<Post> {
         });
 
 
-
-
-        name = (TextView) listItems.findViewById(R.id.name);
-        name.setText(profiles.get(position).getName());
-
-        Picasso.get().load(profiles.get(position).getProfile_img_url()).into(feed_user_thumbnail);
-        Picasso.get().load(postStore.get(position).getMenu_image_url()).into(menu_image);
+        if (postStore.size() == profiles.size()) {
+            name = (TextView) listItems.findViewById(R.id.name);
+            name.setText(profiles.get(position).getName());
+            Picasso.get().load(profiles.get(position).getProfile_img_url()).into(feed_user_thumbnail);
+        }
+        Picasso.get().load(postStore.get(position).getMenuImageURL()).into(menu_image);
 
 
         return listItems;
@@ -113,14 +113,14 @@ public class FeedAdapter extends ArrayAdapter<Post> {
 
 
     public String getCountOfDays(long time) {
-       final int SECOND_MILLIS = 1000;
-       final int MINUTE_MILLIS = 60 * SECOND_MILLIS;
-       final int HOUR_MILLIS = 60 * MINUTE_MILLIS;
-       final int DAY_MILLIS = 24 * HOUR_MILLIS;
+        final int SECOND_MILLIS = 1000;
+        final int MINUTE_MILLIS = 60 * SECOND_MILLIS;
+        final int HOUR_MILLIS = 60 * MINUTE_MILLIS;
+        final int DAY_MILLIS = 24 * HOUR_MILLIS;
         if (time < 1000000000000L) {
             time *= 1000;
         }
-       long now = System.currentTimeMillis();
+        long now = System.currentTimeMillis();
         final long diff = now - time;
         if (diff < MINUTE_MILLIS) {
             return "just now";

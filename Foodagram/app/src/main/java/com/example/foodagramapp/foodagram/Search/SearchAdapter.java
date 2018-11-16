@@ -9,26 +9,36 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
-import android.widget.ListView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.foodagramapp.foodagram.Profile;
 import com.example.foodagramapp.foodagram.R;
-import com.example.foodagramapp.foodagram.User;
+import com.squareup.picasso.Picasso;
 
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchAdapter extends ArrayAdapter<User> {
+public class SearchAdapter extends ArrayAdapter<Profile> {
     private Context context;
-    private ArrayList<User> userList;
-    private TextView firstName;
+    private List<Profile> profiles;
+    private List<Profile> following;
+    private TextView name, userName, followed, vitae;
+    private ImageView image_profile;
     private Filter filter;
 
-    public SearchAdapter(@NonNull Context context, int resource, ArrayList<User> list) {
-        super(context, resource, list);
+    public SearchAdapter(@NonNull Context context, int resource, List<Profile> list, List<Profile> following) {
+        super(context,resource,list);
         this.context = context;
-        this.userList = list;
+        this.profiles = list;
+        this.following = following;
+    }
+
+    @Nullable
+    @Override
+    public Profile getItem(int position) {
+        return profiles.get(position);
     }
 
     @NonNull
@@ -39,24 +49,45 @@ public class SearchAdapter extends ArrayAdapter<User> {
                 parent,
                 false
         );
-        firstName = (TextView) listItems.findViewById(R.id.user_first_name_searchAdapter);
-        firstName.setText(userList.get(position).getName());
+        name = (TextView) listItems.findViewById(R.id.name);
+        if(profiles.get(position).getName().equals("")) {
+            name.setText(profiles.get(position).getName());
+        }else{
+            name.setText(profiles.get(position).getName()+" ");
+        }
+
+        userName = (TextView) listItems.findViewById(R.id.username);
+        userName.setText(profiles.get(position).getUsername());
+
+
+        vitae = (TextView) listItems.findViewById(R.id.vitae);
+        vitae.setText(profiles.get(position).getVitae());
+
+        followed = (TextView) listItems.findViewById(R.id.folloed);
+
+        for(Profile usrId : following) {
+            if (profiles.get(position).getEmail().equals(usrId.getEmail()) && usrId.getEmail() != null) {
+                followed.setVisibility(View.VISIBLE);
+            }
+        }
+        image_profile = (ImageView) listItems.findViewById(R.id.image_profile);
+        Picasso.get().load(profiles.get(position).getProfile_img_url()).into(image_profile);
+
+
         return listItems;
     }
 
     @Override
     public Filter getFilter() {
         if (filter == null)
-            filter = new AppFilter<User>(userList);
+            filter = new AppFilter<Profile>(profiles);
         return filter;
     }
 
     private class AppFilter<T> extends Filter {
-
-        private ArrayList<T> sourceObjects;
-
-        public AppFilter(List<T> objects) {
-            sourceObjects = new ArrayList<T>();
+        private ArrayList<Profile> sourceObjects;
+        public AppFilter(List<Profile> objects) {
+            sourceObjects = new ArrayList<Profile>();
             synchronized (this) {
                 sourceObjects.addAll(objects);
             }
@@ -67,12 +98,14 @@ public class SearchAdapter extends ArrayAdapter<User> {
             String filterSeq = chars.toString().toLowerCase();
             FilterResults result = new FilterResults();
             if (filterSeq != null && filterSeq.length() > 0) {
-                ArrayList<T> filter = new ArrayList<T>();
-
-                for (T object : sourceObjects) {
+                ArrayList<Profile> filter = new ArrayList<Profile>();
+                int count = 0;
+                for (Profile object : sourceObjects) {
                     // the filtering itself:
-                    if (object.toString().toLowerCase().contains(filterSeq))
+                    count++;
+                    if (object.getUsername().toString().toLowerCase().contains(filterSeq)) {
                         filter.add(object);
+                    }
                 }
                 result.count = filter.size();
                 result.values = filter;
@@ -94,13 +127,10 @@ public class SearchAdapter extends ArrayAdapter<User> {
             ArrayList<T> filtered = (ArrayList<T>) results.values;
             notifyDataSetChanged();
             clear();
-            if(results.values != null) {
-                for (int i = 0, l = filtered.size(); i < l; i++)
-                    add((User) filtered.get(i));
-                notifyDataSetInvalidated();
-            }
+            for (int i = 0, l = filtered.size(); i < l; i++)
+                add((Profile) filtered.get(i));
+            notifyDataSetInvalidated();
         }
     }
-
 
 }

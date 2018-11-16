@@ -83,8 +83,6 @@ public class LikeAction {
         userIdBuffer.add(userId);
         myRef = database.getReference("like").child(postId).child("by");
         myRef.setValue(userIdBuffer);
-        myRef = database.getReference("like").child(postId);
-        myRef.child("count").setValue((toInt(likeCount) + 1) + "");
     }
 
     private int toInt(String str) {

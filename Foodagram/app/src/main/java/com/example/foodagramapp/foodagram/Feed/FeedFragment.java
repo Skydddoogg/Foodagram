@@ -5,14 +5,18 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.example.foodagramapp.foodagram.OnlineUser;
 import com.example.foodagramapp.foodagram.Post;
 import com.example.foodagramapp.foodagram.Profile;
 import com.example.foodagramapp.foodagram.R;
@@ -20,10 +24,12 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 
 public class FeedFragment extends Fragment {
     private DatabaseReference myRef;
@@ -32,7 +38,7 @@ public class FeedFragment extends Fragment {
     //จำนวนที่ต้องการโหลดโพสต์ X/ครั้ง
 
 
-    final private String ONLINE_USER = "test_user_id_1";
+    final private String ONLINE_USER = new OnlineUser().ONLINE_USER;
     static private int TOTAL_POST;
     static private int CURRENT_VISIBLE_ITEM = 0;
     static private int LIMIT_POST_PER_SCROLL = 4;
@@ -67,8 +73,6 @@ public class FeedFragment extends Fragment {
     }
 
 
-
-
     private void fetchFollowingForAUser() {
         myRef = database.getReference("followingForAUser").child(ONLINE_USER);
         myRef.addValueEventListener(new ValueEventListener() {
@@ -77,6 +81,7 @@ public class FeedFragment extends Fragment {
                 for (DataSnapshot obj : dataSnapshot.getChildren()) {
                     followingForAUser.add(obj.getValue(String.class));
                 }
+
                 //When New Follow and Unfollow
                 try {
                     fetchPost();
@@ -84,6 +89,7 @@ public class FeedFragment extends Fragment {
                     Log.d("FeedFragment", e.getLocalizedMessage());
                 }
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.e("FeedFragment", databaseError.getMessage().toString());
@@ -91,8 +97,9 @@ public class FeedFragment extends Fragment {
         });
 
     }
+
     private void fetchPost() {
-        myRef = database.getReference("post");
+        Query myRef = database.getReference("post");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -102,15 +109,18 @@ public class FeedFragment extends Fragment {
                         posts.clear();
                         postId.clear();
                     }
-                    for (DataSnapshot obj : dataSnapshot.child(followingForAUser.get(position)).getChildren()) {
-                        posts.add(obj.getValue(Post.class));
-                        postId.add(obj.getKey());
+                    for (DataSnapshot obj : dataSnapshot.getChildren()) {
+                        if (obj.child("owner").getValue(String.class).equals(followingForAUser.get(position))) {
+                            posts.add(obj.getValue(Post.class));
+                            postId.add(obj.getKey());
+                        }
                     }
                 }
                 TOTAL_POST = posts.size();
                 onScrollToLastItem();
                 pullToRefresh();
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.e("FeedFragment", databaseError.getMessage().toString());
@@ -118,6 +128,8 @@ public class FeedFragment extends Fragment {
         });
 
     }
+
+
     private void fetchProfile() {
         //Child ให้ใส่ User ที่เป็นคน Login เพื่อดู User คนนี้กดติดตามใคร
         myRef = database.getReference().child("profile");
@@ -128,9 +140,34 @@ public class FeedFragment extends Fragment {
                 for (Post user_id : posts_for_render) {
                     profiles.add(dataSnapshot.child(user_id.getOwner()).getValue(Profile.class));
                 }
+                fetchComment();
 
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("FeedFragment", databaseError.getMessage());
+            }
+        });
+    }
+
+    private void fetchComment() {
+        //Child ให้ใส่ User ที่เป็นคน Login เพื่อดู User คนนี้กดติดตามใคร
+        myRef = database.getReference().child("comment");
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                comments.clear();
+                for (String str : postId_for_render) {
+                    int count = 0;
+                    for (DataSnapshot obj : dataSnapshot.child(str).getChildren()) {
+                        count++;
+                    }
+                    comments.add(count + "");
+                }
                 renderPost();
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.e("FeedFragment", databaseError.getMessage());
@@ -147,15 +184,12 @@ public class FeedFragment extends Fragment {
                 likeCout.clear();
                 for (int position = 0; position < postId_for_render.size(); position++) {
                     String postIdStr = dataSnapshot.child(postId_for_render.get(position)).getKey().toString();
-                    if (postIdStr.equals(postId_for_render.get(position))) {
-                        try {
-                            String likeCountDB = dataSnapshot.child(postId_for_render.get(position)).child("count").getValue().toString();
-                            likeCout.add(likeCountDB);
-                        } catch (Exception e) {
-                            likeCout.add("NaN");
-                            Log.e("FeedFragment", e.getLocalizedMessage());
-                        }
+                    int count = 0;
+                    for (DataSnapshot obj : dataSnapshot.child(postIdStr).child("by").getChildren()) {
+                        count++;
                     }
+                    likeCout.add(count + "");
+
 
                 }
 
@@ -170,8 +204,20 @@ public class FeedFragment extends Fragment {
     }
 
 
+    private void sortPost() {
+        Collections.sort(posts, new Comparator<Post>() {
+            @Override
+            public int compare(Post o1, Post o2) {
+                if (o1.getTimestamp() == o2.getTimestamp())
+                    return 0;
 
-
+                if (o1.getTimestamp() < o2.getTimestamp())
+                    return 1;
+                else
+                    return -1;
+            }
+        });
+    }
 
     private boolean loadMore() {
         if (CURRENT_VISIBLE_ITEM >= TOTAL_POST) {
@@ -241,7 +287,7 @@ public class FeedFragment extends Fragment {
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 int lastInScreen = firstVisibleItem + visibleItemCount;
                 if (lastInScreen == totalItemCount) {
-                    if(loadMore()) {
+                    if (loadMore()) {
                         fetchLikeCount();
                     }
                 }
@@ -249,18 +295,39 @@ public class FeedFragment extends Fragment {
         });
     }
 
+    private void onClickItem() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //Send Post Objn
+//                 SleepForm obj;
+                FragmentManager fm;
+                FragmentTransaction ft;
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("bundleDate", feedAdapter.getItem(position));
+                fm = getActivity().getSupportFragmentManager();
+                ft = fm.beginTransaction();
+//                obj = new SleepForm();
+//                obj.setArguments(bundle);
+//                ft.replace(R.id.main_view, obj);
+//                ft.commit();
+            }
+        });
+
+    }
 
     //RENDER UI
     private void renderPost() {
         listView.setDivider(null);
         feedAdapter = new FeedAdapter(
-                    getActivity(),
-                    R.layout.feed_crad_view,
-                    posts_for_render,
-                    likeCout,
-                    profiles,
-                    postId_for_render,
-                    ONLINE_USER
+                getActivity(),
+                R.layout.feed_crad_view,
+                posts_for_render,
+                likeCout,
+                profiles,
+                postId_for_render,
+                ONLINE_USER,
+                comments
         );
         // Save the ListView state (= includes scroll position) as a Parceble
         Parcelable state = listView.onSaveInstanceState();
