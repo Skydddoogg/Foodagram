@@ -1,5 +1,6 @@
 package com.example.foodagramapp.foodagram;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -11,7 +12,9 @@ import android.widget.ImageView;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+import com.example.foodagramapp.foodagram.Post.CameraFragment;
 import com.example.foodagramapp.foodagram.Post.PostActivity;
+import com.example.foodagramapp.foodagram.Post.PostViewFragment;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
@@ -28,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
     void createBottomNavBar() {
         try {
             AHBottomNavigation bottomNavigation = findViewById(R.id.bottom_navigation);
+            bottomNavigation.bringToFront();
+            bottomNavigation.invalidate();
             final ImageView plusImg = findViewById(R.id.imageView);
             String backgroundColor = "#ffffff";
             String iconOnActiveColor = "#ff1c49";
@@ -90,7 +95,10 @@ public class MainActivity extends AppCompatActivity {
                             //DISABLE THIS BUTTON BECAUSE REPLACE IT WITH IMAGEVIEW
                             break;
                         case 3:
-                            //SELECT NOTIFICATION BUTTON ON NAV BAR
+                            getSupportFragmentManager()
+                                    .beginTransaction()
+                                    .replace(R.id.main_view, new PostViewFragment())
+                                    .commit();
                             Log.i("NAVBAR", "SELECT NOTIFICATION");
                             break;
                         case 4:
