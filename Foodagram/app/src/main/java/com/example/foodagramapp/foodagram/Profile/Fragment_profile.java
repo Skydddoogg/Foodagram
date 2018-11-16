@@ -80,6 +80,12 @@ public class Fragment_profile extends Fragment {
         super.onActivityCreated(savedInstanceState);
         initUIComponent();
 
+        Bundle bundle = getArguments();
+        if (bundle != null){
+            ProfileForFeed profile = bundle.getParcelable("profile");
+
+        }
+
 
         //** Setup list , listAdapter
         final ListView profilePostList = getView().findViewById(R.id.profile_all_post_list);

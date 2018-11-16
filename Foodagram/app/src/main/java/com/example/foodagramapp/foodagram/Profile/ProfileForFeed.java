@@ -1,8 +1,38 @@
 package com.example.foodagramapp.foodagram.Profile;
 
-public class ProfileForFeed {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class ProfileForFeed implements Parcelable{
    private String dob, email, name, profile_img_url, sex, username, vitae;
 
+
+   public ProfileForFeed (){
+
+   }
+
+
+    protected ProfileForFeed(Parcel in) {
+        dob = in.readString();
+        email = in.readString();
+        name = in.readString();
+        profile_img_url = in.readString();
+        sex = in.readString();
+        username = in.readString();
+        vitae = in.readString();
+    }
+
+    public static final Creator<ProfileForFeed> CREATOR = new Creator<ProfileForFeed>() {
+        @Override
+        public ProfileForFeed createFromParcel(Parcel in) {
+            return new ProfileForFeed(in);
+        }
+
+        @Override
+        public ProfileForFeed[] newArray(int size) {
+            return new ProfileForFeed[size];
+        }
+    };
 
     public String getDob() {
         return dob;
@@ -58,5 +88,21 @@ public class ProfileForFeed {
 
     public void setVitae(String vitae) {
         this.vitae = vitae;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(dob);
+        parcel.writeString(email);
+        parcel.writeString(name);
+        parcel.writeString(profile_img_url);
+        parcel.writeString(sex);
+        parcel.writeString(username);
+        parcel.writeString(vitae);
     }
 }
