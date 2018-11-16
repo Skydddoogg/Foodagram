@@ -25,7 +25,7 @@ public class FeedAdapter extends ArrayAdapter<Post> {
     private List<ProfileForFeed> profiles;
     private List<String> likeCount;
     private List<String> postId, commentCount;
-    private TextView menu_name, post_description, menu_price, timestamp, name, like_count, comment;
+    private TextView menu_name, post_description, menu_price, timestamp, name, like_count, comment,location;
     private ImageView menu_image, feed_user_thumbnail, like_button;
     private Bitmap bitmap;
     private String src;
@@ -80,6 +80,9 @@ public class FeedAdapter extends ArrayAdapter<Post> {
         like_count = (TextView) listItems.findViewById(R.id.like_count);
         like_count.setText(likeCount.get(position));
 
+        location = (TextView) listItems.findViewById(R.id.location);
+        location.setText(postStore.get(position).getPlaceName());
+
 
         comment = (TextView) listItems.findViewById(R.id.comment);
         comment.setText(commentCount.get(position));
@@ -102,7 +105,7 @@ public class FeedAdapter extends ArrayAdapter<Post> {
 
         if (postStore.size() == profiles.size()) {
             name = (TextView) listItems.findViewById(R.id.name);
-            name.setText(profiles.get(position).getName());
+            name.setText(profiles.get(position).getUsername());
             Picasso.get().load(profiles.get(position).getProfile_img_url()).into(feed_user_thumbnail);
         }
         Picasso.get().load(postStore.get(position).getMenuImageURL()).into(menu_image);

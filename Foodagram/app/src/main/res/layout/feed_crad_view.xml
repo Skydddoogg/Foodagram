@@ -113,10 +113,14 @@
                                 app:layout_constraintTop_toTopOf="parent" />
 
                             <TextView
-                                android:layout_width="wrap_content"
+                                android:id="@+id/location"
+                                android:layout_width="130dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="3dp"
                                 android:text="Salmonburg"
+                                android:maxLines="1"
+                                android:maxLength="50"
+                                android:ellipsize="end"
                                 android:textColor="#ABB6C7"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintStart_toEndOf="@+id/checkin_icon"
