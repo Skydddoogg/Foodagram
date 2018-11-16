@@ -34,7 +34,7 @@ public class RegisterFragment extends Fragment {
     private CustomLoadingDialog customLoadingDialog;
     private FirebaseUser mUser;
     private FirebaseAuth mAuth;
-    private String uId;
+    private String uId, userId;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -146,7 +146,7 @@ public class RegisterFragment extends Fragment {
     void addUserDisplayName(EditText displayName, EditText email){
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
         String defaultProfilePic = "https://catking.in/wp-content/uploads/2017/02/default-profile-1.png";
-        User user = new User( displayName.getText().toString(), email.getText().toString(), "", "", "", "", defaultProfilePic);
+        User user = new User( displayName.getText().toString(), email.getText().toString(), "", "", "", "", defaultProfilePic, mUser.getUid());
         mDatabase.child("profile").child(mUser.getUid()).setValue(user);
         Log.i("HASH", byteArrayToHexString(email));
 

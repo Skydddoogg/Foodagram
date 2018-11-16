@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class ProfileForFeed implements Parcelable{
-   private String dob, email, name, profile_img_url, sex, username, vitae;
+   private String dob, email, name, profile_img_url, sex, username, vitae, userId;
 
 
    public ProfileForFeed (){
@@ -20,6 +20,7 @@ public class ProfileForFeed implements Parcelable{
         sex = in.readString();
         username = in.readString();
         vitae = in.readString();
+        userId = in.readString();
     }
 
     public static final Creator<ProfileForFeed> CREATOR = new Creator<ProfileForFeed>() {
@@ -90,6 +91,14 @@ public class ProfileForFeed implements Parcelable{
         this.vitae = vitae;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -104,5 +113,6 @@ public class ProfileForFeed implements Parcelable{
         parcel.writeString(sex);
         parcel.writeString(username);
         parcel.writeString(vitae);
+        parcel.writeString(userId);
     }
 }

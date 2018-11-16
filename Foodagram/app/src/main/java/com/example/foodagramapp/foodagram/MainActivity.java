@@ -17,6 +17,7 @@ import com.example.foodagramapp.foodagram.Feed.FeedFragment;
 import com.example.foodagramapp.foodagram.Post.PostActivity;
 import com.example.foodagramapp.foodagram.Post.PostViewFragment;
 import com.example.foodagramapp.foodagram.Profile.Fragment_profile;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
 
