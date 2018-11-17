@@ -5,16 +5,20 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.foodagramapp.foodagram.OnlineUser;
 import com.example.foodagramapp.foodagram.Post.Post;
+import com.example.foodagramapp.foodagram.Post.PostViewFragment;
 import com.example.foodagramapp.foodagram.Profile.ProfileForFeed;
 import com.example.foodagramapp.foodagram.R;
 import com.google.firebase.database.DataSnapshot;
@@ -71,7 +75,8 @@ public class FeedFragment extends Fragment {
                     postArrayList,
                     likeCountArrayList,
                     profile,
-                    commentCountArrayList
+                    commentCountArrayList,
+                    postId
             );
         }
     }
@@ -86,6 +91,7 @@ public class FeedFragment extends Fragment {
             }
         });
     }
+
 
 
     private void fetchFollowingForAUser() {
@@ -197,7 +203,7 @@ public class FeedFragment extends Fragment {
     private void fetchLike() {
         try {
             myRef = database.getReference("like");
-            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            myRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     likeCountArrayList.clear();
@@ -219,6 +225,27 @@ public class FeedFragment extends Fragment {
         }catch (Exception e){
             Log.e("FeedFragment", e.getLocalizedMessage());
         }
+    }
+
+    private void onClickItem() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                //Send Post Obj
+                PostViewFragment obj;
+                FragmentManager fm;
+                FragmentTransaction ft;
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("post", feedAdapter.getItem(position));
+                fm = getActivity().getSupportFragmentManager();
+                ft = fm.beginTransaction();
+                obj = new PostViewFragment();
+                obj.setArguments(bundle);
+                ft.replace(R.id.main_view, obj);
+                ft.commit();
+            }
+        });
+
     }
 
     private void fetchComment() {
@@ -254,6 +281,7 @@ public class FeedFragment extends Fragment {
         feedAdapter.notifyDataSetChanged();
         Parcelable state = listView.onSaveInstanceState();
         listView.setAdapter(feedAdapter);
+        onClickItem();
         listView.onRestoreInstanceState(state);
 
     }

@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.foodagramapp.foodagram.LikeAction;
+import com.example.foodagramapp.foodagram.OnlineUser;
 import com.example.foodagramapp.foodagram.Post.Post;
 import com.example.foodagramapp.foodagram.Profile.ProfileForFeed;
 import com.example.foodagramapp.foodagram.R;
@@ -25,12 +26,15 @@ public class FeedAdapter extends ArrayAdapter<Post> {
     private List<String> likeCount;
     private List<ProfileForFeed> profiles;
     private List<String> commentCountArrayList;
+    private List<String> postId;
+    private LikeAction likeAction;
     private TextView menuName, menuPrice, location, decscription, likeCountTextView, commentCount, username, timestamp;
-    private ImageView postThumnail,profileImage;
+    private ImageView postThumnail,profileImage, likeButton;
 
     public FeedAdapter(@NonNull Context context, int resource, List<Post> posts,  List<String> likeCount,
                        List<ProfileForFeed> profiles,
-                       List<String> commentCountArrayList
+                       List<String> commentCountArrayList,
+                       List<String> postId
     ) {
         super(context, resource, posts);
         this.context = context;
@@ -38,6 +42,7 @@ public class FeedAdapter extends ArrayAdapter<Post> {
         this.likeCount = likeCount;
         this.profiles = profiles;
         this.commentCountArrayList = commentCountArrayList;
+        this.postId = postId;
     }
 
     @Nullable
@@ -69,6 +74,18 @@ public class FeedAdapter extends ArrayAdapter<Post> {
         decscription = listItems.findViewById(R.id.post_description);
         decscription.setText(posts.get(position).getDescription());
 
+
+        likeButton = listItems.findViewById(R.id.like_button);
+        likeAction = new LikeAction(new OnlineUser().ONLINE_USER, postId.get(position), likeCount.get(position), likeButton);
+        likeAction.setColorButton();
+        likeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                likeAction = new LikeAction(new OnlineUser().ONLINE_USER, postId.get(position), likeCount.get(position), likeButton);
+                likeAction.likeAction();
+            }
+        });
+
         likeCountTextView = listItems.findViewById(R.id.like_count);
         likeCountTextView.setText(likeCount.get(position));
 
@@ -77,7 +94,6 @@ public class FeedAdapter extends ArrayAdapter<Post> {
 
         postThumnail = listItems.findViewById(R.id.menu_image);
         Picasso.get().load(posts.get(position).getMenuImageURL()).into(postThumnail);
-
 
 
         //Comment
@@ -95,6 +111,9 @@ public class FeedAdapter extends ArrayAdapter<Post> {
 
         return listItems;
     }
+
+
+
 
 
     public String getCountOfDays(long time) {
