@@ -117,10 +117,6 @@ public class Fragment_profile extends Fragment {
                 profileNameTextView.setText(anotherName);
                 descriptionTextView.setText(anotherDescription);
 
-                
-
-                //THIS IS ANOTHER PERSON's PROFILE PAGE
-            //GET if Current User is Following Another User
             checkFollowed();
             setFollowBtn();
 
