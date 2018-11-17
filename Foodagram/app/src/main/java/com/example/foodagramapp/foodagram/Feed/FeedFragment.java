@@ -143,7 +143,7 @@ public class FeedFragment extends Fragment {
     private void fetchPost() {
         try {
             myRef = database.getReference("post");
-            myRef.addValueEventListener(new ValueEventListener() {
+            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     postId.clear();
