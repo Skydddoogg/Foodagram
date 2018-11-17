@@ -42,6 +42,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.sql.Timestamp;
@@ -107,9 +108,6 @@ public class Fragment_editProfile extends Fragment {
         initSaveBtn();
         initBackBtn();
         initLogoutBtn();
-        if (bitmap != null){
-            setProfileImage();
-        }
         initChangeProfileImgButton();
 
         try {
@@ -130,6 +128,7 @@ public class Fragment_editProfile extends Fragment {
                             String email = (String) db.child("email").getValue();
                             String sex = (String) db.child("sex").getValue();
                             String birthDate = (String) db.child("dob").getValue();
+                            String profileImageUrl = (String) db.child("profile_img_url").getValue();
 //                        writeNewUser(name, username, description, email, sex, birthDate, db);
                             nameField.setText(name);
                             usernameField.setText(username);
@@ -139,6 +138,11 @@ public class Fragment_editProfile extends Fragment {
                             birthDateField.setText(birthDate);
                             headerUsernameField.setText(username);
                             emailField.setText(email);
+                            if (bitmap != null){
+                                profile_image.setImageBitmap(bitmap);
+                            } else {
+                                Picasso.get().load(profileImageUrl ).into(profile_image);
+                            }
 
                         }
                     }
@@ -176,12 +180,8 @@ public class Fragment_editProfile extends Fragment {
         descriptionField = getView().findViewById(R.id.edit_profile_description);
         emailField = getView().findViewById(R.id.edit_profile_email);
         headerUsernameField = getView().findViewById(R.id.edit_profile_header_username);
-
-    }
-
-    private void setProfileImage(){
         profile_image = getView().findViewById(R.id.profile_image);
-        profile_image.setImageBitmap(bitmap);
+
     }
 
     void initChangeProfileImgButton(){
