@@ -11,11 +11,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.foodagramapp.foodagram.OnlineUser;
 import com.example.foodagramapp.foodagram.Comment.CommentFragment;
 import com.example.foodagramapp.foodagram.Profile.Fragment_profile;
 import com.example.foodagramapp.foodagram.Profile.ProfileForFeed;
 import com.example.foodagramapp.foodagram.R;
-import com.google.firebase.FirebaseException;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,6 +33,9 @@ public class PostViewFragment extends Fragment{
     private ImageView _menuImageView, _profileImageView;
     private Post post;
     private ProfileForFeed profile, testProfile;
+    private OnlineUser onlineUser = new OnlineUser();
+    private String CURRENT_USER = onlineUser.ONLINE_USER;
+    private String POST_OWNER;
 
 
     @Override
@@ -46,6 +49,7 @@ public class PostViewFragment extends Fragment{
         Bundle bundle = getArguments();
         if (bundle != null){
             post = bundle.getParcelable("post");
+            POST_OWNER = post.getOwner();
             _content.setText(post.getDescription());
 
             Double timestamp = post.getTimestamp();
@@ -96,7 +100,7 @@ public class PostViewFragment extends Fragment{
 
     void initButtons(){
         initBackButton();
-        initEditButton();
+        initDeleteButton();
         initViewCommentButton();
     }
 
@@ -120,7 +124,7 @@ public class PostViewFragment extends Fragment{
                 bundleForPostId.putString("postOwner", post.getOwner());
                 CommentFragment frag = new CommentFragment();
                 frag.setArguments(bundleForPostId);
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.main_view, frag).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.main_view, frag).commit();
                 Log.d(TAG, "POST ID = " + bundleForPostId.getString("postId"));
                 Log.d(TAG, "VIEW COMMENTS");
             }
@@ -132,20 +136,25 @@ public class PostViewFragment extends Fragment{
         _backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                getActivity().getSupportFragmentManager().popBackStack();
                 Log.d(TAG, "BACK TO PREVIOUS PAGE");
             }
         });
     }
 
-    void initEditButton(){
-        TextView _editBtn = getView().findViewById(R.id.post_view_edit_btn);
-        _editBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+    void initDeleteButton(){
+        TextView _deleteBtn = getView().findViewById(R.id.post_view_delete_btn);
+        if (CURRENT_USER.equals(POST_OWNER)){
+            _deleteBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-                Log.d(TAG, "EDIT POST");
-            }
-        });
+                    Log.d(TAG, "DELETE POST");
+                }
+            });
+        } else {
+            _deleteBtn.setVisibility(View.INVISIBLE);
+        }
     }
 
     public String getCountOfDays(long time) {

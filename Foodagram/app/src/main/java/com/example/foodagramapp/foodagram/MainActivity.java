@@ -1,5 +1,6 @@
 package com.example.foodagramapp.foodagram;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -23,12 +24,16 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "NavigationActivity";
     static ViewPager mViewPager;
+    private FeedFragment feedFragment;
+    private DiscoverFragment discoverFragment;
+    private Fragment_profile fragment_profile;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         createBottomNavBar();
+        initFragments();
     }
 
     void createBottomNavBar() {
@@ -96,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                         case 0:
                             getSupportFragmentManager()
                                     .beginTransaction()
-                                    .replace(R.id.main_view, new FeedFragment())
+                                    .replace(R.id.main_view, feedFragment)
                                     .addToBackStack(null)
                                     .commit();
                             Log.i("NAVBAR", "SELECT HOME");
@@ -104,7 +109,8 @@ public class MainActivity extends AppCompatActivity {
                         case 1:
                             getSupportFragmentManager()
                                     .beginTransaction()
-                                    .replace(R.id.main_view, new DiscoverFragment())
+                                    .replace(R.id.main_view, discoverFragment)
+                                    .addToBackStack(null)
                                     .commit();
 //                            FirebaseAuth.getInstance().signOut();
 //                            startActivity(new Intent(MainActivity.this, AuthenticationActivity.class));
@@ -114,16 +120,13 @@ public class MainActivity extends AppCompatActivity {
                             //DISABLE THIS BUTTON BECAUSE REPLACE IT WITH IMAGEVIEW
                             break;
                         case 3:
-                            getSupportFragmentManager()
-                                    .beginTransaction()
-                                    .replace(R.id.main_view, new PostViewFragment())
-                                    .commit();
                             Log.i("NAVBAR", "SELECT NOTIFICATION");
                             break;
                         case 4:
                             getSupportFragmentManager()
                                     .beginTransaction()
-                                    .replace(R.id.main_view, new Fragment_profile())
+                                    .replace(R.id.main_view, fragment_profile)
+                                    .addToBackStack(null)
                                     .commit();
                             Log.i("NAVBAR", "SELECT PROFILE");
                             break;
@@ -142,5 +145,11 @@ public class MainActivity extends AppCompatActivity {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    void initFragments(){
+        feedFragment = new FeedFragment();
+        discoverFragment = new DiscoverFragment();
+        fragment_profile = new Fragment_profile();
     }
 }

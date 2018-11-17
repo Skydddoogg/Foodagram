@@ -51,9 +51,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#fff"
+                    android:paddingBottom="40dp"
                     android:paddingHorizontal="30dp"
                     android:paddingTop="20dp"
-                    android:paddingBottom="40dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/post_image_container">
@@ -81,6 +82,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:layout_toRightOf="@+id/post_view_user_image"
+                            android:fontFamily="@font/mitr"
                             android:text="Name Surname"
                             android:textColor="#18273C"
                             android:textSize="18dp"
@@ -92,6 +94,7 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@id/post_view_username"
                             android:layout_toRightOf="@+id/post_view_user_image"
+                            android:fontFamily="@font/mitr"
                             android:text="34 min. ago"
                             android:textColor="#B4B4B4"
                             android:textSize="12dp" />
@@ -102,6 +105,7 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@id/post_view_time_stamp"
                             android:layout_marginVertical="15dp"
+                            android:fontFamily="@font/mitr"
                             android:text="ไม่เคยทานอะไรที่รู้สึกอร่อยแบบนี้มาก่อน ตัวแซลมมีความสดเกินบรรยาย เสิร์ฟพร้อมกับผักบุ้ง เป็นอะไรที่เข้ากันสุดๆ ไปโดนน! #Salmonburg"
                             android:textColor="#252525"
                             android:textSize="14dp" />
@@ -112,8 +116,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/post_view_content"
-                            android:drawableStart="@drawable/ic_heart_icon"
                             android:drawablePadding="10dp"
+                            android:drawableStart="@drawable/ic_heart_icon"
+                            android:fontFamily="@font/mitr"
                             android:text="690" />
 
                         <TextView
@@ -122,8 +127,9 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@id/post_view_content"
                             android:layout_toRightOf="@id/post_view_like_status"
-                            android:drawableStart="@drawable/ic_comment_icon"
                             android:drawablePadding="10dp"
+                            android:drawableStart="@drawable/ic_comment_icon"
+                            android:fontFamily="@font/mitr"
                             android:paddingLeft="15dp"
                             android:text="23" />
 
@@ -131,8 +137,9 @@
                             android:id="@+id/post_view_comment_view_btn"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/post_view_content"
                             android:layout_alignParentEnd="true"
+                            android:layout_below="@id/post_view_content"
+                            android:fontFamily="@font/mitr"
                             android:text="แสดงความคิดเห็น" />
 
                     </RelativeLayout>
@@ -155,6 +162,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
+            android:fontFamily="@font/mitr"
             android:id="@+id/post_view_back_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -168,8 +176,9 @@
             app:layout_constraintVertical_bias="0.513" />
 
         <TextView
+            android:fontFamily="@font/mitr"
             android:layout_width="wrap_content"
-            android:id="@+id/post_view_edit_btn"
+            android:id="@+id/post_view_delete_btn"
             android:layout_marginEnd="26dp"
             android:textColor="#FF1C49"
             android:textSize="14dp"

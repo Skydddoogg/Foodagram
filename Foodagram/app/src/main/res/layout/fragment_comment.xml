@@ -31,7 +31,8 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/backButton"
+            android:fontFamily="@font/mitr"
+            android:id="@+id/comment_back_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="26dp"
@@ -44,6 +45,7 @@
             app:layout_constraintVertical_bias="0.513" />
 
         <TextView
+            android:fontFamily="@font/mitr"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="แสดงความคิดเห็น"
@@ -124,6 +126,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
+            android:fontFamily="@font/mitr"
             android:id="@+id/comment_form"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -139,6 +142,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:fontFamily="@font/mitr"
             android:id="@+id/comment_form_submit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

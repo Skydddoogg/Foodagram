@@ -1,6 +1,7 @@
 package com.example.foodagramapp.foodagram.Comment;
 
 import android.os.Bundle;
+import android.support.annotation.LongDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -68,8 +69,13 @@ public class CommentFragment extends Fragment {
 
         fetchComment();
         profileThumbnail();
+        initBackButton();
+        initCemmentButton();
+
+    }
+
+    void initCemmentButton(){
         postButton = getView().findViewById(R.id.comment_form_submit);
-        backButton = getView().findViewById(R.id.backButton);
         postButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,12 +95,15 @@ public class CommentFragment extends Fragment {
 
             }
         });
+    }
 
-        // Back Stack Back
+    void initBackButton(){
+        backButton = getView().findViewById(R.id.comment_back_btn);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Log.d(TAG, "BACK TO MENU");
+            public void onClick(View view) {
+                getActivity().getSupportFragmentManager().popBackStack();
+                Log.d(TAG, "BACK");
             }
         });
     }
@@ -137,17 +146,19 @@ public class CommentFragment extends Fragment {
     }
 
     private void renderPost() {
-        commentList = (ListView) getView().findViewById(R.id.comment_list);
-        commentList.setDivider(null);
-        commentAdapter = new CommentAdapter(
-                getActivity(),
-                R.layout.fragment_comment_item,
-                comment,
-                profiles
-        );
-        commentList.setAdapter(commentAdapter);
+        if (getView() != null){
+            commentList = (ListView) getView().findViewById(R.id.comment_list);
+            commentList.setDivider(null);
+            commentAdapter = new CommentAdapter(
+                    getActivity(),
+                    R.layout.fragment_comment_item,
+                    comment,
+                    profiles
+            );
+            commentList.setAdapter(commentAdapter);
 
-        onClickItem();
+            onClickItem();
+        }
     }
 
     private void onClickItem(){
