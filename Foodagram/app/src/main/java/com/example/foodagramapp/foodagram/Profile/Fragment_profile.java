@@ -127,17 +127,28 @@ public class Fragment_profile extends Fragment {
             //Get user UID and compare it with CurrentUserId
             Log.d("ProfileFragment", "User ID = " + anotherUserUid);
             Log.d("ProfileFragment", "OwnerUser ID = " + mUser.getUid());
-
                 initAnotherPostRef();
                 isAnotherUser = true;
                 usernameTextView.setText(anotherUserName);
                 profileNameTextView.setText(anotherName);
                 descriptionTextView.setText(anotherDescription);
                 Picasso.get().load(anotherProfileImage).into(profileImage);
-            checkFollowed();
-            setFollowBtn();
             initOwnerFollowingAmount(anotherUserUid);
             initOwnerFollowerAmount(anotherUserUid);
+        if(anotherUserUid.equals(mUser.getUid())) {
+            editProfileBtn.setText("แก้ไขโปรไฟล์");
+            editProfileBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.main_view, new Fragment_editProfile())
+                            .commit();
+                }
+            });
+        }else{
+            checkFollowed();
+            setFollowBtn();
+        }
 
 
             //IF current user followed antoher user , When click on button , DELETE a row on FOLLOWING[CurrentUser -> anotherPerson]
@@ -358,6 +369,9 @@ public class Fragment_profile extends Fragment {
     }
     public void initPostRef(){
         try {
+            profileArrayList.clear();
+            profileInfo.clear();
+            postIdForRender.clear();
             myPostRef = database.getReference().child("post");
             myPostRef.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -404,7 +418,9 @@ public class Fragment_profile extends Fragment {
 
     public void initAnotherPostRef(){
             try {
-//                customLoadingDialog.showDialog();
+                profileArrayList.clear();
+                profileInfo.clear();
+                postIdForRender.clear();
                 myPostRef = database.getReference().child("post");
                 myPostRef.addValueEventListener(new ValueEventListener() {
                     @Override
