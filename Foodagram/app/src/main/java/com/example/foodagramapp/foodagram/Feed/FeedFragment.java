@@ -241,7 +241,7 @@ public class FeedFragment extends Fragment {
                 ft = fm.beginTransaction();
                 obj = new PostViewFragment();
                 obj.setArguments(bundle);
-                ft.replace(R.id.main_view, obj);
+                ft.replace(R.id.main_view, obj).addToBackStack(null);
                 ft.commit();
             }
         });
