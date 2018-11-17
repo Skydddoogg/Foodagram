@@ -15,7 +15,9 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.example.foodagramapp.foodagram.Dialog.CustomLoadingDialog;
 import com.example.foodagramapp.foodagram.OnlineUser;
 import com.example.foodagramapp.foodagram.Post.Post;
 import com.example.foodagramapp.foodagram.Post.PostViewFragment;
@@ -30,7 +32,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 
 public class FeedFragment extends Fragment {
@@ -46,6 +50,7 @@ public class FeedFragment extends Fragment {
     private ArrayList<ProfileForFeed> profile = new ArrayList<>();
     private ArrayList<String> postId = new ArrayList<>();
     private ArrayList<String> commentCountArrayList = new ArrayList<>();
+    private ArrayList<String> userIdFollowing = new ArrayList<>();
 
 
     //List View
@@ -62,17 +67,27 @@ public class FeedFragment extends Fragment {
     private int limit_post = 2;
     private int inventory_post = 0;
 
+    //Dialog
+    private CustomLoadingDialog customLoadingDialog;
+
+    //Text View
+    private TextView followPlease;
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         listView = (ListView) getView().findViewById(R.id.feed_listView);
+        followPlease = (TextView) getView().findViewById(R.id.follow_please);
+        customLoadingDialog = new CustomLoadingDialog(getContext());
+        customLoadingDialog.showDialog();
+        postArrayList.clear();
         pullToRefresh();
         fetchFollowingForAUser();
         if (getActivity() != null) {
             feedAdapter = new FeedAdapter(getActivity(),
                     R.layout.feed_crad_view,
-                    postArrayList,
+                    postArrayListBuffer,
                     likeCountArrayList,
                     profile,
                     commentCountArrayList,
@@ -87,23 +102,31 @@ public class FeedFragment extends Fragment {
             @Override
             public void onRefresh() {
                 fetchFollowingForAUser();
+                feedAdapter.notifyDataSetChanged();
                 pullToRefresh.setRefreshing(false);
             }
         });
     }
 
 
-
     private void fetchFollowingForAUser() {
         try {
             myRef = database.getReference("followingForAUser").child(new OnlineUser().ONLINE_USER);
-            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            myRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    userIdFollowing.clear();
                     for (final DataSnapshot user_id : dataSnapshot.getChildren()) {
-                        fetchPost(user_id.getValue(String.class));
-
+                        userIdFollowing.add(user_id.getValue(String.class));
                     }
+
+                    if (userIdFollowing.size() == 0) {
+                        customLoadingDialog.dismissDialog();
+                    } else {
+                        followPlease.setVisibility(View.INVISIBLE);
+                    }
+                    fetchPost();
+
                 }
 
                 @Override
@@ -111,26 +134,28 @@ public class FeedFragment extends Fragment {
 
                 }
             });
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e("FeedFragment", e.getLocalizedMessage());
         }
     }
 
-    private void fetchPost(String user_id) {
+    private void fetchPost() {
         try {
             myRef = database.getReference("post");
-            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            myRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     postId.clear();
                     postArrayListBuffer.clear();
-                    for (DataSnapshot post : dataSnapshot.getChildren()) {
-                        postArrayListBuffer.add(post.getValue(Post.class));
-                        postId.add(post.getKey());
-                        fetchProfile(post.child("owner").getValue(String.class));
+                    for (String userId : userIdFollowing) {
+                        for (DataSnapshot post : dataSnapshot.getChildren()) {
+                            if (post.child("owner").getValue(String.class).equals(userId)) {
+                                postArrayListBuffer.add(post.getValue(Post.class));
+                                postId.add(post.getKey());
+                                fetchProfile(post.child("owner").getValue(String.class));
+                            }
+                        }
                     }
-                    total_post = postArrayListBuffer.size();
-                    onScrollLoadItem();
                 }
 
                 @Override
@@ -138,7 +163,7 @@ public class FeedFragment extends Fragment {
 
                 }
             });
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e("FeedFragment", e.getLocalizedMessage());
         }
     }
@@ -182,6 +207,7 @@ public class FeedFragment extends Fragment {
 
     private void fetchProfile(String user_id) {
         try {
+            profile.clear();
             myRef = database.getReference("profile").child(user_id);
             myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -195,7 +221,7 @@ public class FeedFragment extends Fragment {
 
                 }
             });
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e("FeedFragment", e.getLocalizedMessage());
         }
     }
@@ -222,7 +248,7 @@ public class FeedFragment extends Fragment {
 
                 }
             });
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e("FeedFragment", e.getLocalizedMessage());
         }
     }
@@ -270,7 +296,7 @@ public class FeedFragment extends Fragment {
 
                 }
             });
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e("FeedFragment", e.getLocalizedMessage());
         }
 
@@ -278,12 +304,16 @@ public class FeedFragment extends Fragment {
 
 
     private void renderUI() {
-        feedAdapter.notifyDataSetChanged();
-        Parcelable state = listView.onSaveInstanceState();
-        listView.setAdapter(feedAdapter);
-        onClickItem();
-        listView.onRestoreInstanceState(state);
-
+        if (getActivity() != null) {
+            if (postArrayListBuffer != null) {
+                customLoadingDialog.dismissDialog();
+            }
+            Parcelable state = listView.onSaveInstanceState();
+            listView.setAdapter(feedAdapter);
+            feedAdapter.notifyDataSetChanged();
+            onClickItem();
+            listView.onRestoreInstanceState(state);
+        }
     }
 
     @Nullable
