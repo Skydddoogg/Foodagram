@@ -81,7 +81,7 @@ public class CameraFragment extends Fragment {
     private CustomLoadingDialog customLoadingDialog;
 
     //Save to FILE
-    private File file;
+    private File f;
     private static final int REQUEST_CAMERA_PERMISSION = 200;
     private boolean mFlashSupported;
     private Handler mBackgroundHandler;
@@ -130,10 +130,6 @@ public class CameraFragment extends Fragment {
         btnCapture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                FirebaseAuth.getInstance().signOut();
-//                Intent mIntent = new Intent(getActivity(), AuthenticationActivity.class);
-//                startActivity(mIntent);
-//                Log.d("Camera", "LOGOUT FROM CAMERA VIEW");
                 takePicture();
                 customLoadingDialog.showDialog();
                 Handler handler = new Handler();
@@ -186,8 +182,20 @@ public class CameraFragment extends Fragment {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss", Locale.getDefault());
             String filename = dateFormat.format(new Date());
 
-            file = new File(Environment.getExternalStorageDirectory()+"/DCIM/camera/"+filename+".jpg");
-            Log.d(TAG, file.getPath());
+            f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "camera");
+
+            Log.d(TAG, f.getPath());
+            if (!f.exists()) {
+                Log.d(TAG, "Folder doesn't exist, creating it...");
+                boolean rv = f.mkdir();
+                Log.d(TAG, "Folder creation " + ( rv ? "success" : "failed"));
+            } else {
+                Log.d(TAG, "Folder already exists.");
+            }
+
+            f = new File(Environment.getExternalStorageDirectory()+"/DCIM/camera/"+filename+".jpg");
+            Log.d(TAG, f.getPath());
+
             ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
                 @Override
                 public void onImageAvailable(ImageReader imageReader) {
@@ -212,7 +220,7 @@ public class CameraFragment extends Fragment {
                 private void save(byte[] bytes) throws IOException {
                     OutputStream outputStream = null;
                     try {
-                        outputStream = new FileOutputStream(file);
+                        outputStream = new FileOutputStream(f);
                         outputStream.write(bytes);
                     } finally {
                         if (outputStream != null) {
@@ -227,7 +235,6 @@ public class CameraFragment extends Fragment {
                 @Override
                 public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
                     super.onCaptureCompleted(session, request, result);
-//                    Toast.makeText(getActivity(), "Saved "+file, Toast.LENGTH_SHORT).show();
                     createCameraPreview();
                 }
             };
