@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.foodagramapp.foodagram.LikeAction;
+import com.example.foodagramapp.foodagram.OnlineUser;
 import com.example.foodagramapp.foodagram.Post.Post;
 import com.example.foodagramapp.foodagram.Profile.ProfileForFeed;
 import com.example.foodagramapp.foodagram.R;
@@ -21,35 +22,33 @@ import java.util.List;
 
 public class FeedAdapter extends ArrayAdapter<Post> {
     private Context context;
-    private List<Post> postStore;
-    private List<ProfileForFeed> profiles;
+    private List<Post> posts;
     private List<String> likeCount;
-    private List<String> postId, commentCount;
-    private TextView menu_name, post_description, menu_price, timestamp, name, like_count, comment,location;
-    private ImageView menu_image, feed_user_thumbnail, like_button;
-    private Bitmap bitmap;
-    private String src;
-    private List<ProfileForFeed> proflies;
-    private String ONLINE_USER;
+    private List<ProfileForFeed> profiles;
+    private List<String> commentCountArrayList;
+    private List<String> postId;
     private LikeAction likeAction;
+    private TextView menuName, menuPrice, location, decscription, likeCountTextView, commentCount, username, timestamp;
+    private ImageView postThumnail,profileImage, likeButton;
 
-    public FeedAdapter(@NonNull Context context, int resource, List<Post> list,
-                       List<String> likeCount, List<ProfileForFeed> proflies, List<String> postId,
-                       String ONLINE_USER, List<String> commentCount) {
-        super(context, resource, list);
+    public FeedAdapter(@NonNull Context context, int resource, List<Post> posts,  List<String> likeCount,
+                       List<ProfileForFeed> profiles,
+                       List<String> commentCountArrayList,
+                       List<String> postId
+    ) {
+        super(context, resource, posts);
         this.context = context;
-        this.postStore = list;
-        this.profiles = proflies;
+        this.posts = posts;
         this.likeCount = likeCount;
+        this.profiles = profiles;
+        this.commentCountArrayList = commentCountArrayList;
         this.postId = postId;
-        this.ONLINE_USER = ONLINE_USER;
-        this.commentCount = commentCount;
     }
 
     @Nullable
     @Override
     public Post getItem(int position) {
-        return postStore.get(position);
+        return posts.get(position);
     }
 
     @NonNull
@@ -62,57 +61,59 @@ public class FeedAdapter extends ArrayAdapter<Post> {
         );
 
 
-        menu_name = (TextView) listItems.findViewById(R.id.menu_name_post);
-        menu_name.setText(postStore.get(position).getMenuName());
-        menu_image = (ImageView) listItems.findViewById(R.id.menu_image);
-        feed_user_thumbnail = (ImageView) listItems.findViewById(R.id.profileImage);
-        src = postStore.get(position).getMenuImageURL();
-        post_description = listItems.findViewById(R.id.post_description);
-        post_description.setText(postStore.get(position).getDescription());
+        //Post
+        menuName = listItems.findViewById(R.id.menu_name_post);
+        menuName.setText(posts.get(position).getMenuName());
 
-        menu_price = listItems.findViewById(R.id.menu_price);
-        menu_price.setText("" + (int) postStore.get(position).getMenuPrice());
+        menuPrice = listItems.findViewById(R.id.menu_price);
+        menuPrice.setText((int) posts.get(position).getMenuPrice()+"");
 
-        timestamp = (TextView) listItems.findViewById(R.id.timestamp);
+        location = listItems.findViewById(R.id.location);
+        location.setText(posts.get(position).getAddress());
 
-        timestamp.setText(getCountOfDays((long) postStore.get(position).getTimestamp()));
-
-        like_count = (TextView) listItems.findViewById(R.id.like_count);
-        like_count.setText(likeCount.get(position));
-
-        location = (TextView) listItems.findViewById(R.id.location);
-        location.setText(postStore.get(position).getPlaceName());
+        decscription = listItems.findViewById(R.id.post_description);
+        decscription.setText(posts.get(position).getDescription());
 
 
-        comment = (TextView) listItems.findViewById(R.id.comment);
-        comment.setText(commentCount.get(position));
-
-
-        like_button = (ImageView) listItems.findViewById(R.id.like_button);
-
-
-        likeAction = new LikeAction(ONLINE_USER, postId.get(position), likeCount.get(position), like_button);
+        likeButton = listItems.findViewById(R.id.like_button);
+        likeAction = new LikeAction(new OnlineUser().ONLINE_USER, postId.get(position), likeCount.get(position), likeButton);
         likeAction.setColorButton();
-
-        like_button.setOnClickListener(new View.OnClickListener() {
+        likeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                likeAction = new LikeAction(ONLINE_USER, postId.get(position), likeCount.get(position), like_button);
-                likeAction.checkLike();
+                likeAction = new LikeAction(new OnlineUser().ONLINE_USER, postId.get(position), likeCount.get(position), likeButton);
+                likeAction.likeAction();
             }
         });
 
+        likeCountTextView = listItems.findViewById(R.id.like_count);
+        likeCountTextView.setText(likeCount.get(position));
 
-        if (postStore.size() == profiles.size()) {
-            name = (TextView) listItems.findViewById(R.id.name);
-            name.setText(profiles.get(position).getUsername());
-            Picasso.get().load(profiles.get(position).getProfile_img_url()).into(feed_user_thumbnail);
-        }
-        Picasso.get().load(postStore.get(position).getMenuImageURL()).into(menu_image);
+        timestamp = listItems.findViewById(R.id.timestamp);
+        timestamp.setText(getCountOfDays((long) posts.get(position).getTimestamp()));
+
+        postThumnail = listItems.findViewById(R.id.menu_image);
+        Picasso.get().load(posts.get(position).getMenuImageURL()).into(postThumnail);
+
+
+        //Comment
+        commentCount = listItems.findViewById(R.id.comment);
+        commentCount.setText(commentCountArrayList.get(position));
+
+
+        //Profile
+        username = listItems.findViewById(R.id.name);
+        username.setText(profiles.get(position).getUsername());
+
+        profileImage = listItems.findViewById(R.id.profileImage);
+        Picasso.get().load(profiles.get(position).getProfile_img_url()).into(profileImage);
 
 
         return listItems;
     }
+
+
+
 
 
     public String getCountOfDays(long time) {

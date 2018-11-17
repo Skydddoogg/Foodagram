@@ -250,8 +250,7 @@
                         android:id="@+id/like_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:drawablePadding="10dp"
-                        android:text="690" />
+                        android:text="0" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -266,7 +265,7 @@
                         android:layout_height="wrap_content"
                         android:drawablePadding="10dp"
                         android:drawableStart="@drawable/ic_comment_icon"
-                        android:text="23" />
+                        android:text="0" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

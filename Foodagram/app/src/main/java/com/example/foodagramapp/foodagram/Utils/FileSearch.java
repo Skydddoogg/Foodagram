@@ -1,5 +1,7 @@
 package com.example.foodagramapp.foodagram.Utils;
 
+import android.util.Log;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -21,10 +23,14 @@ public class FileSearch {
         ArrayList<String> pathArray = new ArrayList<>();
         File file = new File(directory);
         File[] listFiles = file.listFiles();
-        for(int i = 0; i < listFiles.length; i++){
-            if(listFiles[i].isFile()){
-                pathArray.add(listFiles[i].getAbsolutePath());
+        try {
+            for(int i = 0; i < listFiles.length; i++){
+                if(listFiles[i].isFile()){
+                    pathArray.add(listFiles[i].getAbsolutePath());
+                }
             }
+        } catch (NullPointerException e) {
+            Log.d("ImageSelectorFragment", "No Camera Folder");
         }
         return pathArray;
     }

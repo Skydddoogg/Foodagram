@@ -10,106 +10,99 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        >
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="16dp">
         <!--<ScrollView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height=""></ScrollView>-->
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/profile_header"
-            android:layout_width="match_parent"
-            android:background="#fff"
-            android:layout_height="56dp"
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height=""></ScrollView>-->
 
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/profile_detail"
+            android:background="#fff"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/profile_header"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/textView4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="โปรไฟล์"
-                android:fontFamily="@font/mitr_regular"
-                android:textColor="#FF1C49"
-                android:textSize="20dp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+
+            <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/profile_image"
+                android:layout_width="85dp"
+                android:layout_height="85dp"
+                android:layout_below="@id/profile_header"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"
+                android:src="@drawable/profile"
+                app:layout_constraintBottom_toTopOf="@+id/profile_description"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+
+            <TextView
+                android:id="@+id/profile_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_toRightOf="@id/profile_image"
+                android:fontFamily="@font/mitr_regular"
+                android:text="Nuii kamonrat"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/profile_description"
+                app:layout_constraintStart_toEndOf="@+id/profile_image"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/profile_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/profile_name"
+                android:layout_marginStart="24dp"
+                android:layout_marginBottom="32dp"
+                android:layout_toRightOf="@id/profile_image"
+                android:fontFamily="@font/mitr_regular"
+                android:text="ID : 230031123"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@+id/profile_description"
+                app:layout_constraintStart_toEndOf="@+id/profile_image"
+                app:layout_constraintTop_toBottomOf="@+id/profile_name" />
+
+            <TextView
+                android:id="@+id/profile_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/profile_image"
+                android:layout_alignParentStart="true"
+
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginBottom="16dp"
+                android:fontFamily="@font/mitr_regular"
+                android:text="Hello my name is mew, and this is description example , Contact"
+                android:textColor="@android:color/black"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
         </android.support.constraint.ConstraintLayout>
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="10dp"
-            android:layout_below="@id/profile_header"
-            android:background="@drawable/tool_bar_shadow"/>
-
-        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/profile_image"
-            android:layout_width="85dp"
-            android:layout_height="85dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="15dp"
-            android:src="@drawable/profile"
-            android:layout_below="@id/profile_header"
-            />
-
-
-        <TextView
-            android:id="@+id/profile_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/profile_header"
-            android:layout_toRightOf="@id/profile_image"
-            android:paddingBottom="8dp"
-            android:paddingTop="18dp"
-            android:text="Nuii kamonrat"
-            android:fontFamily="@font/mitr_regular"
-            android:textColor="@android:color/black"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/profile_username"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/profile_name"
-            android:layout_toRightOf="@id/profile_image"
-            android:text="ID : 230031123"
-            android:fontFamily="@font/mitr_regular"
-            android:textSize="12sp" />
-
-        <TextView
-            android:id="@+id/profile_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/profile_image"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="15dp"
-
-            android:layout_marginBottom="12dp"
-            android:fontFamily="@font/mitr_regular"
-            android:text="Hello my name is mew, and this is description example , Contact"
-            android:textColor="@android:color/black" />
-
-
-
-
+            android:layout_height="1dp"
+            android:background="#E3E3E3"
+            android:layout_above="@id/profile_follow_block"></View>
         <android.support.constraint.ConstraintLayout
             android:id="@+id/profile_follow_block"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/profile_detail"
+            android:background="#f3f3f3"
             android:orientation="horizontal"
-            android:layout_below="@id/profile_description"
-            android:background="@drawable/custom_border_bg"
-            android:padding="10dp"
-            >
+            android:padding="10dp">
 
 
             <LinearLayout
@@ -148,11 +141,12 @@
 
             <LinearLayout
 
+                android:id="@+id/linearLayout5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginStart="30dp"
 
+                android:layout_marginStart="30dp"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/linear_layout_follower"
@@ -183,35 +177,45 @@
                 android:id="@+id/profile_edit_profile"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-
-                android:layout_marginEnd="20dp"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
                 android:background="@drawable/button_bg_round_corner"
                 android:fontFamily="@font/mitr_regular"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
                 android:text="แก้ไขโปรไฟล์"
                 android:textColor="@android:color/white"
+                android:textSize="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/linearLayout5"
                 app:layout_constraintTop_toTopOf="parent" />
         </android.support.constraint.ConstraintLayout>
         <View
             android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#E3E3E3"
+            android:layout_below="@id/profile_follow_block"></View>
+
+        <View
+            android:layout_width="match_parent"
             android:layout_height="10dp"
             android:layout_below="@id/profile_follow_block"
-            android:background="@drawable/tool_bar_shadow"/>
+            android:background="@drawable/tool_bar_shadow" />
 
         <TextView
             android:id="@+id/profile_all_post"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="โพสต์ทั้งหมด"
             android:layout_below="@id/profile_follow_block"
             android:layout_marginLeft="30dp"
-            android:layout_marginRight="15dp"
             android:layout_marginTop="20dp"
+            android:layout_marginRight="15dp"
             android:layout_marginBottom="15dp"
-            />
+            android:text="โพสต์ทั้งหมด" />
+
         <ListView
             android:id="@+id/profile_all_post_list"
             android:layout_width="match_parent"
@@ -220,6 +224,37 @@
 
         </ListView>
 
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/profile_header"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="#fff"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/mitr_regular"
+                android:text="โปรไฟล์"
+                android:textColor="#FF1C49"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+        </android.support.constraint.ConstraintLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:layout_below="@id/profile_header"
+            android:background="@drawable/tool_bar_shadow" />
 
 
     </RelativeLayout>

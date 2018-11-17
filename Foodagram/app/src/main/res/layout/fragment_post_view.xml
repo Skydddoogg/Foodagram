@@ -7,78 +7,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-    <LinearLayout
-        android:id="@+id/linearLayout4"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="@+id/containerLayout">
 
-        <android.support.constraint.ConstraintLayout
+        <LinearLayout
+            android:id="@+id/linearLayout4"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/toolBarLayout"
-                android:layout_width="match_parent"
-                android:layout_height="61dp"
-                android:background="#fff"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/post_view_back_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="26dp"
-                    android:text="ย้อนกลับ"
-                    android:textColor="#FF1C49"
-                    android:textSize="14dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.513" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:id="@+id/post_view_edit_btn"
-                    android:layout_marginEnd="26dp"
-                    android:textColor="#FF1C49"
-                    android:textSize="14dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:text="แก้ไข"
-                    app:layout_constraintVertical_bias="0.513"
-                    android:layout_height="wrap_content" />
-
-            </android.support.constraint.ConstraintLayout>
-
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/containerLayout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/toolBarLayout">
-
-
-                <View
-                    android:id="@+id/view"
-                    android:layout_width="match_parent"
-                    android:layout_height="10dp"
-                    android:background="@drawable/tool_bar_shadow"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            </android.support.constraint.ConstraintLayout>
 
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/post_image_container"
@@ -86,16 +28,18 @@
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/toolBarLayout">
+                app:layout_constraintStart_toStartOf="parent">
 
                 <ImageView
                     android:id="@+id/post_view_menu_image"
-                    app:srcCompat="@drawable/food_pic"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:scaleType="centerCrop"
-                    />
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/food_pic" />
 
             </android.support.constraint.ConstraintLayout>
 
@@ -103,19 +47,21 @@
                 android:id="@+id/post_content_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingVertical="20dp"
-                android:paddingHorizontal="30dp"
+                android:layout_marginTop="10dp"
                 android:background="#fff"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="40dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/post_image_container">
 
-                <RelativeLayout
-                    android:id="@+id/linearLayout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                <LinearLayout
+                    android:id="@+id/linearLayout6"
+                    android:layout_width="204dp"
+                    android:layout_height="60dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
@@ -123,76 +69,190 @@
                         android:id="@+id/post_view_user_image"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:src="@drawable/food_pic"
                         android:layout_marginRight="10dp"
+                        android:src="@drawable/food_pic"
                         app:civ_border_color="#EEEEEE" />
 
-                    <TextView
-                        android:id="@+id/post_view_username"
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_toRightOf="@+id/post_view_user_image"
-                        android:text="Name Surname"
-                        android:textColor="#18273C"
-                        android:textSize="18dp"
-                        android:textStyle="bold" />
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/post_view_time_stamp"
-                        android:layout_toRightOf="@+id/post_view_user_image"
-                        android:layout_below="@id/post_view_username"
+                        <TextView
+                            android:id="@+id/post_view_username"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_toRightOf="@+id/post_view_user_image"
+                            android:fontFamily="@font/mitr"
+                            android:text="Name Surname"
+                            android:textColor="#18273C"
+                            android:textSize="18dp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/post_view_time_stamp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/post_view_username"
+                            android:layout_toRightOf="@+id/post_view_user_image"
+                            android:fontFamily="@font/mitr"
+                            android:text="34 min. ago"
+                            android:textColor="#B4B4B4"
+                            android:textSize="12dp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/post_view_content"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="15dp"
+                    android:fontFamily="@font/mitr"
+                    android:text="ไม่เคยทานอะไรที่รู้สึกอร่อยแบบนี้มาก่อน ตัวแซลมมีความสดเกินบรรยาย เสิร์ฟพร้อมกับผักบุ้ง เป็นอะไรที่เข้ากันสุดๆ ไปโดนน! #Salmonburg"
+                    android:textColor="#252525"
+                    android:textSize="14dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout6" />
+
+                <LinearLayout
+                    android:layout_marginTop="25dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/post_view_content">
+
+                    <LinearLayout
+                        android:id="@+id/linearLayout7"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="34 min. ago"
-                        android:textColor="#B4B4B4"
-                        android:textSize="12dp"/>
+                        android:layout_alignParentStart="true"
+                        android:layout_marginRight="20dp">
 
-                    <TextView
-                        android:id="@+id/post_view_content"
-                        android:layout_below="@id/post_view_time_stamp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="ไม่เคยทานอะไรที่รู้สึกอร่อยแบบนี้มาก่อน ตัวแซลมมีความสดเกินบรรยาย เสิร์ฟพร้อมกับผักบุ้ง เป็นอะไรที่เข้ากันสุดๆ ไปโดนน! #Salmonburg"
-                        android:textColor="#252525"
-                        android:layout_marginVertical="15dp"
-                        android:textSize="14dp"/>
+                        <ImageView
+                            android:id="@+id/like_button_post_view"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="5dp"
+                            android:src="@drawable/ic_heart_icon"
+                            android:tint="#E3E3E3" />
 
+                        <TextView
+                            android:id="@+id/post_view_like_status"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/post_view_content"
+                            android:drawablePadding="10dp"
+                            android:fontFamily="@font/mitr"
+                            android:text="0" />
+                    </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/post_view_like_status"
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:drawablePadding="10dp"
-                        android:layout_below="@id/post_view_content"
-                        android:drawableStart="@drawable/ic_heart_icon"
-                        android:text="690" />
+                        android:layout_alignParentStart="true">
 
-                    <TextView
-                        android:id="@+id/post_view_comment_status"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:drawablePadding="10dp"
-                        android:layout_below="@id/post_view_content"
-                        android:layout_toRightOf="@id/post_view_like_status"
-                        android:drawableStart="@drawable/ic_comment_icon"
-                        android:text="23"
-                        android:paddingLeft="15dp"/>
+                        <ImageView
+                            android:id="@+id/comment_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="5dp"
+                            android:src="@drawable/ic_comment_icon"
+                            android:tint="#E3E3E3" />
 
-                    <TextView
-                        android:id="@+id/post_view_comment_view_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/post_view_content"
-                        android:layout_alignParentEnd="true"
-                        android:text="แสดงความคิดเห็น" />
+                        <TextView
+                            android:id="@+id/post_view_comment_status"
+                            android:layout_width="wrap_content"
+                            android:layout_height="25dp"
+                            android:layout_below="@id/post_view_content"
+                            android:drawablePadding="10dp"
+                            android:fontFamily="@font/mitr"
+                            android:text="0"/>
+                    </LinearLayout>
 
-                </RelativeLayout>
+                </LinearLayout>
+
+
+
+                <TextView
+                    android:id="@+id/post_view_comment_view_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@id/post_view_content"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/mitr"
+                    android:text="แสดงความคิดเห็น"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/post_view_content" />
+
 
             </android.support.constraint.ConstraintLayout>
 
-        </android.support.constraint.ConstraintLayout>
 
-    </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/toolBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="61dp"
+        android:background="#fff"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:fontFamily="@font/mitr"
+            android:id="@+id/post_view_back_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="26dp"
+            android:text="ย้อนกลับ"
+            android:textColor="#FF1C49"
+            android:textSize="14dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.513" />
+
+        <TextView
+            android:fontFamily="@font/mitr"
+            android:layout_width="wrap_content"
+            android:id="@+id/post_view_delete_btn"
+            android:layout_marginEnd="26dp"
+            android:textColor="#FF1C49"
+            android:textSize="14dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="ลบโพสต์"
+            app:layout_constraintVertical_bias="0.513"
+            android:layout_height="wrap_content" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/containerLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolBarLayout">
+
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="@drawable/tool_bar_shadow"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>
