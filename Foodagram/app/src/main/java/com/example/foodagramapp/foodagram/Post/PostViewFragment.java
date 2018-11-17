@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.foodagramapp.foodagram.Feed.FeedAdapter;
+import com.example.foodagramapp.foodagram.LikeAction;
 import com.example.foodagramapp.foodagram.MainActivity;
 import com.example.foodagramapp.foodagram.OnlineUser;
 import com.example.foodagramapp.foodagram.Comment.CommentFragment;
@@ -23,24 +25,26 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-public class PostViewFragment extends Fragment{
+public class PostViewFragment extends Fragment {
 
     private String postId;
     private String TAG = "PostViewFragment";
     private FirebaseDatabase database;
     private DatabaseReference databaseReferenceForUsername;
     private TextView _username, _time, _content, _like, _commentStatus, _commentViewBtn;
-    private ImageView _menuImageView, _profileImageView;
+    private ImageView _menuImageView, _profileImageView, _likeButton;
     private Post post;
     private ProfileForFeed profile, testProfile;
     private OnlineUser onlineUser = new OnlineUser();
     private String CURRENT_USER = onlineUser.ONLINE_USER;
     private String POST_OWNER, POST_ID;
     private DatabaseReference mDatabase;
-
+    private int likeCount = 0;
+    private LikeAction likeAction;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -51,7 +55,7 @@ public class PostViewFragment extends Fragment{
         database = FirebaseDatabase.getInstance();
 
         Bundle bundle = getArguments();
-        if (bundle != null){
+        if (bundle != null) {
             post = bundle.getParcelable("post");
             POST_OWNER = post.getOwner();
             POST_ID = post.getPostId();
@@ -59,6 +63,9 @@ public class PostViewFragment extends Fragment{
 
             Double timestamp = post.getTimestamp();
             _time.setText(getCountOfDays(timestamp.longValue()));
+
+            fetchAndRednerLikeCount();
+            fetchAndRenderCommentCount();
             try {
                 // Get username
                 databaseReferenceForUsername = database.getReference("profile/" + post.getOwner());
@@ -92,12 +99,69 @@ public class PostViewFragment extends Fragment{
                 });
 
                 Picasso.get().load(post.getMenuImageURL()).into(_menuImageView);
-            } catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
         initDeleteButton();
+    }
+
+    private void fetchAndRednerLikeCount() {
+        try {
+            Query myRef = database.getReference("like");
+            myRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    likeCount = 0;
+                    for (DataSnapshot user_id_like_this_post : dataSnapshot.child(POST_ID).child("by").getChildren()) {
+                        likeCount++;
+                    }
+                    likeAction = new LikeAction(new OnlineUser().ONLINE_USER, POST_ID, likeCount + "", _likeButton);
+                    likeAction.setColorButton();
+                    _like.setText(likeCount + "");
+                    _likeButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            likeAction.likeAction();
+                        }
+                    });
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+
+        } catch (Exception e) {
+            Log.e("FeedFragment", e.getLocalizedMessage());
+        }
+    }
+
+    private void fetchAndRenderCommentCount() {
+        try {
+            Query myRef = database.getReference("comment");
+            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    int commentCount = 0;
+                    for (DataSnapshot user_id_like_this_post : dataSnapshot.child(POST_ID).getChildren()) {
+                        commentCount++;
+                    }
+                    _commentStatus.setText(commentCount + "");
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        } catch (Exception e) {
+            Log.e("FeedFragment", e.getLocalizedMessage());
+        }
+
     }
 
 
@@ -107,22 +171,23 @@ public class PostViewFragment extends Fragment{
         return inflater.inflate(R.layout.fragment_post_view, container, false);
     }
 
-    void initButtons(){
+    void initButtons() {
         initBackButton();
         initViewCommentButton();
     }
 
-    void initViews(){
+    void initViews() {
         _username = getView().findViewById(R.id.post_view_username);
         _commentStatus = getView().findViewById(R.id.post_view_comment_status);
         _content = getView().findViewById(R.id.post_view_content);
         _time = getView().findViewById(R.id.post_view_time_stamp);
         _like = getView().findViewById(R.id.post_view_like_status);
+        _likeButton = getView().findViewById(R.id.like_button_post_view);
         _menuImageView = getView().findViewById(R.id.post_view_menu_image);
         _profileImageView = getView().findViewById(R.id.post_view_user_image);
     }
 
-    void initViewCommentButton(){
+    void initViewCommentButton() {
         try {
             TextView _viewCommentBtn = getView().findViewById(R.id.post_view_comment_view_btn);
             _viewCommentBtn.setOnClickListener(new View.OnClickListener() {
@@ -138,17 +203,17 @@ public class PostViewFragment extends Fragment{
                     Log.d(TAG, "VIEW COMMENTS");
                 }
             });
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    void initBackButton(){
+    void initBackButton() {
         TextView _backBtn = getView().findViewById(R.id.post_view_back_btn);
         _backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (getFragmentManager().getBackStackEntryCount() == 0){
+                if (getFragmentManager().getBackStackEntryCount() == 0) {
                     Intent intent = new Intent(getActivity(), MainActivity.class);
                     startActivity(intent);
                     Log.d(TAG, "BACK TO MAIN");
@@ -159,11 +224,11 @@ public class PostViewFragment extends Fragment{
         });
     }
 
-    void initDeleteButton(){
+    void initDeleteButton() {
         TextView _deleteBtn = getView().findViewById(R.id.post_view_delete_btn);
         Log.d(TAG, "CURRENT USER = " + CURRENT_USER);
         Log.d(TAG, "POST OWNER = " + POST_OWNER);
-        if (CURRENT_USER.equals(POST_OWNER)){
+        if (CURRENT_USER.equals(POST_OWNER)) {
             _deleteBtn.setVisibility(View.VISIBLE);
             _deleteBtn.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -38,7 +38,7 @@ public class LikeAction {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 userIdBuffer.clear();
-                if(!likeCount.equals("NaN")) {
+                if (!likeCount.equals("NaN")) {
                     for (DataSnapshot obj : dataSnapshot.getChildren()) {
                         String userIdDb = obj.getValue(String.class).toString();
                         userIdBuffer.add(obj.getValue(String.class));
@@ -48,7 +48,6 @@ public class LikeAction {
                     }
                 }
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
@@ -68,22 +67,18 @@ public class LikeAction {
                         checkLikeStatus = false;
                         return;
                     }
-
                 }
-
-                if(checkLikeStatus){
+                if (checkLikeStatus) {
                     addDataInDatabase();
                 }
-
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
         });
     }
 
-    public void addDataInDatabase() {
+    private void addDataInDatabase() {
         userIdBuffer.add(userId);
         myRef = database.getReference("like").child(postId).child("by");
         myRef.setValue(userIdBuffer);
@@ -95,7 +90,7 @@ public class LikeAction {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 try {
                     myRef = database.getReference("notification").child(dataSnapshot.getValue(String.class));
-                    Notification notification = new Notification("-", new OnlineUser().ONLINE_USER, postId, "like", 0.0, Double.parseDouble(System.currentTimeMillis()+""));
+                    Notification notification = new Notification("-", new OnlineUser().ONLINE_USER, postId, "like", 0.0, Double.parseDouble(System.currentTimeMillis() + ""));
                     myRef.push().setValue(notification);
                 } catch (Exception e) {
                     e.printStackTrace();
