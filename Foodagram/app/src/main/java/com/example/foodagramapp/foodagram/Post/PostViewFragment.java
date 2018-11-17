@@ -35,7 +35,7 @@ public class PostViewFragment extends Fragment {
     private String TAG = "PostViewFragment";
     private FirebaseDatabase database;
     private DatabaseReference databaseReferenceForUsername;
-    private TextView _username, _time, _content, _like, _commentStatus, _commentViewBtn;
+    private TextView _username, _time, _content, _like, _commentStatus, _commentViewBtn,_menuPrice , _menuName;
     private ImageView _menuImageView, _profileImageView, _likeButton;
     private Post post;
     private ProfileForFeed profile, testProfile;
@@ -60,7 +60,8 @@ public class PostViewFragment extends Fragment {
             POST_OWNER = post.getOwner();
             POST_ID = post.getPostId();
             _content.setText(post.getDescription());
-
+            _menuName.setText(post.getMenuName());
+            _menuPrice.setText((int)post.getMenuPrice()+"");
             Double timestamp = post.getTimestamp();
             _time.setText(getCountOfDays(timestamp.longValue()));
 
@@ -185,6 +186,8 @@ public class PostViewFragment extends Fragment {
         _likeButton = getView().findViewById(R.id.like_button_post_view);
         _menuImageView = getView().findViewById(R.id.post_view_menu_image);
         _profileImageView = getView().findViewById(R.id.post_view_user_image);
+        _menuName = getView().findViewById(R.id.menu_name_post_view);
+        _menuPrice = getView().findViewById(R.id.menu_price_post_view);
     }
 
     void initViewCommentButton() {

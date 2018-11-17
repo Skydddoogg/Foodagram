@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.foodagramapp.foodagram.Profile.Fragment_profile;
 import com.example.foodagramapp.foodagram.Tag.Tag;
 import com.example.foodagramapp.foodagram.OnlineUser;
 import com.example.foodagramapp.foodagram.Profile.ProfileForFeed;
@@ -185,31 +186,18 @@ public class SearchFragment extends Fragment {
         searchListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Query myRef = database.getReference("profile").orderByChild("email").equalTo(adapter.getItem(position).getEmail());
-                myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot obj : dataSnapshot.getChildren()) {
-                            //Send User Id
-                            // SleepForm obj;
-                            FragmentManager fm;
-                            FragmentTransaction ft;
-                            Bundle bundle = new Bundle();
-                            bundle.putString("user_id", obj.getKey());
-//                            fm = getActivity().getSupportFragmentManager();
-//                            ft = fm.beginTransaction();
-//                            obj = new SleepForm();
-//                            obj.setArguments(bundle);
-//                            ft.replace(R.id.main_view, obj);
-//                            ft.commit();
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+                //Send User Id
+                Fragment_profile obj;
+                FragmentManager fm;
+                FragmentTransaction ft;
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("profile", adapter.getItem(position));
+                fm = getActivity().getSupportFragmentManager();
+                ft = fm.beginTransaction();
+                obj = new Fragment_profile();
+                obj.setArguments(bundle);
+                ft.replace(R.id.main_view, obj).addToBackStack(null);
+                ft.commit();
             }
         });
     }
@@ -229,8 +217,6 @@ public class SearchFragment extends Fragment {
             onClickItem();
             adapter.notifyDataSetChanged();
         }
-
-
 
 
     }

@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import com.example.foodagramapp.foodagram.Dialog.CustomLoadingDialog;
 import com.example.foodagramapp.foodagram.OnlineUser;
 import com.example.foodagramapp.foodagram.Tag.Tag;
 import com.example.foodagramapp.foodagram.Post.Post;
@@ -48,6 +49,9 @@ public class DiscoverFragment extends Fragment {
     private RecyclerView.Adapter mAdapter;
     private StaggeredGridLayoutManager mLayoutManager;
 
+    //Dialog
+    private CustomLoadingDialog customLoadingDialog;
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -56,6 +60,8 @@ public class DiscoverFragment extends Fragment {
         if (getActivity()!=null) {
             mAdapter = new DiscoverAdapter(posts, owernProfile, getActivity());
         }
+        customLoadingDialog = new CustomLoadingDialog(getContext());
+        customLoadingDialog.showDialog();
         mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         onClickSearchBox();
         fetchPost();
@@ -106,6 +112,9 @@ public class DiscoverFragment extends Fragment {
 
     private void renderPost() {
         if (getActivity()!=null) {
+            if(posts.size() > 0){
+                customLoadingDialog.dismissDialog();
+            }
             mRecyclerView.setAdapter(mAdapter);
             mRecyclerView.setLayoutManager(mLayoutManager);
         }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
 
     <LinearLayout
@@ -23,8 +23,8 @@
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/linearLayout3"
                 android:layout_width="match_parent"
-                android:background="#fff"
                 android:layout_height="56dp"
+                android:background="#fff"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -48,23 +48,25 @@
             <android.support.constraint.ConstraintLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:background="@android:color/transparent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
+
 
                 <android.support.v4.widget.SwipeRefreshLayout
                     android:id="@+id/pullToRefresh"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                <ListView
-                    android:id="@+id/feed_listView"
-                    android:listSelector="@android:color/transparent"
-                    android:layout_width="match_parent"
-                    android:divider="@android:color/transparent"
-                    android:paddingBottom="70dp"
-                    android:clipToPadding="false"
-                    android:layout_height="wrap_content"/>
+
+                    <ListView
+                        android:id="@+id/feed_listView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clipToPadding="false"
+                        android:divider="@android:color/transparent"
+                        android:listSelector="@android:color/transparent"
+                        android:paddingBottom="70dp" />
                 </android.support.v4.widget.SwipeRefreshLayout>
 
                 <View
@@ -74,15 +76,26 @@
                     android:background="@drawable/tool_bar_shadow"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/follow_please"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/mitr"
+                    android:text="ติดตามใครสักคนสิ"
+                    android:textSize="30dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
 
             </android.support.constraint.ConstraintLayout>
         </android.support.constraint.ConstraintLayout>
 
     </LinearLayout>
-
-
 
 
 </android.support.constraint.ConstraintLayout>

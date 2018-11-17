@@ -3,6 +3,7 @@ package com.example.foodagramapp.foodagram.Profile;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.DialogInterface;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.LongDef;
 import android.support.annotation.NonNull;
@@ -21,6 +22,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.foodagramapp.foodagram.Dialog.CustomLoadingDialog;
+import com.example.foodagramapp.foodagram.Notification.Notification;
 import com.example.foodagramapp.foodagram.Profile.Fragment_editProfile;
 import com.example.foodagramapp.foodagram.Profile.Adapter_profile;
 import com.example.foodagramapp.foodagram.Profile.Model_profile;
@@ -64,6 +67,7 @@ public class Fragment_profile extends Fragment {
     private FirebaseUser mUser;
     private ConstraintLayout followBlock;
     private Boolean isAnotherUser;
+    private CustomLoadingDialog customLoadingDialog;
     private Boolean isFollowed = false;
 //    Model_profile exampleInfo = new Model_profile("Pizza", "SkyDogg" , "50", "IT KMITL");
 
@@ -93,6 +97,7 @@ public class Fragment_profile extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initUIComponent();
+        customLoadingDialog = new CustomLoadingDialog(getContext());
 
 
 
@@ -111,14 +116,17 @@ public class Fragment_profile extends Fragment {
             //Get user UID and compare it with CurrentUserId
             Log.d("ProfileFragment", "User ID = " + anotherUserUid);
             Log.d("ProfileFragment", "OwnerUser ID = " + mUser.getUid());
+
                 initAnotherPostRef();
                 isAnotherUser = true;
                 usernameTextView.setText(anotherUserName);
                 profileNameTextView.setText(anotherName);
                 descriptionTextView.setText(anotherDescription);
-
+                Picasso.get().load(anotherProfileImage).into(profileImage);
             checkFollowed();
             setFollowBtn();
+            initOwnerFollowingAmount(anotherUserUid);
+            initOwnerFollowerAmount(anotherUserUid);
 
 
             //IF current user followed antoher user , When click on button , DELETE a row on FOLLOWING[CurrentUser -> anotherPerson]
@@ -132,8 +140,13 @@ public class Fragment_profile extends Fragment {
 
 
         }else {
+
+            editProfileBtn.setText("แก้ไขโปรไฟล​์");
             initProfileRef();
             initPostRef();
+            initOwnerFollowingAmount(mUser.getUid());
+            initOwnerFollowerAmount(mUser.getUid());
+
         }
 
 
@@ -266,7 +279,14 @@ public class Fragment_profile extends Fragment {
                         isFollowed = false;
                         editProfileBtn.setText("ติดตาม");
 
+
                     } else {
+                        try {
+                            Long commentTimeStamp = System.currentTimeMillis();
+                            pushNotification("-", commentTimeStamp);
+                        } catch (Exception e){
+                            e.printStackTrace();
+                        }
 
                         refUnfollower.child(anotherUserUid).push().setValue(mUser.getUid());
                         refUnfollowing.child(mUser.getUid()).push().setValue(anotherUserUid);
@@ -279,6 +299,17 @@ public class Fragment_profile extends Fragment {
                 }
             }
         });
+    }
+
+    private void pushNotification(String content, Long commentTimeStamp){
+        try {
+            DatabaseReference myNotiRef = database.getReference("notification").child(anotherUserUid);
+            Notification notification = new Notification("-", mUser.getUid() , "-", "follow", 0.0, commentTimeStamp.doubleValue());
+            myNotiRef.push().setValue(notification);
+            Log.d(TAG, "PUSH NOTIFICATION");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void initUIComponent(){
@@ -366,6 +397,7 @@ public class Fragment_profile extends Fragment {
 
     public void initAnotherPostRef(){
             try {
+//                customLoadingDialog.showDialog();
                 myPostRef = database.getReference().child("post");
                 myPostRef.addValueEventListener(new ValueEventListener() {
                     @Override
@@ -416,10 +448,48 @@ public class Fragment_profile extends Fragment {
                 e.printStackTrace();
             }
         }
+    public void initOwnerFollowerAmount(String userId){
+        final DatabaseReference profileFollower = database.getReference().child("followerForAUser").child(userId);
+        profileFollower.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot db : dataSnapshot.getChildren()){
+                    followerTextView.setText("" + dataSnapshot.getChildrenCount());
+//                    customLoadingDialog.dismissDialog();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    public void initOwnerFollowingAmount(String userId){
+        final DatabaseReference profileFollowing = database.getReference().child("followingForAUser").child(userId);
+
+        profileFollowing.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot db : dataSnapshot.getChildren()){
+                    followingTextView.setText("" + dataSnapshot.getChildrenCount());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 
 
     public void initProfileRef(){
         try {
+
+
             myProfileRef = database.getReference().child("profile");
             myProfileRef.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -429,7 +499,7 @@ public class Fragment_profile extends Fragment {
                             username = (String) db.child("username").getValue();
                             name = (String) db.child("name").getValue();
                             profileDescription = (String) db.child("vitae").getValue();
-
+                            Picasso.get().load(db.child("profile_img_url").getValue(String.class)).into(profileImage);
                             profileNameTextView.setText(username);
                             usernameTextView.setText(name);
                             descriptionTextView.setText(profileDescription);
