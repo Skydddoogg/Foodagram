@@ -26,6 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 
 public class DiscoverFragment extends Fragment {
     private RecyclerView recyclerView;
@@ -112,7 +113,9 @@ public class DiscoverFragment extends Fragment {
     }
 
     private void randomItem() {
-        Collections.shuffle(posts);
+        long seed = new Random().nextLong();
+        Collections.shuffle(posts, new Random(seed));
+        Collections.shuffle(owernProfile, new Random(seed));
         renderPost();
     }
 

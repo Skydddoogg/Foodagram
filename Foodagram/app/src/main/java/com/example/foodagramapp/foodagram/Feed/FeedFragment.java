@@ -5,20 +5,16 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.foodagramapp.foodagram.OnlineUser;
 import com.example.foodagramapp.foodagram.Post.Post;
-import com.example.foodagramapp.foodagram.Post.PostViewFragment;
 import com.example.foodagramapp.foodagram.Profile.ProfileForFeed;
 import com.example.foodagramapp.foodagram.R;
 import com.google.firebase.database.DataSnapshot;
@@ -28,63 +24,238 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.List;
+
 
 public class FeedFragment extends Fragment {
-    private DatabaseReference myRef;
+
+    //DB
+    private Query myRef;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
-    static private ListView listView;
-    //จำนวนที่ต้องการโหลดโพสต์ X/ครั้ง
+
+    //ArrayList
+    private ArrayList<Post> postArrayList = new ArrayList<>();
+    private ArrayList<Post> postArrayListBuffer = new ArrayList<>();
+    private ArrayList<String> likeCountArrayList = new ArrayList<>();
+    private ArrayList<ProfileForFeed> profile = new ArrayList<>();
+    private ArrayList<String> postId = new ArrayList<>();
+    private ArrayList<String> commentCountArrayList = new ArrayList<>();
 
 
-    final private String ONLINE_USER = new OnlineUser().ONLINE_USER;
-    static private int TOTAL_POST;
-    static private int CURRENT_VISIBLE_ITEM = 0;
-    static private int LIMIT_POST_PER_SCROLL = 4;
-    static private int INVENTORY_POST;
-    private SwipeRefreshLayout pullToRefresh;
-    private boolean firstRender = true;
+    //List View
+    private ListView listView;
     private FeedAdapter feedAdapter;
-    //Array
-    static private ArrayList<String> followingForAUser;
-    static private ArrayList<Post> posts = new ArrayList<>();
-    static private ArrayList<Post> posts_for_render = new ArrayList<>();
-    static private ArrayList<String> postId = new ArrayList<>();
-    static private ArrayList<String> postId_for_render = new ArrayList<>();
-    final private ArrayList<String> likeCout = new ArrayList<>();
-    static private ArrayList<ProfileForFeed> profiles = new ArrayList<>();
-    static private ArrayList<String> comments = new ArrayList<>();
+
+    //Pull To Refresh
+    private SwipeRefreshLayout pullToRefresh;
+
+
+    //Load More
+    private int current_visible_item = 0;
+    private int total_post = 0;
+    private int limit_post = 2;
+    private int inventory_post = 0;
 
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if(getActivity() != null) {
-            listView = (ListView) getActivity().findViewById(R.id.feed_listView);
-            followingForAUser = new ArrayList<>();
-            pullToRefresh = new SwipeRefreshLayout(getContext());
-            pullToRefresh = getActivity().findViewById(R.id.pullToRefresh);
-        }
+        listView = (ListView) getView().findViewById(R.id.feed_listView);
+        pullToRefresh();
         fetchFollowingForAUser();
+        if (getActivity() != null) {
+            feedAdapter = new FeedAdapter(getActivity(),
+                    R.layout.feed_crad_view,
+                    postArrayList,
+                    likeCountArrayList,
+                    profile,
+                    commentCountArrayList
+            );
+        }
+    }
 
+    private void pullToRefresh() {
+        pullToRefresh = getView().findViewById(R.id.pullToRefresh);
+        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                fetchFollowingForAUser();
+                pullToRefresh.setRefreshing(false);
+            }
+        });
+    }
+
+
+    private void fetchFollowingForAUser() {
+        try {
+            myRef = database.getReference("followingForAUser").child(new OnlineUser().ONLINE_USER);
+            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (final DataSnapshot user_id : dataSnapshot.getChildren()) {
+                        fetchPost(user_id.getValue(String.class));
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }catch (Exception e){
+            Log.e("FeedFragment", e.getLocalizedMessage());
+        }
+    }
+
+    private void fetchPost(String user_id) {
+        try {
+            myRef = database.getReference("post");
+            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    postId.clear();
+                    postArrayListBuffer.clear();
+                    for (DataSnapshot post : dataSnapshot.getChildren()) {
+                        postArrayListBuffer.add(post.getValue(Post.class));
+                        postId.add(post.getKey());
+                        fetchProfile(post.child("owner").getValue(String.class));
+                    }
+                    total_post = postArrayListBuffer.size();
+                    onScrollLoadItem();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }catch (Exception e){
+            Log.e("FeedFragment", e.getLocalizedMessage());
+        }
+    }
+
+
+    private void onScrollLoadItem() {
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView absListView, int i) {
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                int lastInScreen = firstVisibleItem + visibleItemCount;
+                if (lastInScreen == totalItemCount) {
+                    loadMore();
+                }
+            }
+        });
+    }
+
+
+    private void loadMore() {
+        if (current_visible_item >= total_post) {
+            return;
+        }
+        if (total_post - current_visible_item > limit_post) {
+            for (int position = 0; position < limit_post; position++) {
+                postArrayList.add(postArrayListBuffer.get(current_visible_item));
+                current_visible_item++;
+            }
+        } else {
+            for (int position = 0; position < inventory_post; position++) {
+                postArrayList.add(postArrayListBuffer.get(current_visible_item));
+                current_visible_item++;
+            }
+        }
+        inventory_post = total_post - current_visible_item;
+        feedAdapter.notifyDataSetChanged();
+    }
+
+    private void fetchProfile(String user_id) {
+        try {
+            myRef = database.getReference("profile").child(user_id);
+            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    profile.add(dataSnapshot.getValue(ProfileForFeed.class));
+                    fetchLike();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }catch (Exception e){
+            Log.e("FeedFragment", e.getLocalizedMessage());
+        }
+    }
+
+    private void fetchLike() {
+        try {
+            myRef = database.getReference("like");
+            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    likeCountArrayList.clear();
+                    for (String post_id : postId) {
+                        int likeCount = 0;
+                        for (DataSnapshot user_id_like_this_post : dataSnapshot.child(post_id).child("by").getChildren()) {
+                            likeCount++;
+                        }
+                        likeCountArrayList.add(likeCount + "");
+                    }
+                    fetchComment();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }catch (Exception e){
+            Log.e("FeedFragment", e.getLocalizedMessage());
+        }
+    }
+
+    private void fetchComment() {
+        try {
+            myRef = database.getReference("comment");
+            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    commentCountArrayList.clear();
+                    for (final String post_id : postId) {
+                        int commentCount = 0;
+                        for (DataSnapshot user_id_like_this_post : dataSnapshot.child(post_id).getChildren()) {
+                            commentCount++;
+                        }
+                        commentCountArrayList.add(commentCount + "");
+                    }
+                    renderUI();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }catch (Exception e){
+            Log.e("FeedFragment", e.getLocalizedMessage());
+        }
 
     }
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        Log.d("FeedFragment", String.valueOf(isVisibleToUser));
-        if (isVisibleToUser) {
-            getFragmentManager()
-                    .beginTransaction()
-                    .detach(this)
-                    .attach(this)
-                    .commit();
-        } else {
-            clearStack();
-        }
+
+    private void renderUI() {
+        feedAdapter.notifyDataSetChanged();
+        Parcelable state = listView.onSaveInstanceState();
+        listView.setAdapter(feedAdapter);
+        listView.onRestoreInstanceState(state);
+
     }
 
     @Nullable
@@ -92,299 +263,4 @@ public class FeedFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_feed, container, false);
     }
-
-
-    private void fetchFollowingForAUser() {
-        myRef = database.getReference("followingForAUser").child(ONLINE_USER);
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                followingForAUser.clear();
-                for (DataSnapshot obj : dataSnapshot.getChildren()) {
-                    followingForAUser.add(obj.getValue(String.class));
-                }
-
-                //When New Follow and Unfollow
-                fetchPost();
-
-//                feedAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e("FeedFragment", databaseError.getMessage().toString());
-            }
-        });
-
-    }
-
-    private void fetchPost() {
-        Query myRef = database.getReference("post");
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (int position = 0; position < followingForAUser.size(); position++) {
-                    if (position == 0) {
-                        posts.clear();
-                        postId.clear();
-
-                    }
-                    for (DataSnapshot obj : dataSnapshot.getChildren()) {
-                        if (obj.child("owner").getValue(String.class).equals(followingForAUser.get(position))) {
-                            posts.add(obj.getValue(Post.class));
-                            postId.add(obj.getKey());
-                        }
-                    }
-                }
-                TOTAL_POST = posts.size();
-                Log.d("FeedFragment", Integer.toString(TOTAL_POST));
-                onScrollToLastItem();
-                pullToRefresh();
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e("FeedFragment", databaseError.getMessage().toString());
-            }
-        });
-
-    }
-
-
-    private void fetchProfile() {
-        //Child ให้ใส่ User ที่เป็นคน Login เพื่อดู User คนนี้กดติดตามใคร
-        myRef = database.getReference().child("profile");
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                profiles.clear();
-                for (Post user_id : posts_for_render) {
-                    profiles.add(dataSnapshot.child(user_id.getOwner()).getValue(ProfileForFeed.class));
-                }
-                fetchComment();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e("FeedFragment", databaseError.getMessage());
-            }
-        });
-    }
-
-    private void fetchComment() {
-        //Child ให้ใส่ User ที่เป็นคน Login เพื่อดู User คนนี้กดติดตามใคร
-        myRef = database.getReference().child("comment");
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                comments.clear();
-                for (String str : postId_for_render) {
-                    int count = 0;
-                    for (DataSnapshot obj : dataSnapshot.child(str).getChildren()) {
-                        count++;
-                    }
-                    comments.add(count + "");
-                }
-                renderPost();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e("FeedFragment", databaseError.getMessage());
-            }
-        });
-    }
-
-
-    private void fetchLikeCount() {
-        myRef = database.getReference("like");
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                likeCout.clear();
-                for (int position = 0; position < postId_for_render.size(); position++) {
-                    String postIdStr = dataSnapshot.child(postId_for_render.get(position)).getKey().toString();
-                    int count = 0;
-                    for (DataSnapshot obj : dataSnapshot.child(postIdStr).child("by").getChildren()) {
-                        count++;
-                    }
-                    likeCout.add(count + "");
-
-
-                }
-
-                fetchProfile();
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-    }
-
-
-    private void sortPost() {
-        Collections.sort(posts, new Comparator<Post>() {
-            @Override
-            public int compare(Post o1, Post o2) {
-                if (o1.getTimestamp() == o2.getTimestamp())
-                    return 0;
-
-                if (o1.getTimestamp() < o2.getTimestamp())
-                    return 1;
-                else
-                    return -1;
-            }
-        });
-    }
-
-    private boolean loadMore() {
-        if (CURRENT_VISIBLE_ITEM >= TOTAL_POST) {
-            return false;
-        }
-        if (TOTAL_POST - CURRENT_VISIBLE_ITEM > LIMIT_POST_PER_SCROLL) {
-            for (int position = 0; position < LIMIT_POST_PER_SCROLL; position++) {
-                posts_for_render.add(posts.get(CURRENT_VISIBLE_ITEM));
-                //Add Post Id Str to postId_for_render
-                postId_for_render.add(postId.get(CURRENT_VISIBLE_ITEM));
-                CURRENT_VISIBLE_ITEM++;
-            }
-        } else {
-            for (int position = 0; position < INVENTORY_POST; position++) {
-                posts_for_render.add(posts.get(CURRENT_VISIBLE_ITEM));
-                //Add Post Id Str to postId_for_render
-                postId_for_render.add(postId.get(CURRENT_VISIBLE_ITEM));
-                CURRENT_VISIBLE_ITEM++;
-            }
-        }
-        INVENTORY_POST = TOTAL_POST - CURRENT_VISIBLE_ITEM;
-        return true;
-    }
-
-    private void updatePost() {
-        posts_for_render.clear();
-        postId_for_render.clear();
-        CURRENT_VISIBLE_ITEM = 0;
-        if (TOTAL_POST - CURRENT_VISIBLE_ITEM > LIMIT_POST_PER_SCROLL) {
-            for (int position = 0; position < LIMIT_POST_PER_SCROLL; position++) {
-                posts_for_render.add(posts.get(CURRENT_VISIBLE_ITEM));
-                //Add Post Id Str to postId_for_render
-                postId_for_render.add(postId.get(CURRENT_VISIBLE_ITEM));
-                CURRENT_VISIBLE_ITEM++;
-            }
-        } else {
-            for (int position = 0; position < TOTAL_POST; position++) {
-                posts_for_render.add(posts.get(CURRENT_VISIBLE_ITEM));
-                //Add Post Id Str to postId_for_render
-                postId_for_render.add(postId.get(CURRENT_VISIBLE_ITEM));
-                CURRENT_VISIBLE_ITEM++;
-            }
-        }
-    }
-
-    //EVENT
-    private void pullToRefresh() {
-        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-
-//                clearStack();
-                feedAdapter.clear();
-                updatePost();
-                fetchLikeCount();
-                pullToRefresh.setRefreshing(false);
-            }
-        });
-    }
-
-
-    private void onScrollToLastItem() {
-        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                int lastInScreen = firstVisibleItem + visibleItemCount;
-                if (lastInScreen == totalItemCount) {
-                    if (loadMore()) {
-                        fetchLikeCount();
-                    }
-                }
-            }
-        });
-    }
-
-    private void onClickItem() {
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                //Send Post Obj
-                PostViewFragment obj;
-                FragmentManager fm;
-                FragmentTransaction ft;
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("post", feedAdapter.getItem(position));
-                fm = getActivity().getSupportFragmentManager();
-                ft = fm.beginTransaction();
-                obj = new PostViewFragment();
-                obj.setArguments(bundle);
-                ft.replace(R.id.main_view, obj);
-                ft.commit();
-            }
-        });
-
-    }
-
-    //RENDER UI
-    private void renderPost() {
-        listView.setDivider(null);
-        if (getActivity() != null) {
-            feedAdapter = new FeedAdapter(
-                    getActivity(),
-                    R.layout.feed_crad_view,
-                    posts_for_render,
-                    likeCout,
-                    profiles,
-                    postId_for_render,
-                    ONLINE_USER,
-                    comments
-            );
-
-
-            // Save the ListView state (= includes scroll position) as a Parceble
-            Parcelable state = listView.onSaveInstanceState();
-            // e.g. set new items
-            listView.setAdapter(feedAdapter);
-            // Restore previous state (including selected item index and scroll position)
-            listView.onRestoreInstanceState(state);
-            onClickItem();
-
-            feedAdapter.notifyDataSetChanged();
-        }
-    }
-
-    public void clearStack() {
-        //Here we are clearing back stack fragment entries
-        int backStackEntry = getFragmentManager().getBackStackEntryCount();
-        if (backStackEntry > 0) {
-            for (int i = 0; i < backStackEntry; i++) {
-                getFragmentManager().popBackStackImmediate();
-            }
-        }
-        //Here we are removing all the fragment that are shown here
-        if (getFragmentManager().getFragments() != null && getFragmentManager().getFragments().size() > 0) {
-            for (int i = 0; i < getFragmentManager().getFragments().size(); i++) {
-                Fragment mFragment = getFragmentManager().getFragments().get(i);
-                if (mFragment != null) {
-                    getFragmentManager().beginTransaction().remove(mFragment).commit();
-                }
-            }
-        }
-    }
-
-
 }
