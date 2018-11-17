@@ -51,6 +51,7 @@ public class FeedFragment extends Fragment {
     private ArrayList<String> postId = new ArrayList<>();
     private ArrayList<String> commentCountArrayList = new ArrayList<>();
     private ArrayList<String> userIdFollowing = new ArrayList<>();
+    private ArrayList<String> userIdforRender = new ArrayList<>();
 
 
     //List View
@@ -147,15 +148,18 @@ public class FeedFragment extends Fragment {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     postId.clear();
                     postArrayListBuffer.clear();
+                    userIdforRender.clear();
+
                     for (String userId : userIdFollowing) {
                         for (DataSnapshot post : dataSnapshot.getChildren()) {
                             if (post.child("owner").getValue(String.class).equals(userId)) {
                                 postArrayListBuffer.add(post.getValue(Post.class));
                                 postId.add(post.getKey());
-                                fetchProfile(post.child("owner").getValue(String.class));
+                                userIdforRender.add(post.child("owner").getValue(String.class));
                             }
                         }
                     }
+                    fetchProfile();
                 }
 
                 @Override
@@ -205,14 +209,16 @@ public class FeedFragment extends Fragment {
         feedAdapter.notifyDataSetChanged();
     }
 
-    private void fetchProfile(String user_id) {
+    private void fetchProfile() {
         try {
-            profile.clear();
-            myRef = database.getReference("profile").child(user_id);
+            myRef = database.getReference("profile");
             myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    profile.add(dataSnapshot.getValue(ProfileForFeed.class));
+                    profile.clear();
+                    for(String user_id : userIdforRender) {
+                        profile.add(dataSnapshot.child(user_id).getValue(ProfileForFeed.class));
+                    }
                     fetchLike();
                 }
 
