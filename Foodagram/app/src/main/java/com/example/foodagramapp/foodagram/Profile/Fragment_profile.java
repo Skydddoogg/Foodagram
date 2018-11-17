@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.LongDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -35,6 +36,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import static com.nostra13.universalimageloader.core.ImageLoader.TAG;
@@ -42,13 +44,18 @@ import static com.nostra13.universalimageloader.core.ImageLoader.TAG;
 public class Fragment_profile extends Fragment {
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private DatabaseReference myPostRef, myProfileRef, profileNameRef;
+    private DatabaseReference myPostRef, myProfileRef;
     private Adapter_profile profileAdapter;
     private TextView profileNameTextView, usernameTextView, descriptionTextView;
     private ImageView mockAnotherProfile,profileImage;
+    private TextView followingTextView, followerTextView;
     private String menuName, foodDescription, owner, location, price, time, menuImage;
-    private String anotherName, anotherUserName , anotherBirthDate, anotherSex , anotherEmail, anotherProfileImage
-            , anotherDescription, anotherUserUid;
+    private String  anotherBirthDate, anotherSex , anotherProfileImage;
+    private String anotherEmail = "";
+    private String anotherUserName = "";
+    private String anotherName = "";
+    private String anotherUserUid = "";
+    private String anotherDescription = "";
     private String name, username, profileDescription;
     private Button editProfileBtn;
     private Model_profile exampleInfo;
@@ -57,6 +64,7 @@ public class Fragment_profile extends Fragment {
     private FirebaseUser mUser;
     private ConstraintLayout followBlock;
     private Boolean isAnotherUser;
+    private Boolean isFollowed;
 //    Model_profile exampleInfo = new Model_profile("Pizza", "SkyDogg" , "50", "IT KMITL");
 
     @Nullable
@@ -71,8 +79,11 @@ public class Fragment_profile extends Fragment {
 //        profileInfo.add(exampleInfo);
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
-        initProfileRef();
-        initPostRef();
+//        initProfileRef();
+
+
+
+
 
 
 
@@ -82,6 +93,9 @@ public class Fragment_profile extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initUIComponent();
+
+
+
 
         Bundle bundle = getArguments();
         if (bundle != null){
@@ -96,25 +110,35 @@ public class Fragment_profile extends Fragment {
             anotherUserUid = profile.getUserId();
             //Get user UID and compare it with CurrentUserId
             Log.d("ProfileFragment", "User ID = " + anotherUserUid);
+            Log.d("ProfileFragment", "OwnerUser ID = " + mUser.getUid());
+                initAnotherPostRef();
+                isAnotherUser = true;
+                usernameTextView.setText(anotherUserName);
+                profileNameTextView.setText(anotherName);
+                descriptionTextView.setText(anotherDescription);
 
+                
+
+                //THIS IS ANOTHER PERSON's PROFILE PAGE
+            //GET if Current User is Following Another User
+            checkFollowed();
+            setFollowBtn();
+
+
+            //IF current user followed antoher user , When click on button , DELETE a row on FOLLOWING[CurrentUser -> anotherPerson]
+            //AT THE SAME TIME, delete currentUser in anotherPerson FOLLOWER [anotherPerson -> CurrentUser]
+
+
+
+            //IF current user isn't followed , when clicked, Add another user in FOLLOWING [CurrentUser -> anotherPerson]
+            //AT THE SAME TIME, add currentUser in to anotherPerson FOLLOWER [anotherPerson -> CurrentUser]
+
+
+
+        }else {
+            initProfileRef();
+            initPostRef();
         }
-
-        if(mUser.getUid().equals(anotherUserUid)){
-
-            isAnotherUser = false;
-
-            Log.i("UID", "Same user");
-            Log.i("UID", anotherName);
-            Log.i("UID", anotherUserName);
-            Log.i("UID", anotherUserUid);
-
-
-        }else{
-            isAnotherUser = true;
-            Log.i("UID", "Another user");
-
-        }
-
 
 
 
@@ -165,6 +189,105 @@ public class Fragment_profile extends Fragment {
 
     }
 
+    public void checkFollowed(){
+        DatabaseReference refFollowing = database.getReference("/followingForAUser/");
+        Log.i("Following", "Current UID" + mUser.getUid());
+        refFollowing.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot db: dataSnapshot.getChildren()){
+                    Log.i("Following" , "CHECK");
+                    if(db.child(mUser.getUid()).getValue() != null){
+                        if(db.child(mUser.getUid()).getValue(String.class).equals(anotherUserUid)){
+                            editProfileBtn.setText("ติดตามแล้ว");
+                            isFollowed = true;
+                            break;
+                        }else{
+                            editProfileBtn.setText("ติดตาม");
+                            isFollowed = false;
+                            break;
+                        }
+                    }else{
+                        editProfileBtn.setText("ติดตาม");
+                        isFollowed = false;
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void setFollowBtn(){
+
+        editProfileBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+
+                    DatabaseReference refUnfollower = FirebaseDatabase.getInstance().getReference("followerForAUser");
+                    DatabaseReference refUnfollowing = FirebaseDatabase.getInstance().getReference("followingForAUser");
+
+                    if (isFollowed) {
+
+                        refUnfollower.child(anotherUserUid)
+                                .orderByValue().equalTo(mUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                                    String value = snap.getValue(String.class);
+                                    String key = snap.getKey();
+                                    dataSnapshot.getRef().removeValue();
+                                    Log.d(TAG, "KEY = " + key);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+                        refUnfollowing.child(mUser.getUid())
+                                .orderByValue().equalTo(anotherUserUid).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                                    String value = snap.getValue(String.class);
+                                    String key = snap.getKey();
+                                    dataSnapshot.getRef().removeValue();
+                                    Log.d(TAG, "KEY = " + key);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                        isFollowed = false;
+                        editProfileBtn.setText("ติดตาม");
+
+                    } else {
+
+                        refUnfollower.child(anotherUserUid).push().setValue(mUser.getUid());
+                        refUnfollowing.child(mUser.getUid()).push().setValue(anotherUserUid);
+                        editProfileBtn.setText("ติดตามแล้ว");
+                        isFollowed = true;
+
+                    }
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
     public void initUIComponent(){
         editProfileBtn =  getView().findViewById(R.id.profile_edit_profile);
         profileImage = getView().findViewById(R.id.profile_image);
@@ -172,6 +295,8 @@ public class Fragment_profile extends Fragment {
         usernameTextView = getView().findViewById(R.id.profile_username);
         descriptionTextView = getView().findViewById(R.id.profile_description);
         followBlock = getView().findViewById(R.id.profile_follow_block);
+        followingTextView = getView().findViewById(R.id.profile_following_amount);
+        followerTextView = getView().findViewById(R.id.profile_follower_amount);
 //        mockAnotherProfile = getView().findViewById(R.id.mock_anohter_profile);
 
         //        mockAnotherProfile.setOnClickListener(new View.OnClickListener() {
@@ -245,6 +370,60 @@ public class Fragment_profile extends Fragment {
             e.printStackTrace();
         }
     }
+
+    public void initAnotherPostRef(){
+            try {
+                myPostRef = database.getReference().child("post");
+                myPostRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for(final DataSnapshot db: dataSnapshot.getChildren()){
+                            //** Check data from person's profile
+
+                            if(db.child("owner").getValue().equals(anotherUserUid)) {
+                                myProfileRef = database.getReference().child("profile").child(anotherUserUid);
+                                myProfileRef.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        owner = (String) dataSnapshot.child("username").getValue();
+                                        menuName = (String) db.child("menuName").getValue();
+                                        foodDescription = (String) db.child("description").getValue();
+                                        location = (String) db.child("address").getValue();
+                                        price = (String) db.child("menuPrice").getValue().toString();
+                                        menuImage = (String) db.child("menuImageURL").getValue();
+                                        exampleInfo = new Model_profile(menuName, owner, price, location, foodDescription, menuImage);
+                                        profileInfo.add(exampleInfo);
+                                        profileAdapter.notifyDataSetChanged();
+
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+
+
+                                // ** Get profile's post
+
+
+
+                            }
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
 
     public void initProfileRef(){
         try {
