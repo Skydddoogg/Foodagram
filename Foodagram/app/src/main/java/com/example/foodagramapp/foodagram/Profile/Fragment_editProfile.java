@@ -69,6 +69,7 @@ public class Fragment_editProfile extends Fragment {
         initBirthDateField();
         initSaveBtn();
         initBackBtn();
+        initChangeProfileImgButton();
 
         try {
             myRef = database.getReference().child("profile");
@@ -135,6 +136,16 @@ public class Fragment_editProfile extends Fragment {
         emailField = getView().findViewById(R.id.edit_profile_email);
         headerUsernameField = getView().findViewById(R.id.edit_profile_header_username);
 
+    }
+
+    void initChangeProfileImgButton(){
+        TextView _change_profile_img = getView().findViewById(R.id.edit_profile_change_profile_img_btn);
+        _change_profile_img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 
     public void initSexField(){
