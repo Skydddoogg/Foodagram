@@ -1,6 +1,7 @@
 package com.example.foodagramapp.foodagram.Profile;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,10 +10,14 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.foodagramapp.foodagram.AuthenticationActivity;
+import com.example.foodagramapp.foodagram.LoginFragment;
+import com.example.foodagramapp.foodagram.MainActivity;
 import com.example.foodagramapp.foodagram.Profile.Fragment_profile;
 
 import com.example.foodagramapp.foodagram.R;
@@ -43,6 +48,7 @@ public class Fragment_editProfile extends Fragment {
     private String[] sex;
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
+    private Button logoutBtn;
 
     // Write a message to the database
 
@@ -69,6 +75,7 @@ public class Fragment_editProfile extends Fragment {
         initBirthDateField();
         initSaveBtn();
         initBackBtn();
+        initLogoutBtn();
         initChangeProfileImgButton();
 
         try {
@@ -191,6 +198,18 @@ public class Fragment_editProfile extends Fragment {
 
     }
 
+    public void initLogoutBtn(){
+        logoutBtn = getView().findViewById(R.id.edit_profile_logout_btn);
+        logoutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mAuth.signOut();
+                Intent mIntent = new Intent(getActivity(), AuthenticationActivity.class);
+                startActivity(mIntent);
+            }
+        });
+
+    }
     public void initSexpickerDialog(){
         AlertDialog.Builder builder =
                 new AlertDialog.Builder(getContext());

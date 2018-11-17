@@ -232,4 +232,10 @@
             android:hint="01/01/2018"
             android:background="@null"/>
     </LinearLayout>
+    <Button
+        android:id="@+id/edit_profile_logout_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign out"
+        android:layout_gravity="center"/>
 </LinearLayout>
