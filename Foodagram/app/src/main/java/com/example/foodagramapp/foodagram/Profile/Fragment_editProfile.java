@@ -1,6 +1,7 @@
 package com.example.foodagramapp.foodagram.Profile;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,7 +15,9 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.foodagramapp.foodagram.AuthenticationActivity;
 import com.example.foodagramapp.foodagram.LoginFragment;
+import com.example.foodagramapp.foodagram.MainActivity;
 import com.example.foodagramapp.foodagram.Profile.Fragment_profile;
 
 import com.example.foodagramapp.foodagram.R;
@@ -201,10 +204,8 @@ public class Fragment_editProfile extends Fragment {
             @Override
             public void onClick(View view) {
                 mAuth.signOut();
-                getActivity().getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.main_view, new LoginFragment())
-                        .commit();
+                Intent mIntent = new Intent(getActivity(), AuthenticationActivity.class);
+                startActivity(mIntent);
             }
         });
 
