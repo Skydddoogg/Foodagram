@@ -90,12 +90,12 @@ public class Fragment_editProfile extends Fragment {
                             String sex = (String) db.child("sex").getValue();
                             String birthDate = (String) db.child("dob").getValue();
 //                        writeNewUser(name, username, description, email, sex, birthDate, db);
-                            nameField.setHint(name);
-                            usernameField.setHint(username);
-                            descriptionField.setHint(description);
+                            nameField.setText(name);
+                            usernameField.setText(username);
+                            descriptionField.setText(description);
 
-                            sexField.setHint(sex);
-                            birthDateField.setHint(birthDate);
+                            sexField.setText(sex);
+                            birthDateField.setText(birthDate);
                             headerUsernameField.setText(username);
                             emailField.setText(email);
 

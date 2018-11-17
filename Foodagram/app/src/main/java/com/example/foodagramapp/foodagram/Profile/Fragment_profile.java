@@ -64,7 +64,7 @@ public class Fragment_profile extends Fragment {
     private FirebaseUser mUser;
     private ConstraintLayout followBlock;
     private Boolean isAnotherUser;
-    private Boolean isFollowed;
+    private Boolean isFollowed = false;
 //    Model_profile exampleInfo = new Model_profile("Pizza", "SkyDogg" , "50", "IT KMITL");
 
     @Nullable
@@ -186,29 +186,26 @@ public class Fragment_profile extends Fragment {
     }
 
     public void checkFollowed(){
-        DatabaseReference refFollowing = database.getReference("/followingForAUser/");
         Log.i("Following", "Current UID" + mUser.getUid());
+        DatabaseReference refFollowing = database.getReference("/followingForAUser/" + mUser.getUid());
         refFollowing.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                for(DataSnapshot db: dataSnapshot.getChildren()){
-                    Log.i("Following" , "CHECK");
-                    if(db.child(mUser.getUid()).getValue() != null){
-                        if(db.child(mUser.getUid()).getValue(String.class).equals(anotherUserUid)){
+                if (dataSnapshot.getValue() != null){
+                    for(DataSnapshot db: dataSnapshot.getChildren()){
+                        Log.i("Following", "Another User ID = " + anotherUserUid);
+                        Log.i("Following", "Matching ID = " + db.getValue().toString());
+
+                        if (anotherUserUid.equals(db.getValue().toString())){
                             editProfileBtn.setText("ติดตามแล้ว");
                             isFollowed = true;
                             break;
-                        }else{
-                            editProfileBtn.setText("ติดตาม");
-                            isFollowed = false;
-                            break;
                         }
-                    }else{
                         editProfileBtn.setText("ติดตาม");
-                        isFollowed = false;
-                        break;
                     }
+                } else {
+                    editProfileBtn.setText("ติดตาม");
                 }
             }
 
@@ -256,7 +253,7 @@ public class Fragment_profile extends Fragment {
                                 for (DataSnapshot snap : dataSnapshot.getChildren()) {
                                     String value = snap.getValue(String.class);
                                     String key = snap.getKey();
-                                    dataSnapshot.getRef().removeValue();
+                                    dataSnapshot.child(key).getRef().removeValue();
                                     Log.d(TAG, "KEY = " + key);
                                 }
                             }
