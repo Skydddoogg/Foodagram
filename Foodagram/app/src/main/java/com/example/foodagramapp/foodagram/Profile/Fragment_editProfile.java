@@ -1,21 +1,31 @@
 package com.example.foodagramapp.foodagram.Profile;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.foodagramapp.foodagram.Dialog.CustomLoadingDialog;
+import com.example.foodagramapp.foodagram.Post.ImageSelectorFragment;
 import com.example.foodagramapp.foodagram.Profile.Fragment_profile;
 
 import com.example.foodagramapp.foodagram.R;
+import com.example.foodagramapp.foodagram.Utils.Extension;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -24,10 +34,22 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.ByteArrayOutputStream;
+import java.sql.Timestamp;
+import java.util.UUID;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+
+import static com.example.foodagramapp.foodagram.Post.ImageSelectorFragment.getBitmap;
 
 
 public class Fragment_editProfile extends Fragment {
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private FirebaseStorage storage = FirebaseStorage.getInstance();
     private DatabaseReference myRef;
     String monthStr;
     String dayStr;
@@ -43,6 +65,14 @@ public class Fragment_editProfile extends Fragment {
     private String[] sex;
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
+
+    private Bitmap bitmap = getBitmap();
+    private CircleImageView profile_image;
+    private ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    private StorageReference storageRef = storage.getReference();
+    private String downloadImageURL;
+    private CustomLoadingDialog customLoadingDialog;
+    private String TAG = "ProfileEditFragment";
 
     // Write a message to the database
 
@@ -64,11 +94,15 @@ public class Fragment_editProfile extends Fragment {
         sex = new String[]{"ชาย", "หญิง"};
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
+        customLoadingDialog = new CustomLoadingDialog(this.getContext());
         initUIComponent();
         initSexField();
         initBirthDateField();
         initSaveBtn();
         initBackBtn();
+        if (bitmap != null){
+            setProfileImage();
+        }
         initChangeProfileImgButton();
 
         try {
@@ -138,12 +172,22 @@ public class Fragment_editProfile extends Fragment {
 
     }
 
+    private void setProfileImage(){
+        profile_image = getView().findViewById(R.id.profile_image);
+        profile_image.setImageBitmap(bitmap);
+    }
+
     void initChangeProfileImgButton(){
         TextView _change_profile_img = getView().findViewById(R.id.edit_profile_change_profile_img_btn);
         _change_profile_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                getActivity()
+                        .getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.main_view, new ImageSelectorFragment())
+                        .addToBackStack(null)
+                        .commit();
             }
         });
     }
@@ -216,16 +260,63 @@ public class Fragment_editProfile extends Fragment {
             @Override
             public void onClick(View view) {
                 //** Test save value mock
-                myRef.child(mUser.getUid()).child("username").setValue(usernameField.getText().toString());
-                myRef.child(mUser.getUid()).child("name").setValue(nameField.getText().toString());
-                myRef.child(mUser.getUid()).child("vitae").setValue(descriptionField.getText().toString());
-                myRef.child(mUser.getUid()).child("sex").setValue(sexField.getText().toString());
-                myRef.child(mUser.getUid()).child("dob").setValue(birthDateField.getText().toString());
-                myRef.child(mUser.getUid()).child("email").setValue(emailField.getText().toString());
+                try {
+                    customLoadingDialog.showDialog();
+
+                    myRef.child(mUser.getUid()).child("username").setValue(usernameField.getText().toString());
+                    myRef.child(mUser.getUid()).child("name").setValue(nameField.getText().toString());
+                    myRef.child(mUser.getUid()).child("vitae").setValue(descriptionField.getText().toString());
+                    myRef.child(mUser.getUid()).child("sex").setValue(sexField.getText().toString());
+                    myRef.child(mUser.getUid()).child("dob").setValue(birthDateField.getText().toString());
+                    myRef.child(mUser.getUid()).child("email").setValue(emailField.getText().toString());
+
+                    // Generate reference message for uploading image
+                    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                    String destination_directory = "profile_images";
+                    String refMessage = destination_directory + "/" + UUID.randomUUID().toString() + timestamp.toString() + ".jpg";
+
+                    // Compress image
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos);
+                    byte[] data = baos.toByteArray();
+
+                    // Upload to firebase storage
+                    final StorageReference ref = storageRef.child(refMessage);
+                    UploadTask uploadTask = ref.putBytes(data);
+
+                    uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                        @Override
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                            if (!task.isSuccessful()) {
+                                throw task.getException();
+                            }
+                            return ref.getDownloadUrl();
+                        }
+                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()){
+                                Uri downloadUrl = task.getResult();
+                                downloadImageURL = downloadUrl.toString(); // Image URL
+                                myRef.child(mUser.getUid()).child("profile_img_url").setValue(downloadImageURL);
+                                customLoadingDialog.dismissDialog();
+                                Log.d(TAG, "UPLOADED AN IMAGE");
+                            }else {
+                                customLoadingDialog.dismissDialog();
+                                Extension.toast(getActivity(), "เกิดข้อผิดพลาดในการอัปโหลดรูป");
+                                Log.d(TAG, "FAILED TO UPLOAD AN IMAGE");
+                            }
+                        }
+                    });
+
+
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
 
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.main_view, new Fragment_profile())
+                        .addToBackStack(null)
                         .commit();
             }
         });
@@ -238,6 +329,7 @@ public class Fragment_editProfile extends Fragment {
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.main_view, new Fragment_profile())
+                        .addToBackStack(null)
                         .commit();
             }
         });

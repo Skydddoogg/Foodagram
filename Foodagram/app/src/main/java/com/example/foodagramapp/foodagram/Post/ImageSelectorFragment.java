@@ -18,6 +18,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.foodagramapp.foodagram.Dialog.CustomLoadingDialog;
+import com.example.foodagramapp.foodagram.MainActivity;
+import com.example.foodagramapp.foodagram.Profile.Fragment_editProfile;
 import com.example.foodagramapp.foodagram.R;
 import com.example.foodagramapp.foodagram.Utils.Extension;
 import com.example.foodagramapp.foodagram.Utils.FilePaths;
@@ -65,6 +67,7 @@ public class ImageSelectorFragment extends Fragment {
     private boolean isSnappedToCenter = false;
     private String selectedFileName;
     private CustomLoadingDialog customLoadingDialog;
+    private boolean checkBackButtonState = false;
 
     @Nullable
     @Override
@@ -114,10 +117,22 @@ public class ImageSelectorFragment extends Fragment {
         btnRotate = view.findViewById(R.id.rotate_button);
         imageNotFound = view.findViewById(R.id.gallery_image_not_found);
 
-        // Add listener
+//        backBtn.setVisibility(View.INVISIBLE);
+
+        if (getFragmentManager().getBackStackEntryCount() != 0){
+            checkBackButtonState = true;
+//            backBtn.setVisibility(View.VISIBLE);
+            nextScreen.setText("ตกลง");
+        }
+
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (checkBackButtonState){
+                    getActivity().getSupportFragmentManager().popBackStack();
+                } else {
+                    startActivity(new Intent(getActivity(), MainActivity.class));
+                }
                 Log.d(TAG, "onClick: closing the ImageSelectorFragment.");
             }
         });
@@ -232,8 +247,15 @@ public class ImageSelectorFragment extends Fragment {
             handler.postDelayed(new Runnable() {
                 public void run() {
                     customLoadingDialog.dismissDialog();
-                    Intent intent = new Intent(getActivity(), AddPostActivity.class);
-                    startActivity(intent);
+                    if (checkBackButtonState){
+                        getActivity().getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.main_view, new Fragment_editProfile())
+                                .commit();
+                    }else {
+                        Intent intent = new Intent(getActivity(), AddPostActivity.class);
+                        startActivity(intent);
+                    }
                 }
             }, 1500);
         } catch (NullPointerException e) {

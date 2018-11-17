@@ -152,7 +152,7 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
                                     Log.d(TAG, "GO TO POST VIEW");
                                 } else {
                                     customLoadingDialog.dismissDialog();
-                                    Extension.toast(AddPostActivity.this, "Failed to upload an image");
+                                    Extension.toast(AddPostActivity.this, "เกิดข้อผิดพลาดในการอัปโหลดรูป");
                                     Log.d(TAG, "FAILED TO UPLOAD AN IMAGE");
                                 }
                             }
