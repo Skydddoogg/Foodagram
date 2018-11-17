@@ -261,9 +261,9 @@ public class Fragment_profile extends Fragment {
             public void onClick(View view) {
                 try {
 
-                    DatabaseReference refUnfollower = FirebaseDatabase.getInstance().getReference("followerForAUser");
+                    final DatabaseReference refUnfollower = FirebaseDatabase.getInstance().getReference("followerForAUser");
                     DatabaseReference refUnfollowing = FirebaseDatabase.getInstance().getReference("followingForAUser");
-
+                    final DatabaseReference refFollowing = FirebaseDatabase.getInstance().getReference("followingForAUser");
                     if (isFollowed) {
 
                         refUnfollower.child(anotherUserUid)
@@ -271,11 +271,15 @@ public class Fragment_profile extends Fragment {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 for (DataSnapshot snap : dataSnapshot.getChildren()) {
+
                                     String value = snap.getValue(String.class);
                                     String key = snap.getKey();
                                     dataSnapshot.getRef().removeValue();
-                                    Log.d(TAG, "KEY = " + key);
+//                                    Log.d(TAG, "Children: " + snap.getChildrenCount());
+//                                    followerTextView.setText(""+ dataSnapshot.getChildrenCount());
+
                                 }
+
                             }
 
                             @Override
@@ -291,8 +295,9 @@ public class Fragment_profile extends Fragment {
                                 for (DataSnapshot snap : dataSnapshot.getChildren()) {
                                     String value = snap.getValue(String.class);
                                     String key = snap.getKey();
+
                                     dataSnapshot.child(key).getRef().removeValue();
-                                    Log.d(TAG, "KEY = " + key);
+
                                 }
                             }
 
@@ -313,8 +318,28 @@ public class Fragment_profile extends Fragment {
                             e.printStackTrace();
                         }
 
+
+
                         refUnfollower.child(anotherUserUid).push().setValue(mUser.getUid());
                         refUnfollowing.child(mUser.getUid()).push().setValue(anotherUserUid);
+
+//                        refUnfollower.child(anotherUserUid)
+//                                .orderByValue().equalTo(mUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+//                            @Override
+//                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                                for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//                                    followerTextView.setText("" + dataSnapshot.getChildrenCount());
+//                                }
+//
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                            }
+//                        });
+
+
                         editProfileBtn.setText("ติดตามแล้ว");
                         isFollowed = true;
 
