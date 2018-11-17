@@ -109,40 +109,49 @@ public class CommentFragment extends Fragment {
     }
 
     public void fetchComment(){
-        myfetchCommentRef = database.getReference("comment").child(CURRENT_POST);
-        myfetchCommentRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                comment.clear();
-                for (DataSnapshot child : dataSnapshot.getChildren()){
-                    comment.add(child.getValue(Comment.class));
-                    fetchProfile();
+        try {
+            myfetchCommentRef = database.getReference("comment").child(CURRENT_POST);
+            myfetchCommentRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    comment.clear();
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        comment.add(child.getValue(Comment.class));
+                        fetchProfile();
+                    }
                 }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d(TAG, databaseError.getMessage());
-            }
-        });
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.d(TAG, databaseError.getMessage());
+                }
+            });
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void fetchProfile(){
-        myfetchProfileRef = database.getReference("profile");
-        myfetchProfileRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                renderPost();
-                profiles.clear();
-                for (Comment user_id : comment) {
-                    profiles.add(dataSnapshot.child(user_id.getUser_id()).getValue(ProfileForFeed.class));
+        try {
+            myfetchProfileRef = database.getReference("profile");
+            myfetchProfileRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    renderPost();
+                    profiles.clear();
+                    for (Comment user_id : comment) {
+                        profiles.add(dataSnapshot.child(user_id.getUser_id()).getValue(ProfileForFeed.class));
+                    }
                 }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d(TAG, databaseError.getMessage());
-            }
-        });
 
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.d(TAG, databaseError.getMessage());
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void renderPost() {
@@ -178,33 +187,46 @@ public class CommentFragment extends Fragment {
     }
 
     private void pushComment(final String commentText, final Long commentTimeStamp){
-        myCommentRef = database.getReference("comment").child(CURRENT_POST);
-        commentClass = new Comment(CURRENT_USER, commentText, commentTimeStamp.doubleValue());
-        myCommentRef.push().setValue(commentClass);
-        Log.d(TAG, "PUSH COMMENT");
+        try {
+            myCommentRef = database.getReference("comment").child(CURRENT_POST);
+            commentClass = new Comment(CURRENT_USER, commentText, commentTimeStamp.doubleValue());
+            myCommentRef.push().setValue(commentClass);
+            Log.d(TAG, "PUSH COMMENT");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void pushNotification(String content, Long commentTimeStamp){
-        myNotiRef = database.getReference("notification").child(POST_OWNER);
-        Notification notification = new Notification(content, CURRENT_USER, CURRENT_POST, "comment", 0.0, commentTimeStamp.doubleValue());
-        myNotiRef.push().setValue(notification);
-        Log.d(TAG, "PUSH NOTIFICATION");
+        try {
+            myNotiRef = database.getReference("notification").child(POST_OWNER);
+            Notification notification = new Notification(content, CURRENT_USER, CURRENT_POST, "comment", 0.0, commentTimeStamp.doubleValue());
+            myNotiRef.push().setValue(notification);
+            Log.d(TAG, "PUSH NOTIFICATION");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void  profileThumbnail(){
-        userThumbnail = (ImageView) getView().findViewById(R.id.comment_form_user_thumbnail);
-        myThumbnailRef = database.getReference("profile").child(CURRENT_USER);
-        myThumbnailRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                thumbnailUrl = dataSnapshot.child("profile_img_url").getValue(String.class);
-                Picasso.get().load(thumbnailUrl).into(userThumbnail);
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.i(TAG, databaseError.getMessage());
-            }
-        });
+        try {
+            userThumbnail = (ImageView) getView().findViewById(R.id.comment_form_user_thumbnail);
+            myThumbnailRef = database.getReference("profile").child(CURRENT_USER);
+            myThumbnailRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    thumbnailUrl = dataSnapshot.child("profile_img_url").getValue(String.class);
+                    Picasso.get().load(thumbnailUrl).into(userThumbnail);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.i(TAG, databaseError.getMessage());
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }
