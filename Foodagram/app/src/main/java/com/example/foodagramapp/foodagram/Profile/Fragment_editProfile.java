@@ -9,10 +9,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.foodagramapp.foodagram.LoginFragment;
 import com.example.foodagramapp.foodagram.Profile.Fragment_profile;
 
 import com.example.foodagramapp.foodagram.R;
@@ -43,6 +45,7 @@ public class Fragment_editProfile extends Fragment {
     private String[] sex;
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
+    private Button logoutBtn;
 
     // Write a message to the database
 
@@ -69,6 +72,7 @@ public class Fragment_editProfile extends Fragment {
         initBirthDateField();
         initSaveBtn();
         initBackBtn();
+        initLogoutBtn();
         initChangeProfileImgButton();
 
         try {
@@ -191,6 +195,20 @@ public class Fragment_editProfile extends Fragment {
 
     }
 
+    public void initLogoutBtn(){
+        logoutBtn = getView().findViewById(R.id.edit_profile_logout_btn);
+        logoutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mAuth.signOut();
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.main_view, new LoginFragment())
+                        .commit();
+            }
+        });
+
+    }
     public void initSexpickerDialog(){
         AlertDialog.Builder builder =
                 new AlertDialog.Builder(getContext());
