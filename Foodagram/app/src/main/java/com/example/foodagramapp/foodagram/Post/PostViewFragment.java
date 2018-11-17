@@ -1,5 +1,6 @@
 package com.example.foodagramapp.foodagram.Post;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,11 +12,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.foodagramapp.foodagram.MainActivity;
 import com.example.foodagramapp.foodagram.OnlineUser;
 import com.example.foodagramapp.foodagram.Comment.CommentFragment;
 import com.example.foodagramapp.foodagram.Profile.Fragment_profile;
 import com.example.foodagramapp.foodagram.Profile.ProfileForFeed;
 import com.example.foodagramapp.foodagram.R;
+import com.google.firebase.FirebaseException;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -35,14 +38,15 @@ public class PostViewFragment extends Fragment{
     private ProfileForFeed profile, testProfile;
     private OnlineUser onlineUser = new OnlineUser();
     private String CURRENT_USER = onlineUser.ONLINE_USER;
-    private String POST_OWNER;
+    private String POST_OWNER, POST_ID;
+    private DatabaseReference mDatabase;
 
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initButtons();
         initViews();
+        initButtons();
 
         database = FirebaseDatabase.getInstance();
 
@@ -50,45 +54,50 @@ public class PostViewFragment extends Fragment{
         if (bundle != null){
             post = bundle.getParcelable("post");
             POST_OWNER = post.getOwner();
+            POST_ID = post.getPostId();
             _content.setText(post.getDescription());
 
             Double timestamp = post.getTimestamp();
             _time.setText(getCountOfDays(timestamp.longValue()));
+            try {
+                // Get username
+                databaseReferenceForUsername = database.getReference("profile/" + post.getOwner());
+                databaseReferenceForUsername.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        profile = dataSnapshot.getValue(ProfileForFeed.class);
+                        _username.setText(profile.getUsername());
+                        Picasso.get().load(profile.getProfile_img_url()).into(_profileImageView);
 
-            // Get username
-            databaseReferenceForUsername = database.getReference("profile/" + post.getOwner());
-            databaseReferenceForUsername.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    profile = dataSnapshot.getValue(ProfileForFeed.class);
-                    _username.setText(profile.getUsername());
-                    Picasso.get().load(profile.getProfile_img_url()).into(_profileImageView);
+                        Bundle bundleForProfile = new Bundle();
+                        bundleForProfile.putParcelable("profile", profile);
+                        final Fragment_profile frag = new Fragment_profile();
+                        frag.setArguments(bundleForProfile);
+                        _profileImageView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.main_view, frag).commit();
+                                Log.d(TAG, "GO TO PROFILE");
+                            }
+                        });
 
-                    Bundle bundleForProfile = new Bundle();
-                    bundleForProfile.putParcelable("profile", profile);
-                    final Fragment_profile frag = new Fragment_profile();
-                    frag.setArguments(bundleForProfile);
-                    _profileImageView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.main_view, frag).commit();
-                            Log.d(TAG, "GO TO PROFILE");
-                        }
-                    });
+                        Log.d(TAG, "THE READ SUCCEEDED");
 
-                    Log.d(TAG, "THE READ SUCCEEDED");
+                    }
 
-                }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.d(TAG, "THE READ FAILED: " + databaseError.getMessage());
+                    }
+                });
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Log.d(TAG, "THE READ FAILED: " + databaseError.getMessage());
-                }
-            });
-
-            Picasso.get().load(post.getMenuImageURL()).into(_menuImageView);
-            Log.d(TAG, "POST OWNER: " + post.getOwner());
+                Picasso.get().load(post.getMenuImageURL()).into(_menuImageView);
+            } catch (Exception e){
+                e.printStackTrace();
+            }
         }
+
+        initDeleteButton();
     }
 
 
@@ -100,7 +109,6 @@ public class PostViewFragment extends Fragment{
 
     void initButtons(){
         initBackButton();
-        initDeleteButton();
         initViewCommentButton();
     }
 
@@ -115,20 +123,24 @@ public class PostViewFragment extends Fragment{
     }
 
     void initViewCommentButton(){
-        TextView _viewCommentBtn = getView().findViewById(R.id.post_view_comment_view_btn);
-        _viewCommentBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Bundle bundleForPostId = new Bundle();
-                bundleForPostId.putString("postId", post.getPostId());
-                bundleForPostId.putString("postOwner", post.getOwner());
-                CommentFragment frag = new CommentFragment();
-                frag.setArguments(bundleForPostId);
-                getActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.main_view, frag).commit();
-                Log.d(TAG, "POST ID = " + bundleForPostId.getString("postId"));
-                Log.d(TAG, "VIEW COMMENTS");
-            }
-        });
+        try {
+            TextView _viewCommentBtn = getView().findViewById(R.id.post_view_comment_view_btn);
+            _viewCommentBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Bundle bundleForPostId = new Bundle();
+                    bundleForPostId.putString("postId", post.getPostId());
+                    bundleForPostId.putString("postOwner", post.getOwner());
+                    CommentFragment frag = new CommentFragment();
+                    frag.setArguments(bundleForPostId);
+                    getActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.main_view, frag).commit();
+                    Log.d(TAG, "POST ID = " + bundleForPostId.getString("postId"));
+                    Log.d(TAG, "VIEW COMMENTS");
+                }
+            });
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     void initBackButton(){
@@ -136,6 +148,11 @@ public class PostViewFragment extends Fragment{
         _backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (getFragmentManager().getBackStackEntryCount() == 0){
+                    Intent intent = new Intent(getActivity(), MainActivity.class);
+                    startActivity(intent);
+                    Log.d(TAG, "BACK TO MAIN");
+                }
                 getActivity().getSupportFragmentManager().popBackStack();
                 Log.d(TAG, "BACK TO PREVIOUS PAGE");
             }
@@ -144,12 +161,20 @@ public class PostViewFragment extends Fragment{
 
     void initDeleteButton(){
         TextView _deleteBtn = getView().findViewById(R.id.post_view_delete_btn);
+        Log.d(TAG, "CURRENT USER = " + CURRENT_USER);
+        Log.d(TAG, "POST OWNER = " + POST_OWNER);
         if (CURRENT_USER.equals(POST_OWNER)){
+            _deleteBtn.setVisibility(View.VISIBLE);
             _deleteBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
-                    Log.d(TAG, "DELETE POST");
+                    try {
+                        mDatabase = FirebaseDatabase.getInstance().getReference();
+                        mDatabase.child("post").child(POST_ID).removeValue();
+                        Log.d(TAG, "DELETE POST");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             });
         } else {
