@@ -1,8 +1,10 @@
 package com.example.foodagramapp.foodagram.Profile;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +22,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.nostra13.universalimageloader.core.ImageLoader.TAG;
 
 public class Adapter_profile extends ArrayAdapter<Post> {
 
@@ -97,7 +101,17 @@ public class Adapter_profile extends ArrayAdapter<Post> {
         postTime.setText(getCountOfDays((long) profileInfo.get(position).getTimestamp()));
 
 
-
+        ConstraintLayout location_button_profile = profileItem.findViewById(R.id.location_button_profile);
+        location_button_profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Send Post Obj To Map XML
+                Intent intent = new Intent(getContext(), MapsMarkerActivity.class);
+                intent.putExtra("post",profileInfo.get(position));
+                getContext().startActivity(intent);
+//                Log.i(TAG, "GO TO LOCATION XML ---------- Profile" + profileInfo.get(position).getMenuName());
+            }
+        });
 
 
         return profileItem;
