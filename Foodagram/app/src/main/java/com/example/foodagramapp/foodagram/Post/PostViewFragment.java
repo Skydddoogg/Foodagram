@@ -221,8 +221,10 @@ public class PostViewFragment extends Fragment {
                     startActivity(intent);
                     Log.d(TAG, "BACK TO MAIN");
                 }
-                getActivity().getSupportFragmentManager().popBackStack();
-                Log.d(TAG, "BACK TO PREVIOUS PAGE");
+                else {
+                    getActivity().getSupportFragmentManager().popBackStack();
+                    Log.d(TAG, "BACK TO PREVIOUS PAGE");
+                }
             }
         });
     }

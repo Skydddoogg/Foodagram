@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.foodagramapp.foodagram.Dialog.CustomLoadingDialog;
+import com.example.foodagramapp.foodagram.MainActivity;
 import com.example.foodagramapp.foodagram.R;
 import com.example.foodagramapp.foodagram.Utils.Extension;
 import com.google.android.gms.common.ConnectionResult;
@@ -144,11 +145,13 @@ public class AddPostActivity extends AppCompatActivity implements GoogleApiClien
                                     downloadImageURL = downloadUrl.toString(); // Image URL
                                     addPostToDB(downloadImageURL);
                                     customLoadingDialog.dismissDialog();
-                                    Bundle bundle = new Bundle();
-                                    bundle.putParcelable("post", post);
-                                    PostViewFragment frag = new PostViewFragment();
-                                    frag.setArguments(bundle);
-                                    getSupportFragmentManager().beginTransaction().replace(R.id.main_view, frag).commit();
+                                    Intent intent = new Intent(AddPostActivity.this, MainActivity.class);
+                                    startActivity(intent);
+//                                    Bundle bundle = new Bundle();
+//                                    bundle.putParcelable("post", post);
+//                                    PostViewFragment frag = new PostViewFragment();
+//                                    frag.setArguments(bundle);
+//                                    getSupportFragmentManager().beginTransaction().replace(R.id.main_view, frag).commit();
                                     Log.d(TAG, "GO TO POST VIEW");
                                 } else {
                                     customLoadingDialog.dismissDialog();
