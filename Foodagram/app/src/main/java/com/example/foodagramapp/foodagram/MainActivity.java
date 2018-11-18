@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -15,10 +16,16 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.example.foodagramapp.foodagram.Discover.DiscoverFragment;
 import com.example.foodagramapp.foodagram.Feed.FeedFragment;
+import com.example.foodagramapp.foodagram.Notification.Notification;
 import com.example.foodagramapp.foodagram.Post.PostActivity;
 import com.example.foodagramapp.foodagram.Post.PostViewFragment;
 import com.example.foodagramapp.foodagram.Profile.Fragment_profile;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,6 +34,9 @@ public class MainActivity extends AppCompatActivity {
     private FeedFragment feedFragment;
     private DiscoverFragment discoverFragment;
     private Fragment_profile fragment_profile;
+    private NotificationFragment notificationFragment;
+    static AHBottomNavigation bottomNavigation;
+    static int notificationButtonPosition;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
 //        mViewPager.setCurrentItem(0);
 
         try {
-            AHBottomNavigation bottomNavigation = findViewById(R.id.bottom_navigation);
+            bottomNavigation = findViewById(R.id.bottom_navigation);
             bottomNavigation.bringToFront();
             bottomNavigation.invalidate();
             final ImageView plusImg = findViewById(R.id.imageView);
@@ -60,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
             String iconInActiveColor = "#5a6b84";
             int defaultIconButtonPosition = 0;
             int addImgButtonPosition = 2;
-            int notificationButtonPosition = 3;
+            notificationButtonPosition = 3;
 
             // Add icon to navbar (null because we don't need icon title)
             bottomNavigation.addItem(new AHBottomNavigationItem(null, R.drawable.ic_home));
@@ -80,7 +90,28 @@ public class MainActivity extends AppCompatActivity {
             bottomNavigation.setTitleState(AHBottomNavigation.TitleState.ALWAYS_SHOW);
 
             // Add or remove notification for each item
-            bottomNavigation.setNotification("", notificationButtonPosition);
+            try {
+
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference myRef = database.getReference("notification/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
+                myRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot child : dataSnapshot.getChildren()) {
+                            if (child.getValue(Notification.class).getViewed() == new Double(0)) {
+                                bottomNavigation.setNotification(" ", notificationButtonPosition);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            } catch (Exception e){
+                e.printStackTrace();
+            }
 
             // Set current item programmatically
             bottomNavigation.setCurrentItem(defaultIconButtonPosition);
@@ -126,6 +157,11 @@ public class MainActivity extends AppCompatActivity {
                             //DISABLE THIS BUTTON BECAUSE REPLACE IT WITH IMAGEVIEW
                             break;
                         case 3:
+                            getSupportFragmentManager()
+                                    .beginTransaction()
+                                    .replace(R.id.main_view, notificationFragment)
+                                    .addToBackStack(null)
+                                    .commit();
                             Log.i("NAVBAR", "SELECT NOTIFICATION");
                             break;
                         case 4:
@@ -157,5 +193,7 @@ public class MainActivity extends AppCompatActivity {
         feedFragment = new FeedFragment();
         discoverFragment = new DiscoverFragment();
         fragment_profile = new Fragment_profile();
+        notificationFragment = new NotificationFragment();
     }
+
 }

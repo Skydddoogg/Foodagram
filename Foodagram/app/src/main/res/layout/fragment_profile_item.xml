@@ -50,7 +50,7 @@
 
             <ImageView
                 android:id="@+id/menu_image"
-                android:layout_width="match_parent"
+                android:layout_width="354dp"
                 android:layout_height="0dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/img_1"
@@ -114,7 +114,10 @@
 
                             <TextView
                                 android:id="@+id/checkin_location"
-                                android:layout_width="wrap_content"
+                                android:layout_width="130dp"
+                                android:maxLines="1"
+                                android:maxLength="50"
+                                android:ellipsize="end"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="3dp"
                                 android:text="Salmonburg"
@@ -234,13 +237,18 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-
+                <ImageView
+                    android:tint="#E3E3E3"
+                    android:id="@+id/like_button_profile_item"
+                    android:src="@drawable/ic_heart_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
                 <TextView
+                    android:layout_marginLeft="5dp"
+                    android:id="@+id/like_count_profile_item"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:drawablePadding="10dp"
-                    android:drawableStart="@drawable/ic_heart_icon"
-                    android:text="690" />
+                    android:text="0" />
             </LinearLayout>
 
             <LinearLayout
@@ -249,6 +257,7 @@
                 android:layout_marginLeft="25dp">
 
                 <TextView
+                    android:id="@+id/comment_profile_item"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:drawablePadding="10dp"

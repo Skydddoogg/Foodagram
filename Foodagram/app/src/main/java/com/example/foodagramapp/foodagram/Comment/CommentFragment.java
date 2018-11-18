@@ -16,7 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.foodagramapp.foodagram.Notification.Notification;
+import com.example.foodagramapp.foodagram.Notification.NotificationModel;
 import com.example.foodagramapp.foodagram.OnlineUser;
 import com.example.foodagramapp.foodagram.Profile.ProfileForFeed;
 import com.example.foodagramapp.foodagram.R;
@@ -66,6 +66,7 @@ public class CommentFragment extends Fragment {
             POST_OWNER = bundle.getString("postOwner");
             Log.d(TAG, "POST ID = " + CURRENT_POST);
         }
+        Log.i("TEST", "COMMENT ////");
 
         fetchComment();
         profileThumbnail();
@@ -200,7 +201,7 @@ public class CommentFragment extends Fragment {
     private void pushNotification(String content, Long commentTimeStamp){
         try {
             myNotiRef = database.getReference("notification").child(POST_OWNER);
-            Notification notification = new Notification(content, CURRENT_USER, CURRENT_POST, "comment", 0.0, commentTimeStamp.doubleValue());
+            NotificationModel notification = new NotificationModel(content, CURRENT_USER, CURRENT_POST, "comment", 0.0, commentTimeStamp.doubleValue());
             myNotiRef.push().setValue(notification);
             Log.d(TAG, "PUSH NOTIFICATION");
         } catch (Exception e){

@@ -45,7 +45,7 @@
                     app:layout_constraintBottom_toBottomOf="@id/gallery_top_bar_layout"
                     app:layout_constraintStart_toStartOf="@id/gallery_top_bar_layout"
                     android:layout_centerVertical="true"
-                    android:text="ย้อนกลับ"
+                    android:text="ยกเลิก"
                     android:fontFamily="@font/mitr"
                     android:textColor="#172D4D"
                     android:textSize="14dp" />

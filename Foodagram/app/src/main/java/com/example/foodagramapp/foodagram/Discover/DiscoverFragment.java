@@ -7,11 +7,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import com.example.foodagramapp.foodagram.Dialog.CustomLoadingDialog;
 import com.example.foodagramapp.foodagram.OnlineUser;
 import com.example.foodagramapp.foodagram.Tag.Tag;
 import com.example.foodagramapp.foodagram.Post.Post;
@@ -48,14 +50,19 @@ public class DiscoverFragment extends Fragment {
     private RecyclerView.Adapter mAdapter;
     private StaggeredGridLayoutManager mLayoutManager;
 
+    //Dialog
+    private CustomLoadingDialog customLoadingDialog;
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         searchBox = getView().findViewById(R.id.search_button);
         mRecyclerView = (RecyclerView) getView().findViewById(R.id.discoverRecycleViewMian);
-        if (getActivity()!=null) {
+        if (getActivity()!=null && posts.size() > 0 && owernProfile.size() > 0) {
             mAdapter = new DiscoverAdapter(posts, owernProfile, getActivity());
         }
+        customLoadingDialog = new CustomLoadingDialog(getContext());
+        customLoadingDialog.showDialog();
         mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         onClickSearchBox();
         fetchPost();
@@ -63,49 +70,60 @@ public class DiscoverFragment extends Fragment {
 
 
     private void fetchPost() {
-        myRef = database.getReference("post");
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                posts.clear();
-                postOwnerId.clear();
-                for (DataSnapshot obj : dataSnapshot.getChildren()) {
-                    if (!obj.child("owner").getValue(String.class).equals(ONLINE_USER)) {
-                        posts.add(obj.getValue(Post.class));
-                        postOwnerId.add(obj.child("owner").getValue() + "");
+        try {
+            myRef = database.getReference("post");
+            myRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    posts.clear();
+                    postOwnerId.clear();
+                    for (DataSnapshot obj : dataSnapshot.getChildren()) {
+                        if (!obj.child("owner").getValue(String.class).equals(ONLINE_USER)) {
+                            posts.add(obj.getValue(Post.class));
+                            postOwnerId.add(obj.child("owner").getValue() + "");
+                        }
                     }
+                    fetchProfile();
                 }
-                fetchProfile();
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
+        }catch (Exception e){
+            Log.e("DiscoverFragment", e.getLocalizedMessage());
+        }
     }
 
     private void fetchProfile() {
-        myRef = database.getReference("profile");
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                owernProfile.clear();
-                for (String ownerId : postOwnerId) {
-                    owernProfile.add(dataSnapshot.child(ownerId).getValue(ProfileForFeed.class));
+        try {
+            myRef = database.getReference("profile");
+            myRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    owernProfile.clear();
+                    for (String ownerId : postOwnerId) {
+                        owernProfile.add(dataSnapshot.child(ownerId).getValue(ProfileForFeed.class));
+                    }
+                    randomItem();
                 }
-                randomItem();
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
+        }catch (Exception e){
+            Log.e("DiscoverFragment", e.getLocalizedMessage());
+        }
     }
 
     private void renderPost() {
         if (getActivity()!=null) {
+            if(posts.size() > 0){
+                customLoadingDialog.dismissDialog();
+            }
             mRecyclerView.setAdapter(mAdapter);
             mRecyclerView.setLayoutManager(mLayoutManager);
         }

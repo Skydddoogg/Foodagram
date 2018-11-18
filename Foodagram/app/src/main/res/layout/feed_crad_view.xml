@@ -50,7 +50,7 @@
 
             <ImageView
                 android:id="@+id/menu_image"
-                android:layout_width="match_parent"
+                android:layout_width="354dp"
                 android:layout_height="0dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/img_1"
@@ -89,6 +89,7 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <TextView
+                        android:fontFamily="@font/mitr"
                         android:id="@+id/menu_name_post"
                         android:layout_width="120dp"
                         android:layout_height="wrap_content"
@@ -114,6 +115,7 @@
 
                             <TextView
                                 android:id="@+id/location"
+                                android:fontFamily="@font/mitr"
                                 android:layout_width="130dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="3dp"
@@ -142,12 +144,14 @@
                     <TextView
                         android:layout_width="wrap_content"
 
+                        android:fontFamily="@font/mitr"
                         android:layout_height="wrap_content"
                         android:text="฿"
                         android:textColor="#FF819A"
                         android:textSize="20dp" />
 
                     <TextView
+                        android:fontFamily="@font/mitr"
                         android:id="@+id/menu_price"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -188,6 +192,7 @@
 
                     <TextView
                         android:id="@+id/name"
+                        android:fontFamily="@font/mitr"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Name Surname"
@@ -196,6 +201,7 @@
 
                     <TextView
                         android:id="@+id/timestamp"
+                        android:fontFamily="@font/mitr"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="34 min. ago"
@@ -222,6 +228,7 @@
 
             <TextView
 
+                android:fontFamily="@font/mitr"
                 android:textAlignment="textStart"
                 android:id="@+id/post_description"
                 android:layout_width="match_parent"
@@ -248,10 +255,10 @@
                     <TextView
                         android:layout_marginLeft="5dp"
                         android:id="@+id/like_count"
+                        android:fontFamily="@font/mitr"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:drawablePadding="10dp"
-                        android:text="690" />
+                        android:text="0" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -262,11 +269,12 @@
 
                     <TextView
                         android:id="@+id/comment"
+                        android:fontFamily="@font/mitr"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:drawablePadding="10dp"
                         android:drawableStart="@drawable/ic_comment_icon"
-                        android:text="23" />
+                        android:text="0" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

@@ -14,9 +14,8 @@
 
 
         <ImageView
-
             android:id="@+id/discover_thumbnail"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
@@ -64,6 +63,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
+                    android:fontFamily="@font/mitr"
                     android:id="@+id/discover_user_name"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

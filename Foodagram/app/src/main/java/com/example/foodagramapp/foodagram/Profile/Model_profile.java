@@ -15,6 +15,8 @@ public class Model_profile {
 
 
 
+
+
     String location;
 
 //    public Image getMenuImage() {
