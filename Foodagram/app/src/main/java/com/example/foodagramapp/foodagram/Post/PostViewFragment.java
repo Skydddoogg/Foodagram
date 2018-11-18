@@ -243,6 +243,12 @@ public class PostViewFragment extends Fragment {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+
+                    getActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.main_view, new Fragment_profile())
+                            .addToBackStack(null)
+                            .commit();
                 }
             });
         } else {

@@ -80,6 +80,7 @@ public class Fragment_editProfile extends Fragment {
     private String downloadImageURL;
     private CustomLoadingDialog customLoadingDialog;
     private String TAG = "ProfileEditFragment";
+    private boolean checkUploadImg = false;
 
     // Write a message to the database
 
@@ -139,6 +140,7 @@ public class Fragment_editProfile extends Fragment {
                             headerUsernameField.setText(username);
                             emailField.setText(email);
                             if (bitmap != null){
+                                checkUploadImg = true;
                                 profile_image.setImageBitmap(bitmap);
                             } else {
                                 Picasso.get().load(profileImageUrl ).into(profile_image);
@@ -209,6 +211,7 @@ public class Fragment_editProfile extends Fragment {
             }
         });
 
+
         sexField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
@@ -262,7 +265,7 @@ public class Fragment_editProfile extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String selected = sex[which];
-                sexField.setHint(selected);
+                sexField.setText(selected);
             }
         });
 
@@ -289,48 +292,56 @@ public class Fragment_editProfile extends Fragment {
                     myRef.child(mUser.getUid()).child("dob").setValue(birthDateField.getText().toString());
                     myRef.child(mUser.getUid()).child("email").setValue(emailField.getText().toString());
 
-                    // Generate reference message for uploading image
-                    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-                    String destination_directory = "profile_images";
-                    String refMessage = destination_directory + "/" + UUID.randomUUID().toString() + timestamp.toString() + ".jpg";
 
-                    // Compress image
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos);
-                    byte[] data = baos.toByteArray();
+                    if (checkUploadImg) {
 
-                    // Upload to firebase storage
-                    final StorageReference ref = storageRef.child(refMessage);
-                    UploadTask uploadTask = ref.putBytes(data);
 
-                    uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                        @Override
-                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                            if (!task.isSuccessful()) {
-                                throw task.getException();
+                        // Generate reference message for uploading image
+                        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                        String destination_directory = "profile_images";
+                        String refMessage = destination_directory + "/" + UUID.randomUUID().toString() + timestamp.toString() + ".jpg";
+
+                        // Compress image
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos);
+                        byte[] data = baos.toByteArray();
+
+                        // Upload to firebase storage
+                        final StorageReference ref = storageRef.child(refMessage);
+                        UploadTask uploadTask = ref.putBytes(data);
+
+                        uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                            @Override
+                            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                                if (!task.isSuccessful()) {
+                                    throw task.getException();
+                                }
+                                return ref.getDownloadUrl();
                             }
-                            return ref.getDownloadUrl();
-                        }
-                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Uri> task) {
-                            if (task.isSuccessful()){
-                                Uri downloadUrl = task.getResult();
-                                downloadImageURL = downloadUrl.toString(); // Image URL
-                                myRef.child(mUser.getUid()).child("profile_img_url").setValue(downloadImageURL);
-                                customLoadingDialog.dismissDialog();
-                                Log.d(TAG, "UPLOADED AN IMAGE");
-                            }else {
-                                customLoadingDialog.dismissDialog();
-                                Extension.toast(getActivity(), "เกิดข้อผิดพลาดในการอัปโหลดรูป");
-                                Log.d(TAG, "FAILED TO UPLOAD AN IMAGE");
+                        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Uri> task) {
+                                if (task.isSuccessful()) {
+                                    Uri downloadUrl = task.getResult();
+                                    downloadImageURL = downloadUrl.toString(); // Image URL
+                                    myRef.child(mUser.getUid()).child("profile_img_url").setValue(downloadImageURL);
+                                    customLoadingDialog.dismissDialog();
+                                    Log.d(TAG, "UPLOADED AN IMAGE");
+                                } else {
+                                    customLoadingDialog.dismissDialog();
+                                    Extension.toast(getActivity(), "เกิดข้อผิดพลาดในการอัปโหลดรูป");
+                                    Log.d(TAG, "FAILED TO UPLOAD AN IMAGE");
+                                }
                             }
-                        }
-                    });
+                        });
+                    } else {
+                        customLoadingDialog.dismissDialog();
+                    }
 
 
                 } catch (Exception e){
                     e.printStackTrace();
                 }
+
 
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
@@ -375,7 +386,7 @@ public class Fragment_editProfile extends Fragment {
                 mYear = year;
                 mMonth = month;
                 mDay = date;
-                field.setHint(year+"-"+monthStr+"-"+dayStr);
+                field.setText(year+"-"+monthStr+"-"+dayStr);
             }
         }, mYear, mMonth, mDay);
         datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
