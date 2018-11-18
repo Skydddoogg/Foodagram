@@ -50,7 +50,7 @@
 
             <ImageView
                 android:id="@+id/menu_image"
-                android:layout_width="match_parent"
+                android:layout_width="354dp"
                 android:layout_height="0dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/img_1"
