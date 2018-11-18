@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import com.example.foodagramapp.foodagram.Notification.Notification;
+import com.example.foodagramapp.foodagram.Notification.NotificationModel;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -90,7 +91,7 @@ public class LikeAction {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 try {
                     myRef = database.getReference("notification").child(dataSnapshot.getValue(String.class));
-                    Notification notification = new Notification("-", new OnlineUser().ONLINE_USER, postId, "like", 0.0, Double.parseDouble(System.currentTimeMillis() + ""));
+                    NotificationModel notification = new NotificationModel("-", new OnlineUser().ONLINE_USER, postId, "like", 0.0, Double.parseDouble(System.currentTimeMillis() + ""));
                     myRef.push().setValue(notification);
                 } catch (Exception e) {
                     e.printStackTrace();

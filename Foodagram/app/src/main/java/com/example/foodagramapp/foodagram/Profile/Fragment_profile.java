@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.example.foodagramapp.foodagram.Dialog.CustomLoadingDialog;
 import com.example.foodagramapp.foodagram.Notification.Notification;
+import com.example.foodagramapp.foodagram.Notification.NotificationModel;
 import com.example.foodagramapp.foodagram.Profile.Fragment_editProfile;
 import com.example.foodagramapp.foodagram.Profile.Adapter_profile;
 import com.example.foodagramapp.foodagram.Profile.Model_profile;
@@ -304,7 +305,7 @@ public class Fragment_profile extends Fragment {
     private void pushNotification(String content, Long commentTimeStamp){
         try {
             DatabaseReference myNotiRef = database.getReference("notification").child(anotherUserUid);
-            Notification notification = new Notification("-", mUser.getUid() , "-", "follow", 0.0, commentTimeStamp.doubleValue());
+            NotificationModel notification = new NotificationModel("-", mUser.getUid() , "-", "follow", 0.0, commentTimeStamp.doubleValue());
             myNotiRef.push().setValue(notification);
             Log.d(TAG, "PUSH NOTIFICATION");
         } catch (Exception e){

@@ -1,33 +1,36 @@
 package com.example.foodagramapp.foodagram.Notification;
 
-public class Notification {
+import android.support.annotation.NonNull;
 
-    private String content, from, postId, type;
-    private Double viewed, timestamp;
+public class Notification implements Comparable<Notification>{
 
-    public Notification(String content, String from, String postId, String type, Double viewed, Double timestamp){
-        this.content = content;
-        this.from = from;
+    private String postId;
+    private String from;
+    private String type;
+    private String content;
+    private long timestamp;
+    private double viewed;
+    private String pathImg;
+    private String emailHash;
+
+    public Notification(){
+
+    }
+
+    @Override
+    public int compareTo(@NonNull Notification notification) {
+        return 0;
+    }
+
+    public Notification(String postId, String from, String type, String content, long timestamp, double viewed, String pathImg, String emailHash){
         this.postId = postId;
-        this.type = type;
-        this.viewed = viewed;
-        this.timestamp = timestamp;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getFrom() {
-        return from;
-    }
-
-    public void setFrom(String from) {
         this.from = from;
+        this.type = type;
+        this.content = content;
+        this.timestamp = timestamp;
+        this.viewed = viewed;
+        this.pathImg = pathImg;
+        this.emailHash = emailHash;
     }
 
     public String getPostId() {
@@ -38,6 +41,14 @@ public class Notification {
         this.postId = postId;
     }
 
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
+    }
+
     public String getType() {
         return type;
     }
@@ -46,19 +57,43 @@ public class Notification {
         this.type = type;
     }
 
-    public Double getViewed() {
-        return viewed;
+    public String getContent() {
+        return content;
     }
 
-    public void setViewed(Double viewed) {
-        this.viewed = viewed;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public Double getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Double timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public double getViewed() {
+        return viewed;
+    }
+
+    public void setViewed(int viewed) {
+        this.viewed = viewed;
+    }
+
+    public String getPathImg() {
+        return pathImg;
+    }
+
+    public void setPathImg(String pathImg){
+        this.pathImg = pathImg;
+    }
+
+    public String getEmailHash(){
+        return emailHash;
+    }
+
+    public void setEmailHash(String emailHash) {
+        this.emailHash = emailHash;
     }
 }
