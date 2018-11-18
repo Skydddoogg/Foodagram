@@ -94,12 +94,39 @@ public class Adapter_profile extends ArrayAdapter<Post> {
         menuPrice.setText((int)profileInfo.get(position).getMenuPrice()+"");
         postDescription.setText(profileInfo.get(position).getDescription());
         profileName.setText(profileArrayList.get(position).getUsername());
-        postTime.setText(profileInfo.get(position).getTimestamp()+"");
+        postTime.setText(getCountOfDays((long) profileInfo.get(position).getTimestamp()));
 
 
 
 
 
         return profileItem;
+    }
+
+    public String getCountOfDays(long time) {
+        final int SECOND_MILLIS = 1000;
+        final int MINUTE_MILLIS = 60 * SECOND_MILLIS;
+        final int HOUR_MILLIS = 60 * MINUTE_MILLIS;
+        final int DAY_MILLIS = 24 * HOUR_MILLIS;
+        if (time < 1000000000000L) {
+            time *= 1000;
+        }
+        long now = System.currentTimeMillis();
+        final long diff = now - time;
+        if (diff < MINUTE_MILLIS) {
+            return "just now";
+        } else if (diff < 2 * MINUTE_MILLIS) {
+            return "a minute ago";
+        } else if (diff < 50 * MINUTE_MILLIS) {
+            return diff / MINUTE_MILLIS + " minutes ago";
+        } else if (diff < 90 * MINUTE_MILLIS) {
+            return "an hour ago";
+        } else if (diff < 24 * HOUR_MILLIS) {
+            return diff / HOUR_MILLIS + " hours ago";
+        } else if (diff < 48 * HOUR_MILLIS) {
+            return "yesterday";
+        } else {
+            return diff / DAY_MILLIS + " days ago";
+        }
     }
 }
