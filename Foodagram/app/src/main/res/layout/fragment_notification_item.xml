@@ -17,8 +17,8 @@
 
         <ImageView
             android:id="@+id/notification_img_profile"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/mitr_regular"
                 android:text="Name Surename"
-                android:textSize="12dp"
+                android:textSize="15dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -71,7 +71,7 @@
                 android:drawablePadding="5dp"
                 android:fontFamily="@font/mitr_regular"
                 android:text="34 mins ago."
-                android:textSize="10dp"
+                android:textSize="14dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/notification_content" />
 
