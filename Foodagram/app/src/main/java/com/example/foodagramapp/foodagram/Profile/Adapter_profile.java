@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,17 +12,15 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.foodagramapp.foodagram.Feed.MapsMarkerActivity;
 import com.example.foodagramapp.foodagram.LikeAction;
 import com.example.foodagramapp.foodagram.OnlineUser;
 import com.example.foodagramapp.foodagram.Post.Post;
-import com.example.foodagramapp.foodagram.Profile.Model_profile;
 import com.example.foodagramapp.foodagram.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.nostra13.universalimageloader.core.ImageLoader.TAG;
 
 public class Adapter_profile extends ArrayAdapter<Post> {
 

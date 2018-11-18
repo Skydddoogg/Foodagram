@@ -13,15 +13,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.foodagramapp.foodagram.Feed.FeedAdapter;
+import com.example.foodagramapp.foodagram.Comment.CommentFragment;
+import com.example.foodagramapp.foodagram.Feed.MapsMarkerActivity;
 import com.example.foodagramapp.foodagram.LikeAction;
 import com.example.foodagramapp.foodagram.MainActivity;
 import com.example.foodagramapp.foodagram.OnlineUser;
-import com.example.foodagramapp.foodagram.Comment.CommentFragment;
 import com.example.foodagramapp.foodagram.Profile.Fragment_profile;
 import com.example.foodagramapp.foodagram.Profile.ProfileForFeed;
 import com.example.foodagramapp.foodagram.R;
-import com.google.firebase.FirebaseException;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
