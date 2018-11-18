@@ -42,6 +42,10 @@
             android:name="com.example.foodagramapp.foodagram.Post.AddPostActivity"
             android:launchMode="singleInstance"/>
 
+        <activity
+            android:name="com.example.foodagramapp.foodagram.Feed.MapsMarkerActivity"
+            android:launchMode="singleInstance"/>
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBsshCGKs_5_xWomVBfPFxvOCpa26VEHkM" />
