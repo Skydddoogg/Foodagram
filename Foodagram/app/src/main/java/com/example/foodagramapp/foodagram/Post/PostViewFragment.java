@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -51,6 +52,7 @@ public class PostViewFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         initViews();
         initButtons();
+        initNavigateButton();
 
         database = FirebaseDatabase.getInstance();
 
@@ -207,6 +209,24 @@ public class PostViewFragment extends Fragment {
                 }
             });
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    void initNavigateButton(){
+        try{
+            ConstraintLayout _navigateBtn = getView().findViewById(R.id.post_view_navigate_btn);
+            _navigateBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getActivity(), MapsMarkerActivity.class);
+                    intent.putExtra("post", post);
+                    startActivity(intent);
+                    Log.d(TAG, "CLICK ON NAVIGATE BUTTON");
+                    Log.d(TAG, "POST ID = " + post.getPostId());
+                }
+            });
+        }catch (Exception e){
             e.printStackTrace();
         }
     }
