@@ -5,17 +5,21 @@ import android.animation.AnimatorListenerAdapter;
 import android.content.DialogInterface;
 import android.media.Image;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.LongDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,6 +29,8 @@ import android.widget.TextView;
 import com.example.foodagramapp.foodagram.Dialog.CustomLoadingDialog;
 import com.example.foodagramapp.foodagram.Notification.Notification;
 import com.example.foodagramapp.foodagram.Notification.NotificationModel;
+import com.example.foodagramapp.foodagram.Post.Post;
+import com.example.foodagramapp.foodagram.Post.PostViewFragment;
 import com.example.foodagramapp.foodagram.Profile.Fragment_editProfile;
 import com.example.foodagramapp.foodagram.Profile.Adapter_profile;
 import com.example.foodagramapp.foodagram.Profile.Model_profile;
@@ -63,13 +69,18 @@ public class Fragment_profile extends Fragment {
     private String name, username, profileDescription;
     private Button editProfileBtn;
     private Model_profile exampleInfo;
-    private ArrayList<Model_profile> profileInfo = new ArrayList<Model_profile>();
+    private ArrayList<Post> profileInfo = new ArrayList<Post>();
+    private ArrayList<String> likeCountForRender = new ArrayList<String>();
+    private ArrayList<String> postIdForRender = new ArrayList<String>();
+    private ArrayList<String> commentCountArrayList = new ArrayList<String>();
+    private ArrayList<ProfileForFeed> profileArrayList = new ArrayList<ProfileForFeed>();
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
     private ConstraintLayout followBlock;
     private Boolean isAnotherUser;
     private CustomLoadingDialog customLoadingDialog;
     private Boolean isFollowed = false;
+    private ListView profilePostList;
 //    Model_profile exampleInfo = new Model_profile("Pizza", "SkyDogg" , "50", "IT KMITL");
 
     @Nullable
@@ -117,17 +128,29 @@ public class Fragment_profile extends Fragment {
             //Get user UID and compare it with CurrentUserId
             Log.d("ProfileFragment", "User ID = " + anotherUserUid);
             Log.d("ProfileFragment", "OwnerUser ID = " + mUser.getUid());
-
                 initAnotherPostRef();
                 isAnotherUser = true;
                 usernameTextView.setText(anotherUserName);
                 profileNameTextView.setText(anotherName);
                 descriptionTextView.setText(anotherDescription);
                 Picasso.get().load(anotherProfileImage).into(profileImage);
+
+        if(anotherUserUid.equals(mUser.getUid())) {
+            editProfileBtn.setText("แก้ไขโปรไฟล์");
+            editProfileBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.main_view, new Fragment_editProfile())
+                            .commit();
+                }
+            });
+        }else{
             checkFollowed();
             setFollowBtn();
             initOwnerFollowingAmount(anotherUserUid);
             initOwnerFollowerAmount(anotherUserUid);
+        }
 
 
             //IF current user followed antoher user , When click on button , DELETE a row on FOLLOWING[CurrentUser -> anotherPerson]
@@ -153,13 +176,17 @@ public class Fragment_profile extends Fragment {
 
 
         //** Setup list , listAdapter
-        final ListView profilePostList = getView().findViewById(R.id.profile_all_post_list);
+        profilePostList = getView().findViewById(R.id.profile_all_post_list);
         profileAdapter = new Adapter_profile(
                 getActivity(),
                 R.layout.fragment_profile_item,
-                profileInfo
+                profileInfo,
+                likeCountForRender,
+                commentCountArrayList,
+                postIdForRender,
+                profileArrayList
         );
-        profilePostList.setAdapter(profileAdapter);
+
         profilePostList.setOnScrollListener(new AbsListView.OnScrollListener() {
             private boolean listIsAtTop()   {
                 if(profilePostList.getChildCount() == 0) return true;
@@ -194,7 +221,6 @@ public class Fragment_profile extends Fragment {
 
         });
 
-        profileAdapter.notifyDataSetChanged();
         //**
 
     }
@@ -237,9 +263,9 @@ public class Fragment_profile extends Fragment {
             public void onClick(View view) {
                 try {
 
-                    DatabaseReference refUnfollower = FirebaseDatabase.getInstance().getReference("followerForAUser");
+                    final DatabaseReference refUnfollower = FirebaseDatabase.getInstance().getReference("followerForAUser");
                     DatabaseReference refUnfollowing = FirebaseDatabase.getInstance().getReference("followingForAUser");
-
+                    final DatabaseReference refFollowing = FirebaseDatabase.getInstance().getReference("followingForAUser");
                     if (isFollowed) {
 
                         refUnfollower.child(anotherUserUid)
@@ -247,11 +273,15 @@ public class Fragment_profile extends Fragment {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 for (DataSnapshot snap : dataSnapshot.getChildren()) {
+
                                     String value = snap.getValue(String.class);
                                     String key = snap.getKey();
                                     dataSnapshot.getRef().removeValue();
-                                    Log.d(TAG, "KEY = " + key);
+//                                    Log.d(TAG, "Children: " + snap.getChildrenCount());
+//                                    followerTextView.setText(""+ dataSnapshot.getChildrenCount());
+
                                 }
+
                             }
 
                             @Override
@@ -267,8 +297,9 @@ public class Fragment_profile extends Fragment {
                                 for (DataSnapshot snap : dataSnapshot.getChildren()) {
                                     String value = snap.getValue(String.class);
                                     String key = snap.getKey();
+
                                     dataSnapshot.child(key).getRef().removeValue();
-                                    Log.d(TAG, "KEY = " + key);
+
                                 }
                             }
 
@@ -289,8 +320,28 @@ public class Fragment_profile extends Fragment {
                             e.printStackTrace();
                         }
 
+
+
                         refUnfollower.child(anotherUserUid).push().setValue(mUser.getUid());
                         refUnfollowing.child(mUser.getUid()).push().setValue(anotherUserUid);
+
+//                        refUnfollower.child(anotherUserUid)
+//                                .orderByValue().equalTo(mUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+//                            @Override
+//                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                                for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//                                    followerTextView.setText("" + dataSnapshot.getChildrenCount());
+//                                }
+//
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                            }
+//                        });
+
+
                         editProfileBtn.setText("ติดตามแล้ว");
                         isFollowed = true;
 
@@ -345,6 +396,9 @@ public class Fragment_profile extends Fragment {
     }
     public void initPostRef(){
         try {
+            profileArrayList.clear();
+            profileInfo.clear();
+            postIdForRender.clear();
             myPostRef = database.getReference().child("post");
             myPostRef.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -357,17 +411,10 @@ public class Fragment_profile extends Fragment {
                             myProfileRef.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    owner = (String) dataSnapshot.child("username").getValue();
-                                    menuName = (String) db.child("menuName").getValue();
-                                    foodDescription = (String) db.child("description").getValue();
-                                    location = (String) db.child("address").getValue();
-                                    price = (String) db.child("menuPrice").getValue().toString();
-                                    menuImage = (String) db.child("menuImageURL").getValue();
-                                    exampleInfo = new Model_profile(menuName, owner, price, location, foodDescription, menuImage);
-                                    profileInfo.add(exampleInfo);
-                                    profileAdapter.notifyDataSetChanged();
-
-
+                                    profileArrayList.add(dataSnapshot.getValue(ProfileForFeed.class));
+                                    profileInfo.add(db.getValue(Post.class));
+                                    postIdForRender.add(db.getKey());
+                                    fetchLike();
                                 }
 
                                 @Override
@@ -398,7 +445,9 @@ public class Fragment_profile extends Fragment {
 
     public void initAnotherPostRef(){
             try {
-//                customLoadingDialog.showDialog();
+                profileArrayList.clear();
+                profileInfo.clear();
+                postIdForRender.clear();
                 myPostRef = database.getReference().child("post");
                 myPostRef.addValueEventListener(new ValueEventListener() {
                     @Override
@@ -411,16 +460,10 @@ public class Fragment_profile extends Fragment {
                                 myProfileRef.addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        owner = (String) dataSnapshot.child("username").getValue();
-                                        menuName = (String) db.child("menuName").getValue();
-                                        foodDescription = (String) db.child("description").getValue();
-                                        location = (String) db.child("address").getValue();
-                                        price = (String) db.child("menuPrice").getValue().toString();
-                                        menuImage = (String) db.child("menuImageURL").getValue();
-                                        exampleInfo = new Model_profile(menuName, owner, price, location, foodDescription, menuImage);
-                                        profileInfo.add(exampleInfo);
-                                        profileAdapter.notifyDataSetChanged();
-
+                                        profileArrayList.add(dataSnapshot.getValue(ProfileForFeed.class));
+                                        profileInfo.add(db.getValue(Post.class));
+                                        postIdForRender.add(db.getKey());
+                                        fetchLike();
 
                                     }
 
@@ -449,6 +492,90 @@ public class Fragment_profile extends Fragment {
                 e.printStackTrace();
             }
         }
+
+    private void fetchLike() {
+
+        try {
+            Query myRef = database.getReference("like");
+            myRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    likeCountForRender.clear();
+                    for(String postId : postIdForRender) {
+                        int likeCount = 0;
+                        for (DataSnapshot user_id_like_this_post : dataSnapshot.child(postId).child("by").getChildren()) {
+                            likeCount++;
+                        }
+                        likeCountForRender.add(likeCount + "");
+                    }
+                    fetchComment();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        } catch (Exception e) {
+            Log.e("FeedFragment", e.getLocalizedMessage());
+        }
+    }
+
+    private void fetchComment() {
+
+        try {
+            Query myRef = database.getReference("comment");
+            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    Parcelable state = profilePostList.onSaveInstanceState();
+                    commentCountArrayList.clear();
+                    for(String postId : postIdForRender) {
+                        int commentCount = 0;
+                        for (DataSnapshot user_id_like_this_post : dataSnapshot.child(postId).getChildren()) {
+                            commentCount++;
+                        }
+                        commentCountArrayList.add(commentCount + "");
+                    }
+                    if(commentCountArrayList.size() == profileInfo.size()){
+                        profilePostList.setAdapter(profileAdapter);
+                        profileAdapter.notifyDataSetChanged();
+                        onClickItem();
+                    }
+                    profilePostList.onRestoreInstanceState(state);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        } catch (Exception e) {
+            Log.e("FeedFragment", e.getLocalizedMessage());
+        }
+
+    }
+
+    private void onClickItem(){
+        profilePostList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                //Send Post Obj
+                PostViewFragment obj;
+                FragmentManager fm;
+                FragmentTransaction ft;
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("post", profileAdapter.getItem(position));
+                fm = getActivity().getSupportFragmentManager();
+                ft = fm.beginTransaction();
+                obj = new PostViewFragment();
+                obj.setArguments(bundle);
+                ft.replace(R.id.main_view, obj).addToBackStack(null);
+                ft.commit();
+            }
+        });
+    }
+
     public void initOwnerFollowerAmount(String userId){
         final DatabaseReference profileFollower = database.getReference().child("followerForAUser").child(userId);
         profileFollower.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -457,6 +584,8 @@ public class Fragment_profile extends Fragment {
                 for(DataSnapshot db : dataSnapshot.getChildren()){
                     followerTextView.setText("" + dataSnapshot.getChildrenCount());
 //                    customLoadingDialog.dismissDialog();
+                    Log.i("CHECKING FOLLOWER", "" + dataSnapshot.getChildrenCount());
+
                 }
             }
 
@@ -475,6 +604,7 @@ public class Fragment_profile extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot db : dataSnapshot.getChildren()){
+                    Log.i("CHECKING FOLLOWING", "" + dataSnapshot.getChildrenCount());
                     followingTextView.setText("" + dataSnapshot.getChildrenCount());
                 }
             }

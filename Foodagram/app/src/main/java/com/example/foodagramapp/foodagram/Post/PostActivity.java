@@ -56,6 +56,7 @@ public class PostActivity extends AppCompatActivity {
         mViewPager.setAdapter(adapter);
         mViewPager.setCurrentItem(0);
         radioGroup.check(radioGroup.getChildAt(0).getId());
+        radioCamera.setTextColor(getResources().getColor(R.color.white));
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
