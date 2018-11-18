@@ -133,8 +133,7 @@ public class Fragment_profile extends Fragment {
                 profileNameTextView.setText(anotherName);
                 descriptionTextView.setText(anotherDescription);
                 Picasso.get().load(anotherProfileImage).into(profileImage);
-            initOwnerFollowingAmount(anotherUserUid);
-            initOwnerFollowerAmount(anotherUserUid);
+
         if(anotherUserUid.equals(mUser.getUid())) {
             editProfileBtn.setText("แก้ไขโปรไฟล์");
             editProfileBtn.setOnClickListener(new View.OnClickListener() {
@@ -148,6 +147,8 @@ public class Fragment_profile extends Fragment {
         }else{
             checkFollowed();
             setFollowBtn();
+            initOwnerFollowingAmount(anotherUserUid);
+            initOwnerFollowerAmount(anotherUserUid);
         }
 
 
@@ -582,6 +583,8 @@ public class Fragment_profile extends Fragment {
                 for(DataSnapshot db : dataSnapshot.getChildren()){
                     followerTextView.setText("" + dataSnapshot.getChildrenCount());
 //                    customLoadingDialog.dismissDialog();
+                    Log.i("CHECKING FOLLOWER", "" + dataSnapshot.getChildrenCount());
+
                 }
             }
 
@@ -600,6 +603,7 @@ public class Fragment_profile extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot db : dataSnapshot.getChildren()){
+                    Log.i("CHECKING FOLLOWING", "" + dataSnapshot.getChildrenCount());
                     followingTextView.setText("" + dataSnapshot.getChildrenCount());
                 }
             }
