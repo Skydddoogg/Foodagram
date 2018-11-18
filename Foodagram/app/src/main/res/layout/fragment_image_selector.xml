@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/gallery_content_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <android.support.v7.widget.Toolbar
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/gallery_top_frame"
+            android:id="@+id/toolbar4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/gallery_top_bar_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    app:layout_constraintTop_toTopOf="@id/gallery_top_bar_layout"
+                    app:layout_constraintBottom_toBottomOf="@id/gallery_top_bar_layout"
+                    app:layout_constraintEnd_toEndOf="@id/gallery_top_bar_layout"
+                    app:layout_constraintStart_toStartOf="@id/gallery_top_bar_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:text="คลังรูปภาพ"
+                    android:fontFamily="@font/mitr"
+                    android:textColor="#FF1C49"
+                    android:textSize="20dp" />
+
+                <TextView
+                    android:id="@+id/gallery_back_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="@id/gallery_top_bar_layout"
+                    app:layout_constraintBottom_toBottomOf="@id/gallery_top_bar_layout"
+                    app:layout_constraintStart_toStartOf="@id/gallery_top_bar_layout"
+                    android:layout_centerVertical="true"
+                    android:text="ยกเลิก"
+                    android:fontFamily="@font/mitr"
+                    android:textColor="#172D4D"
+                    android:textSize="14dp" />
+
+                <TextView
+                    android:id="@+id/gallery_next_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:fontFamily="@font/mitr"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:text="ถัดไป"
+                    android:textColor="#172D4D"
+                    android:textSize="14dp"
+                    android:layout_marginEnd="15dp"
+                    app:layout_constraintBottom_toBottomOf="@id/gallery_top_bar_layout"
+                    app:layout_constraintTop_toTopOf="@id/gallery_top_bar_layout"
+                    app:layout_constraintEnd_toEndOf="@id/gallery_top_bar_layout"/>
+            </android.support.constraint.ConstraintLayout>
+
+        </android.support.v7.widget.Toolbar>
+
+        <com.sothree.slidinguppanel.SlidingUpPanelLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:sothree="http://schemas.android.com/apk/res/com.example.foodagramapp.foodagram"
+            android:id="@+id/sliding_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="bottom"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar4"
+            sothree:umanoPanelHeight="200dp"
+            sothree:umanoShadowHeight="4dp" >
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:id="@+id/gallery_top_frame"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    app:layout_constraintDimensionRatio="1:1">
+
+                    <com.fenchtose.nocropper.CropperView
+                        android:background="#ff282828"
+                        android:id="@+id/gallery_image_view_bitmap"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:nocropper__grid_color="@color/colorAccent"
+                        app:nocropper__grid_opacity="0.8"
+                        app:nocropper__grid_thickness="0.8dp" />
+
+                    <ImageView
+                        android:id="@+id/snap_button"
+                        android:layout_margin="16dp"
+                        android:padding="8dp"
+                        android:layout_gravity="left|bottom"
+                        android:background="@drawable/black_tranp_circle_ripple"
+                        android:src="@drawable/ic_crop_free_white_24dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp" />
+
+                    <ImageView
+                        android:id="@+id/rotate_button"
+                        android:layout_margin="16dp"
+                        android:padding="8dp"
+                        android:layout_gravity="right|bottom"
+                        android:background="@drawable/black_tranp_circle_ripple"
+                        android:src="@drawable/ic_rotate_right_white_24dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp" />
+
+                    <ProgressBar
+                        android:id="@+id/gallery_progress_bar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintBottom_toTopOf="@+id/gallery_push_up_icon"
+                        app:layout_constraintEnd_toEndOf="@+id/gallery_top_frame"
+                        app:layout_constraintStart_toStartOf="@+id/gallery_top_frame"
+                        app:layout_constraintTop_toTopOf="@+id/gallery_top_frame" />
+
+                    <TextView
+                        android:id="@+id/gallery_image_not_found"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:text="ไม่พบรูปภาพในโฟลเดอร์รูปถ่ายของท่าน"
+                        android:textAlignment="center"
+                        android:layout_gravity="center"
+                        android:visibility="invisible" />
+
+                    <ImageView
+                        android:id="@+id/gallery_push_up_icon"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|center"
+                        android:src="@drawable/ic_action_push_up"
+                        android:tint="#FFF"
+                        app:layout_constraintBottom_toBottomOf="@+id/gallery_top_frame"
+                        tools:layout_editor_absoluteX="0dp"
+                        tools:layout_editor_absoluteY="293dp" />
+
+                </FrameLayout>
+
+            </android.support.constraint.ConstraintLayout>
+
+            <LinearLayout
+                android:id="@+id/dragView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#ffffff"
+                android:clickable="true"
+                android:focusable="false"
+                android:orientation="vertical">
+                <GridView
+                    android:id="@+id/gallery_grid_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_below="@id/gallery_push_up_icon"
+                    android:layout_weight="40"
+                    android:layout_marginTop="1dp"
+                    android:gravity="center|top"
+                    android:horizontalSpacing="1.5dp"
+                    android:numColumns="3"
+                    android:stretchMode="none"
+                    android:verticalSpacing="1.5dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/gallery_push_up_icon"
+                    tools:layout_editor_absoluteX="0dp">
+                </GridView>
+            </LinearLayout>
+
+        </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:background="@drawable/background_gallery_grid_view"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="0dp" />
+
+</android.support.constraint.ConstraintLayout>
