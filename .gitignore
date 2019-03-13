@@ -1,5 +1,6 @@
 # General
 .DS_Store
+.idea
 
 # Android Studio
 Foodagram/.idea/workspace.xml
