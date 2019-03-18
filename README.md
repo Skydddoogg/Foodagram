@@ -1,2 +1,2 @@
-# MobileDev-Project-Foodagram
-https://drive.google.com/drive/folders/1lUxdc6O7Bs5uVgZnluUV5CopS-GXOaVA?fbclid=IwAR3LTjLjcWOIiL7Ah1JBq8Lkv-9we7edXnZ-uig16ubhs6M0OKf2A6E9sOs
+# Foodagram
+Foodagram is a photo-sharing social networking application for sharing food experiences. There are several features that have been conducted for this application like photo sharing, restaurant navigating, people following, post commenting and liking.
